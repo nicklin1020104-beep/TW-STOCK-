@@ -12,14 +12,14 @@ th{color:var(--mute);font-weight:500}.up{color:var(--up)}.dn{color:var(--dn)}a{c
 h3{font-size:14px;margin:14px 0 6px}.cols{display:grid;grid-template-columns:1fr 1fr;gap:20px}@media (max-width:900px){.cols{grid-template-columns:1fr}}
 table.flow td:first-child,table.flow th:first-child{color:var(--mute);text-align:right;width:1em}table.flow td:nth-child(2),table.flow th:nth-child(2){text-align:left}table.flow td:nth-child(3),table.flow th:nth-child(3){text-align:right}
 .tabs{display:flex;gap:6px;flex-wrap:wrap}.tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:999px;cursor:pointer;font:inherit;font-size:13px}.tab.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
-.star{color:#e6a700;margin-left:4px}.ok{color:var(--up);text-align:center!important}.no{color:var(--mute);text-align:center!important}table.stats td:first-child{text-align:left;font-weight:500}.chips{white-space:normal;min-width:170px;text-align:left!important}.chip{display:inline-block;font-size:11px;padding:1px 6px;border-radius:4px;margin:1px 2px 1px 0}.chip.good{background:color-mix(in srgb,var(--up) 14%,transparent);color:var(--up)}.chip.bad{background:color-mix(in srgb,var(--dn) 14%,transparent);color:var(--dn)}.chip.mid{background:var(--card);color:var(--mute)}h2{border-top:1px solid var(--line);padding-top:20px}
-.ptabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:18px 0 0}.ptab{border:0;background:none;color:var(--mute);font:inherit;font-size:15px;padding:8px 14px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}.ptab.on{color:var(--fg);border-bottom-color:var(--fg);font-weight:600}
-.page>h2:first-child{border-top:0}details{margin-top:10px;font-size:13px}summary{cursor:pointer;color:var(--mute);padding:6px 0}.hint{font-size:13px;color:var(--mute)}
+.star{color:#e6a700;margin-left:4px}.ok{color:var(--up);text-align:center!important}.no{color:var(--mute);text-align:center!important}table.stats td:first-child{text-align:left;font-weight:500}td.post{white-space:normal;min-width:280px;max-width:520px;text-align:left!important;font-size:12.5px;line-height:1.4}td.post a{text-decoration:none;color:var(--mute)}td.post a:hover{color:var(--fg)}.chips{white-space:normal;min-width:170px;text-align:left!important}.chip{display:inline-block;font-size:11px;padding:1px 6px;border-radius:4px;margin:1px 2px 1px 0}.chip.good{background:color-mix(in srgb,var(--up) 14%,transparent);color:var(--up)}.chip.bad{background:color-mix(in srgb,var(--dn) 14%,transparent);color:var(--dn)}.chip.mid{background:var(--card);color:var(--mute)}h2{border-top:1px solid var(--line);padding-top:20px}
+.ptabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin:18px 0 0;overflow-x:auto;scrollbar-width:none}.ptabs::-webkit-scrollbar{display:none}.ptab{white-space:nowrap}.ptab{border:0;background:none;color:var(--mute);font:inherit;font-size:15px;padding:8px 14px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}.ptab.on{color:var(--fg);border-bottom-color:var(--fg);font-weight:600}
+.page>h2:first-child,.page>.rules:first-child+h2{border-top:0}.page{padding-top:4px}details{margin-top:10px;font-size:13px}summary{cursor:pointer;color:var(--mute);padding:6px 0}.hint{font-size:13px;color:var(--mute)}
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}.card{background:var(--card);border-radius:10px;padding:4px 14px 10px}.card h3{margin:12px 0 6px}
 ul.news{list-style:none;padding:0;margin:0;font-size:13.5px}ul.news li{padding:7px 0;border-bottom:1px solid var(--line);line-height:1.45}ul.news li:last-child{border-bottom:0}ul.news a{text-decoration:none}ul.news a:hover{text-decoration:underline}.meta{display:block;color:var(--mute);font-size:12px;margin-top:2px}
 </style></head><body>
-<h1>台股每日整理</h1><div class="sub">交易日 2026/09/29　產出時間 2026/9/30 上午9:23:18</div>
-<div class="ptabs"><button class="ptab on" data-p="main">每日整理</button><button class="ptab" data-p="track">一週追蹤</button><button class="ptab" data-p="news">產業新聞</button></div>
+<h1>台股每日整理</h1><div class="sub">交易日 2026/09/29　產出時間 2026/9/30 上午9:37:47</div>
+<div class="ptabs"><button class="ptab on" data-p="main">選股</button><button class="ptab" data-p="latent">潛伏股</button><button class="ptab" data-p="three">三率三升</button><button class="ptab" data-p="leader">千金龍頭</button><button class="ptab" data-p="flow">三大法人</button><button class="ptab" data-p="track">一週追蹤</button><button class="ptab" data-p="news">產業新聞</button><button class="ptab" data-p="us">美股</button></div>
 <div class="page" data-p="main">
 <div class="rules">① MA5 / MA10 / MA20 皆上彎　② 開盤 ≤ 三線最低、收盤 &gt; 三線最高　③ 成交量 &gt; 5,000 張　④ 最新月營收 YoY 為正，且不低於上個月　⑤ 依收盤是否站上季線(MA60)分組</div>
 <h2>站上季線 <span class="count">1 檔</span></h2><div class="scroll"><table><thead><tr><th>代號</th><th>名稱</th><th>產業</th><th>基本面</th><th>開盤</th><th>收盤</th><th>漲跌</th><th>量(張)</th><th>MA5</th><th>MA10</th><th>MA20</th><th>MA60</th><th>距季線</th><th>營收YoY</th><th>月增</th><th>累計YoY</th><th>EPS</th><th>營益率</th><th>毛利率</th><th>本益比</th><th>淨值比</th></tr></thead><tbody><tr>
@@ -34,54 +34,6 @@ ul.news{list-style:none;padding:0;margin:0;font-size:13.5px}ul.news li{padding:7
 <td class="up">3.55</td><td>7.0%</td><td>22.4%</td>
 <td>59.0</td><td>3.58</td></tr></tbody></table></div>
 <h2>未站上季線 <span class="count">0 檔</span></h2><p class="empty">今日無符合條件個股</p>
-<h2>類大甲：營收加速＋低檔起漲 <span class="count">9 檔</span></h2>
-<div class="rules">① 月營收 YoY 連 3 個月往上，最新 ≥ 30%　② MA5 &gt; MA10 &gt; MA20 且皆上彎　③ 今日量 ≥ 前 20 日均量 2 倍、≥ 500 張　④ 今日漲幅 ≥ 3%　⑤ 距 60 日低點 ≤ 60%（起漲初期）</div>
-<div class="scroll"><table><thead><tr><th>代號</th><th>名稱</th><th>產業</th><th>基本面</th><th>YoY 近3月</th><th>收盤</th><th>漲幅</th><th>量(張)</th><th>量比</th><th>距60日低</th><th>季線</th><th>EPS</th><th>本益比</th></tr></thead><tbody><tr><td><a href="https://tw.stock.yahoo.com/quote/6693.TWO/technical-analysis" target="_blank">6693</a></td>
-<td>廣閎科<span class="tag">上櫃</span></td><td>半導體業</td>
-<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">三率三升</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip good">獲利</span><span class="chip bad">高本益比</span></td>
-<td class="up">107% → 109% → 114%</td><td>218</td><td class="up">+4.06%</td><td>3,929</td><td>2.2 倍</td>
-<td>+59.7%</td><td>站上</td>
-<td class="up">3.38</td><td>43.8</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/3162.TWO/technical-analysis" target="_blank">3162</a></td>
-<td>精確<span class="tag">上櫃</span></td><td>電機機械</td>
-<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip good">獲利</span><span class="chip bad">高本益比</span></td>
-<td class="up">59% → 78% → 101%</td><td>80.9</td><td class="up">+9.92%</td><td>4,088</td><td>2.9 倍</td>
-<td>+45.2%</td><td>站上</td>
-<td class="up">0.05</td><td>128.4</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/8147.TWO/technical-analysis" target="_blank">8147</a></td>
-<td>正淩<span class="tag">上櫃</span></td><td>電子零組件業</td>
-<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip good">獲利</span><span class="chip bad">高本益比</span></td>
-<td class="up">15% → 50% → 96%</td><td>148</td><td class="up">+8.42%</td><td>738</td><td>3.4 倍</td>
-<td>+39.6%</td><td>站上</td>
-<td class="up">1.38</td><td>57.8</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/3088.TWO/technical-analysis" target="_blank">3088</a></td>
-<td>艾訊<span class="tag">上櫃</span></td><td>電腦及週邊設備業</td>
-<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip good">獲利</span></td>
-<td class="up">48% → 67% → 79%</td><td>136</td><td class="up">+5.02%</td><td>1,737</td><td>2.8 倍</td>
-<td>+15.3%</td><td>站上</td>
-<td class="up">4.28</td><td>17.0</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/4721.TWO/technical-analysis" target="_blank">4721</a></td>
-<td>美琪瑪<span class="tag">上櫃</span></td><td>化學工業</td>
-<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">三率三升</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip good">獲利</span></td>
-<td class="up">-19% → 25% → 72%</td><td>79.8</td><td class="up">+3.10%</td><td>916</td><td>2.7 倍</td>
-<td>+26.7%</td><td>站上</td>
-<td class="up">3.51</td><td>16.1</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/4906.TW/technical-analysis" target="_blank">4906</a></td>
-<td>正文<span class="tag">上市</span></td><td>通信網路業</td>
-<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">三率三升</span><span class="chip good">YoY 加速</span><span class="chip bad">今年累計衰退</span><span class="chip good">月增</span><span class="chip bad">虧損</span><span class="chip bad">高本益比</span></td>
-<td class="up">-5% → 32% → 56%</td><td>40.2</td><td class="up">+6.77%</td><td>13,405</td><td>2.2 倍</td>
-<td>+38.9%</td><td>站上</td>
-<td class="dn">-0.42</td><td>335.0</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/4540.TW/technical-analysis" target="_blank">4540</a></td>
-<td>全球傳動<span class="tag">上市</span></td><td>電機機械</td>
-<td class="chips"><span class="chip good">營收成長</span><span class="chip good">三率三升</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip good">獲利</span></td>
-<td class="up">31% → 36% → 45%</td><td>62.6</td><td class="up">+4.33%</td><td>5,085</td><td>2.3 倍</td>
-<td>+48.3%</td><td>站上</td>
-<td class="up">0.25</td><td>-</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/6207.TWO/technical-analysis" target="_blank">6207</a></td>
-<td>雷科<span class="tag">上櫃</span></td><td>電子零組件業</td>
-<td class="chips"><span class="chip good">營收成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip good">獲利</span><span class="chip bad">高本益比</span></td>
-<td class="up">-3% → 6% → 36%</td><td>137.5</td><td class="up">+10.00%</td><td>23,196</td><td>3.6 倍</td>
-<td>+58.4%</td><td>站上</td>
-<td class="up">1.11</td><td>90.5</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/3563.TW/technical-analysis" target="_blank">3563</a></td>
-<td>牧德<span class="tag">上市</span></td><td>光電業</td>
-<td class="chips"><span class="chip good">營收成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip good">獲利</span><span class="chip bad">高本益比</span></td>
-<td class="up">16% → 32% → 36%</td><td>794</td><td class="up">+3.25%</td><td>1,815</td><td>3.1 倍</td>
-<td>+41.5%</td><td>站上</td>
-<td class="up">9.80</td><td>46.6</td></tr></tbody></table></div>
 <h2>所有一根K棒站上三線 <span class="count">18 檔，營收 YoY 為正且未往下；✓✗ 標示是否符合，★ 為符合全部條件</span></h2>
 <div class="scroll"><table><thead><tr><th>代號</th><th>名稱</th><th>產業</th><th>基本面</th><th>三線上彎</th><th>量&gt;5000</th><th>收盤</th><th>漲跌</th><th>量(張)</th><th>季線</th><th>營收YoY</th><th>EPS</th><th>本益比</th></tr></thead><tbody><tr><td><a href="https://tw.stock.yahoo.com/quote/4958.TW/technical-analysis" target="_blank">4958</a></td>
 <td>臻鼎-KY<span class="tag">上市</span><span class="star" title="符合全部條件">★</span></td><td>電子零組件業</td>
@@ -192,8 +144,461 @@ ul.news{list-style:none;padding:0;margin:0;font-size:13.5px}ul.news li{padding:7
 <td>71.8</td><td class="dn">-0.14%</td><td>18</td>
 <td class="">-</td>
 <td class="up">+45.71%</td><td class="up">1.53</td><td>36.5</td></tr></tbody></table></div>
-<h2>三率三升 <span class="count">319 檔・115Q2 vs 115Q1，單季毛利率、營益率、淨利率皆較上季提升，且營收 YoY 為正、未往下</span></h2>
-<h3>技術面轉強（一K站三線／類大甲／多頭排列）<span class="count">81 檔</span></h3><div class="scroll"><table><thead><tr><th>代號</th><th>名稱</th><th>產業</th><th>技術面</th><th>毛利率%</th><th>營益率%</th><th>淨利率%</th><th>營收YoY</th><th>收盤</th><th>漲跌</th><th>量(張)</th><th>季線</th><th>EPS</th><th>本益比</th></tr></thead><tbody><tr><td><a href="https://tw.stock.yahoo.com/quote/3006.TW/technical-analysis" target="_blank">3006</a></td>
+</div>
+<div class="page" data-p="latent" hidden><h2>潛伏股：營收加速、股價還沒起漲 <span class="count">64 檔</span></h2>
+<div class="rules">① 月營收 YoY 連 3 個月往上，最新 ≥ 30%　② 距 60 日低點 ≤ 25%　③ 近 20 日漲幅 ≤ 10%　④ 5/10/20 日均線糾結（差距 ≤ 8%）　⑤ 20 日均量 ≥ 200 張</div>
+<p class="hint">排序：三率三升優先，再依營收加速幅度。「今日量比」≥ 1.5 倍標紅，代表可能開始有資金進場，值得優先注意。</p>
+<div class="scroll"><table><thead><tr><th>代號</th><th>名稱</th><th>產業</th><th>基本面</th><th>YoY 近3月</th><th>收盤</th><th>漲跌</th><th>距60日低</th><th>近20日</th><th>均線差距</th><th>20日均量</th><th>今日量比</th><th>季線</th><th>EPS</th><th>本益比</th></tr></thead><tbody><tr><td><a href="https://tw.stock.yahoo.com/quote/3176.TWO/technical-analysis" target="_blank">3176</a></td>
+<td>基亞<span class="tag">上櫃</span></td><td>生技醫療業</td>
+<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">三率三升</span><span class="chip good">YoY 加速</span><span class="chip bad">今年累計衰退</span><span class="chip good">月增</span><span class="chip bad">虧損</span><span class="chip mid">本益比無</span></td>
+<td class="up">-30% → -16% → 197%</td><td>37.35</td><td class="dn">-1.06%</td>
+<td>+20.1%</td><td class="dn">-3.98%</td><td>3.2%</td>
+<td>768</td><td class="">0.4 倍</td>
+<td>站上</td>
+<td class="dn">-0.57</td><td>-</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2540.TW/technical-analysis" target="_blank">2540</a></td>
+<td>愛山林<span class="tag">上市</span></td><td>建材營造</td>
+<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">三率三升</span><span class="chip good">YoY 加速</span><span class="chip bad">今年累計衰退</span><span class="chip good">月增</span><span class="chip good">獲利</span></td>
+<td class="up">-49% → 7% → 98%</td><td>47.6</td><td class="dn">-2.86%</td>
+<td>+8.2%</td><td class="dn">-1.24%</td><td>0.8%</td>
+<td>606</td><td class="">0.8 倍</td>
+<td>未站上</td>
+<td class="up">0.02</td><td>-</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2427.TW/technical-analysis" target="_blank">2427</a></td>
+<td>三商電<span class="tag">上市</span></td><td>資訊服務業</td>
+<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">三率三升</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip good">獲利</span></td>
+<td class="up">-12% → 31% → 75%</td><td>23.25</td><td class="dn">-0.64%</td>
+<td>+7.1%</td><td class="up">+2.88%</td><td>3.0%</td>
+<td>1,089</td><td class="">0.2 倍</td>
+<td>站上</td>
+<td class="up">0.73</td><td>16.4</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2382.TW/technical-analysis" target="_blank">2382</a></td>
+<td>廣達<span class="tag">上市</span></td><td>電腦及週邊設備業</td>
+<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">三率三升</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip good">獲利</span><span class="chip good">低本益比</span></td>
+<td class="up">103% → 131% → 177%</td><td>336.5</td><td class="dn">-0.59%</td>
+<td>+20.6%</td><td class="up">+1.20%</td><td>0.4%</td>
+<td>14,751</td><td class="">0.7 倍</td>
+<td>站上</td>
+<td class="up">12.93</td><td>14.7</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/6190.TWO/technical-analysis" target="_blank">6190</a></td>
+<td>萬泰科<span class="tag">上櫃</span></td><td>通信網路業</td>
+<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">三率三升</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip bad">月減</span><span class="chip good">獲利</span></td>
+<td class="up">29% → 45% → 72%</td><td>69.3</td><td class="up">+1.02%</td>
+<td>+21.2%</td><td class="dn">-1.84%</td><td>1.0%</td>
+<td>2,068</td><td class="">0.5 倍</td>
+<td>未站上</td>
+<td class="up">1.35</td><td>30.5</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2353.TW/technical-analysis" target="_blank">2353</a></td>
+<td>宏碁<span class="tag">上市</span></td><td>電腦及週邊設備業</td>
+<td class="chips"><span class="chip good">營收成長</span><span class="chip good">三率三升</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip good">獲利</span></td>
+<td class="up">-3% → 22% → 38%</td><td>31.4</td><td class="dn">-1.10%</td>
+<td>+12.5%</td><td class="up">+1.78%</td><td>0.2%</td>
+<td>16,350</td><td class="">0.4 倍</td>
+<td>站上</td>
+<td class="up">0.96</td><td>18.7</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2609.TW/technical-analysis" target="_blank">2609</a></td>
+<td>陽明<span class="tag">上市</span></td><td>航運業</td>
+<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">三率三升</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip good">獲利</span><span class="chip good">低本益比</span></td>
+<td class="up">20% → 35% → 56%</td><td>58.4</td><td class="dn">-2.01%</td>
+<td>+21.7%</td><td class="up">+3.91%</td><td>1.6%</td>
+<td>43,005</td><td class="">0.5 倍</td>
+<td>站上</td>
+<td class="up">2.05</td><td>13.2</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2420.TW/technical-analysis" target="_blank">2420</a></td>
+<td>新巨<span class="tag">上市</span></td><td>電子零組件業</td>
+<td class="chips"><span class="chip good">營收成長</span><span class="chip good">三率三升</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip bad">月減</span><span class="chip good">獲利</span><span class="chip good">低本益比</span></td>
+<td class="up">11% → 19% → 34%</td><td>53.9</td><td class="up">0.00%</td>
+<td>+1.5%</td><td class="dn">-2.53%</td><td>0.5%</td>
+<td>236</td><td class="">0.7 倍</td>
+<td>未站上</td>
+<td class="up">2.30</td><td>12.1</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/8109.TWO/technical-analysis" target="_blank">8109</a></td>
+<td>博大<span class="tag">上櫃</span></td><td>電子零組件業</td>
+<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">三率三升</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip good">獲利</span></td>
+<td class="up">36% → 45% → 56%</td><td>134.5</td><td class="up">+1.89%</td>
+<td>+15.9%</td><td class="up">+3.07%</td><td>1.6%</td>
+<td>228</td><td class="">0.7 倍</td>
+<td>站上</td>
+<td class="up">3.84</td><td>18.1</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2472.TW/technical-analysis" target="_blank">2472</a></td>
+<td>立隆電<span class="tag">上市</span></td><td>電子零組件業</td>
+<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">三率三升</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip bad">月減</span><span class="chip good">獲利</span></td>
+<td class="up">36% → 36% → 51%</td><td>213</td><td class="dn">-2.52%</td>
+<td>+4.9%</td><td class="dn">-8.39%</td><td>1.2%</td>
+<td>2,427</td><td class="">0.6 倍</td>
+<td>未站上</td>
+<td class="up">3.98</td><td>21.7</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2009.TW/technical-analysis" target="_blank">2009</a></td>
+<td>第一銅<span class="tag">上市</span></td><td>鋼鐵工業</td>
+<td class="chips"><span class="chip good">營收成長</span><span class="chip good">三率三升</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip bad">月減</span><span class="chip good">獲利</span></td>
+<td class="up">15% → 21% → 30%</td><td>39.15</td><td class="up">0.00%</td>
+<td>+14.1%</td><td class="dn">-5.21%</td><td>1.0%</td>
+<td>1,872</td><td class="">0.9 倍</td>
+<td>站上</td>
+<td class="up">0.49</td><td>38.0</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2327.TW/technical-analysis" target="_blank">2327</a></td>
+<td>國巨*<span class="tag">上市</span></td><td>電子零組件業</td>
+<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">三率三升</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip good">獲利</span></td>
+<td class="up">39% → 52% → 52%</td><td>548</td><td class="dn">-5.52%</td>
+<td>+20.0%</td><td class="dn">-8.21%</td><td>2.4%</td>
+<td>39,128</td><td class="">1.1 倍</td>
+<td>未站上</td>
+<td class="up">8.48</td><td>36.9</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2049.TW/technical-analysis" target="_blank">2049</a></td>
+<td>上銀<span class="tag">上市</span></td><td>電機機械</td>
+<td class="chips"><span class="chip good">營收成長</span><span class="chip good">三率三升</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip good">獲利</span><span class="chip bad">高本益比</span></td>
+<td class="up">32% → 34% → 42%</td><td>335.5</td><td class="up">+3.07%</td>
+<td>+18.6%</td><td class="dn">-5.23%</td><td>4.3%</td>
+<td>3,848</td><td class="">0.6 倍</td>
+<td>未站上</td>
+<td class="up">4.03</td><td>50.8</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2108.TW/technical-analysis" target="_blank">2108</a></td>
+<td>南帝<span class="tag">上市</span></td><td>橡膠工業</td>
+<td class="chips"><span class="chip good">營收成長</span><span class="chip good">三率三升</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip good">獲利</span></td>
+<td class="up">32% → 33% → 42%</td><td>28.2</td><td class="dn">-1.74%</td>
+<td>+6.2%</td><td class="dn">-7.39%</td><td>2.2%</td>
+<td>651</td><td class="">0.7 倍</td>
+<td>未站上</td>
+<td class="up">1.28</td><td>15.8</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2383.TW/technical-analysis" target="_blank">2383</a></td>
+<td>台光電<span class="tag">上市</span></td><td>電子零組件業</td>
+<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">三率三升</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip good">獲利</span><span class="chip bad">高本益比</span></td>
+<td class="up">121% → 129% → 130%</td><td>4920</td><td class="dn">-2.57%</td>
+<td>+20.0%</td><td class="dn">-10.38%</td><td>5.2%</td>
+<td>2,064</td><td class="">1.0 倍</td>
+<td>未站上</td>
+<td class="up">42.46</td><td>76.9</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/1456.TW/technical-analysis" target="_blank">1456</a></td>
+<td>怡華<span class="tag">上市</span></td><td>建材營造</td>
+<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip bad">虧損</span><span class="chip good">低本益比</span></td>
+<td class="up">-63% → -18% → 6526%</td><td>14.6</td><td class="dn">-0.68%</td>
+<td>+9.4%</td><td class="up">+6.96%</td><td>1.6%</td>
+<td>205</td><td class="">0.5 倍</td>
+<td>站上</td>
+<td class="dn">-1.07</td><td>5.0</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2258.TW/technical-analysis" target="_blank">2258</a></td>
+<td>鴻華先進-創<span class="tag">上市</span></td><td>汽車工業</td>
+<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip bad">虧損</span><span class="chip mid">本益比無</span></td>
+<td class="up">23% → 113% → 726%</td><td>30.95</td><td class="up">+1.48%</td>
+<td>+3.7%</td><td class="dn">-1.12%</td><td>0.6%</td>
+<td>385</td><td class="">1.2 倍</td>
+<td>未站上</td>
+<td class="dn">-1.15</td><td>-</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/3708.TW/technical-analysis" target="_blank">3708</a></td>
+<td>上緯投控<span class="tag">上市</span></td><td>綠能環保</td>
+<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip bad">月減</span><span class="chip bad">虧損</span><span class="chip good">低本益比</span></td>
+<td class="up">62% → 100% → 535%</td><td>97.6</td><td class="dn">-2.11%</td>
+<td>+11.2%</td><td class="dn">-3.37%</td><td>1.5%</td>
+<td>486</td><td class="">0.6 倍</td>
+<td>未站上</td>
+<td class="dn">-0.87</td><td>2.4</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/6657.TW/technical-analysis" target="_blank">6657</a></td>
+<td>華安<span class="tag">上市</span></td><td>生技醫療業</td>
+<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip bad">虧損</span><span class="chip mid">本益比無</span></td>
+<td class="up">-46% → 25% → 153%</td><td>32.45</td><td class="dn">-1.07%</td>
+<td>+10.4%</td><td class="up">+7.10%</td><td>1.5%</td>
+<td>253</td><td class="">0.3 倍</td>
+<td>未站上</td>
+<td class="dn">-2.10</td><td>-</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/8054.TWO/technical-analysis" target="_blank">8054</a></td>
+<td>安國<span class="tag">上櫃</span></td><td>半導體業</td>
+<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip bad">虧損</span><span class="chip mid">本益比無</span></td>
+<td class="up">-21% → 98% → 157%</td><td>87.2</td><td class="up">+3.07%</td>
+<td>+15.3%</td><td class="up">+3.07%</td><td>2.7%</td>
+<td>851</td><td class="">1.4 倍</td>
+<td>站上</td>
+<td class="dn">-0.23</td><td>-</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/4119.TW/technical-analysis" target="_blank">4119</a></td>
+<td>旭富<span class="tag">上市</span></td><td>生技醫療業</td>
+<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip bad">月減</span><span class="chip good">獲利</span><span class="chip bad">高本益比</span></td>
+<td class="up">36% → 133% → 188%</td><td>55.4</td><td class="dn">-2.29%</td>
+<td>+24.2%</td><td class="up">+1.84%</td><td>2.0%</td>
+<td>229</td><td class="">0.5 倍</td>
+<td>站上</td>
+<td class="up">0.06</td><td>110.8</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/8076.TWO/technical-analysis" target="_blank">8076</a></td>
+<td>伍豐<span class="tag">上櫃</span></td><td>電腦及週邊設備業</td>
+<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip bad">月減</span><span class="chip good">獲利</span><span class="chip bad">高本益比</span></td>
+<td class="up">8% → 94% → 124%</td><td>21.5</td><td class="dn">-0.92%</td>
+<td>+2.1%</td><td class="dn">-7.53%</td><td>1.8%</td>
+<td>537</td><td class="">0.8 倍</td>
+<td>未站上</td>
+<td class="up">0.33</td><td>153.6</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/6215.TW/technical-analysis" target="_blank">6215</a></td>
+<td>和椿<span class="tag">上市</span></td><td>其他電子業</td>
+<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip good">獲利</span></td>
+<td class="up">30% → 37% → 133%</td><td>97.2</td><td class="up">+0.41%</td>
+<td>+21.2%</td><td class="dn">-1.22%</td><td>0.5%</td>
+<td>553</td><td class="">0.3 倍</td>
+<td>未站上</td>
+<td class="up">1.92</td><td>28.9</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/6691.TW/technical-analysis" target="_blank">6691</a></td>
+<td>洋基工程<span class="tag">上市</span></td><td>其他電子業</td>
+<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip good">獲利</span></td>
+<td class="up">115% → 177% → 214%</td><td>654</td><td class="dn">-1.95%</td>
+<td>+10.3%</td><td class="up">+5.83%</td><td>3.5%</td>
+<td>557</td><td class="up">1.7 倍</td>
+<td>未站上</td>
+<td class="up">17.46</td><td>19.6</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/4142.TW/technical-analysis" target="_blank">4142</a></td>
+<td>國光生<span class="tag">上市</span></td><td>生技醫療業</td>
+<td class="chips"><span class="chip good">營收成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip bad">月減</span><span class="chip bad">虧損</span><span class="chip mid">本益比無</span></td>
+<td class="up">-63% → 29% → 34%</td><td>18.1</td><td class="up">+1.12%</td>
+<td>+9.4%</td><td class="up">+1.12%</td><td>1.4%</td>
+<td>629</td><td class="up">1.7 倍</td>
+<td>站上</td>
+<td class="dn">-0.82</td><td>-</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/3135.TW/technical-analysis" target="_blank">3135</a></td>
+<td>凌航<span class="tag">上市</span></td><td>半導體業</td>
+<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip bad">月減</span><span class="chip good">獲利</span><span class="chip good">低本益比</span></td>
+<td class="up">150% → 204% → 238%</td><td>156.5</td><td class="up">0.00%</td>
+<td>+12.2%</td><td class="dn">-13.54%</td><td>4.6%</td>
+<td>801</td><td class="">0.3 倍</td>
+<td>未站上</td>
+<td class="up">20.87</td><td>6.8</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/8088.TWO/technical-analysis" target="_blank">8088</a></td>
+<td>品安<span class="tag">上櫃</span></td><td>半導體業</td>
+<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip good">獲利</span><span class="chip good">低本益比</span></td>
+<td class="up">1% → 45% → 73%</td><td>42.25</td><td class="up">+0.96%</td>
+<td>+6.0%</td><td class="dn">-7.65%</td><td>1.7%</td>
+<td>382</td><td class="">0.5 倍</td>
+<td>未站上</td>
+<td class="up">1.14</td><td>14.1</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/6811.TWO/technical-analysis" target="_blank">6811</a></td>
+<td>宏碁資訊<span class="tag">上櫃</span></td><td>數位雲端</td>
+<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip good">獲利</span><span class="chip good">低本益比</span></td>
+<td class="up">7% → 47% → 77%</td><td>239.5</td><td class="dn">-2.04%</td>
+<td>+11.7%</td><td class="up">+6.21%</td><td>5.7%</td>
+<td>394</td><td class="">0.9 倍</td>
+<td>站上</td>
+<td class="up">9.49</td><td>14.8</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/3062.TW/technical-analysis" target="_blank">3062</a></td>
+<td>建漢<span class="tag">上市</span></td><td>通信網路業</td>
+<td class="chips"><span class="chip good">營收成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip bad">月減</span><span class="chip bad">虧損</span><span class="chip mid">本益比無</span></td>
+<td class="up">-34% → 5% → 35%</td><td>22</td><td class="up">+0.23%</td>
+<td>+19.9%</td><td class="up">+5.01%</td><td>6.0%</td>
+<td>1,666</td><td class="">0.6 倍</td>
+<td>站上</td>
+<td class="dn">-0.88</td><td>-</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2495.TW/technical-analysis" target="_blank">2495</a></td>
+<td>普安<span class="tag">上市</span></td><td>電腦及週邊設備業</td>
+<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip good">獲利</span></td>
+<td class="up">40% → 64% → 106%</td><td>38.95</td><td class="dn">-0.26%</td>
+<td>+22.3%</td><td class="up">+1.43%</td><td>3.1%</td>
+<td>1,281</td><td class="">0.7 倍</td>
+<td>未站上</td>
+<td class="up">0.61</td><td>19.2</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/4303.TWO/technical-analysis" target="_blank">4303</a></td>
+<td>信立<span class="tag">上櫃</span></td><td>塑膠工業</td>
+<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip bad">虧損</span><span class="chip good">低本益比</span></td>
+<td class="up">-10% → 17% → 52%</td><td>33.4</td><td class="dn">-1.91%</td>
+<td>+0.0%</td><td class="dn">-14.36%</td><td>3.4%</td>
+<td>886</td><td class="">0.9 倍</td>
+<td>未站上</td>
+<td class="dn">-0.26</td><td>3.6</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2636.TW/technical-analysis" target="_blank">2636</a></td>
+<td>台驊控股<span class="tag">上市</span></td><td>航運業</td>
+<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip good">獲利</span><span class="chip good">低本益比</span></td>
+<td class="up">25% → 63% → 85%</td><td>70.4</td><td class="dn">-2.09%</td>
+<td>+12.6%</td><td class="up">+2.18%</td><td>1.1%</td>
+<td>445</td><td class="">0.5 倍</td>
+<td>站上</td>
+<td class="up">3.84</td><td>10.0</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/4123.TWO/technical-analysis" target="_blank">4123</a></td>
+<td>晟德<span class="tag">上櫃</span></td><td>生技醫療業</td>
+<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip bad">月減</span><span class="chip bad">虧損</span></td>
+<td class="up">3% → 15% → 62%</td><td>31</td><td class="up">+0.16%</td>
+<td>+4.9%</td><td class="dn">-2.21%</td><td>1.2%</td>
+<td>1,528</td><td class="">0.7 倍</td>
+<td>未站上</td>
+<td class="dn">-11.24</td><td>23.3</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/8422.TW/technical-analysis" target="_blank">8422</a></td>
+<td>可寧衛*<span class="tag">上市</span></td><td>綠能環保</td>
+<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip good">獲利</span></td>
+<td class="up">50% → 60% → 106%</td><td>25.5</td><td class="dn">-0.20%</td>
+<td>+4.7%</td><td class="dn">-5.90%</td><td>1.7%</td>
+<td>4,231</td><td class="">0.6 倍</td>
+<td>未站上</td>
+<td class="up">0.55</td><td>26.6</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2365.TW/technical-analysis" target="_blank">2365</a></td>
+<td>昆盈<span class="tag">上市</span></td><td>電腦及週邊設備業</td>
+<td class="chips"><span class="chip good">營收成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip bad">月減</span><span class="chip good">獲利</span><span class="chip bad">高本益比</span></td>
+<td class="up">-17% → 22% → 36%</td><td>28.1</td><td class="dn">-0.35%</td>
+<td>+8.1%</td><td class="dn">-6.33%</td><td>1.5%</td>
+<td>687</td><td class="">0.8 倍</td>
+<td>未站上</td>
+<td class="up">0.26</td><td>51.1</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2354.TW/technical-analysis" target="_blank">2354</a></td>
+<td>鴻準<span class="tag">上市</span></td><td>其他電子業</td>
+<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">YoY 加速</span><span class="chip bad">今年累計衰退</span><span class="chip good">月增</span><span class="chip good">獲利</span></td>
+<td class="up">11% → 37% → 58%</td><td>65.1</td><td class="dn">-1.21%</td>
+<td>+22.8%</td><td class="up">+1.88%</td><td>0.3%</td>
+<td>11,906</td><td class="">0.4 倍</td>
+<td>站上</td>
+<td class="up">1.10</td><td>27.6</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2388.TW/technical-analysis" target="_blank">2388</a></td>
+<td>威盛<span class="tag">上市</span></td><td>半導體業</td>
+<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip bad">月減</span><span class="chip good">獲利</span><span class="chip bad">高本益比</span></td>
+<td class="up">34% → 43% → 77%</td><td>71.2</td><td class="up">+1.57%</td>
+<td>+9.0%</td><td class="dn">-2.86%</td><td>4.1%</td>
+<td>4,492</td><td class="">0.6 倍</td>
+<td>未站上</td>
+<td class="up">0.34</td><td>44.5</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/3338.TW/technical-analysis" target="_blank">3338</a></td>
+<td>泰碩<span class="tag">上市</span></td><td>電子零組件業</td>
+<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip good">獲利</span><span class="chip bad">高本益比</span></td>
+<td class="up">21% → 40% → 62%</td><td>67.9</td><td class="up">+0.44%</td>
+<td>+23.9%</td><td class="up">+5.76%</td><td>1.5%</td>
+<td>469</td><td class="">0.4 倍</td>
+<td>站上</td>
+<td class="up">0.46</td><td>58.0</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2208.TW/technical-analysis" target="_blank">2208</a></td>
+<td>台船<span class="tag">上市</span></td><td>航運業</td>
+<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">YoY 加速</span><span class="chip bad">今年累計衰退</span><span class="chip good">月增</span><span class="chip good">獲利</span></td>
+<td class="up">15% → 20% → 56%</td><td>19.1</td><td class="dn">-1.55%</td>
+<td>+4.9%</td><td class="dn">-0.52%</td><td>1.4%</td>
+<td>1,946</td><td class="">1.4 倍</td>
+<td>未站上</td>
+<td class="up">0.28</td><td>39.0</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/3230.TWO/technical-analysis" target="_blank">3230</a></td>
+<td>錦明<span class="tag">上櫃</span></td><td>光電業</td>
+<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip bad">虧損</span><span class="chip mid">本益比無</span></td>
+<td class="up">12% → 25% → 51%</td><td>41.7</td><td class="up">+3.73%</td>
+<td>+20.9%</td><td class="dn">-10.03%</td><td>2.5%</td>
+<td>389</td><td class="">1.3 倍</td>
+<td>未站上</td>
+<td class="dn">-1.03</td><td>-</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2597.TW/technical-analysis" target="_blank">2597</a></td>
+<td>潤弘<span class="tag">上市</span></td><td>建材營造</td>
+<td class="chips"><span class="chip good">營收成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip good">獲利</span><span class="chip good">低本益比</span></td>
+<td class="up">3% → 3% → 41%</td><td>167</td><td class="dn">-0.30%</td>
+<td>+5.7%</td><td class="dn">-2.91%</td><td>0.8%</td>
+<td>211</td><td class="">0.4 倍</td>
+<td>未站上</td>
+<td class="up">5.08</td><td>14.3</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/6206.TW/technical-analysis" target="_blank">6206</a></td>
+<td>飛捷<span class="tag">上市</span></td><td>電腦及週邊設備業</td>
+<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip good">獲利</span></td>
+<td class="up">26% → 38% → 62%</td><td>143</td><td class="up">+2.88%</td>
+<td>+22.2%</td><td class="up">+3.25%</td><td>1.8%</td>
+<td>841</td><td class="up">1.5 倍</td>
+<td>站上</td>
+<td class="up">5.93</td><td>15.8</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/4714.TWO/technical-analysis" target="_blank">4714</a></td>
+<td>永捷<span class="tag">上櫃</span></td><td>化學工業</td>
+<td class="chips"><span class="chip good">營收成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip bad">虧損</span><span class="chip mid">本益比無</span></td>
+<td class="up">8% → 15% → 43%</td><td>11.8</td><td class="dn">-0.84%</td>
+<td>+19.4%</td><td class="up">+3.51%</td><td>6.3%</td>
+<td>1,854</td><td class="">0.4 倍</td>
+<td>站上</td>
+<td class="dn">-0.10</td><td>-</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/3088.TWO/technical-analysis" target="_blank">3088</a></td>
+<td>艾訊<span class="tag">上櫃</span></td><td>電腦及週邊設備業</td>
+<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip good">獲利</span></td>
+<td class="up">48% → 67% → 79%</td><td>136</td><td class="up">+5.02%</td>
+<td>+15.3%</td><td class="up">+9.68%</td><td>3.4%</td>
+<td>696</td><td class="up">2.5 倍</td>
+<td>站上</td>
+<td class="up">4.28</td><td>17.0</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/1708.TW/technical-analysis" target="_blank">1708</a></td>
+<td>東鹼<span class="tag">上市</span></td><td>化學工業</td>
+<td class="chips"><span class="chip good">營收成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip good">獲利</span><span class="chip good">低本益比</span></td>
+<td class="up">3% → 25% → 33%</td><td>52</td><td class="dn">-0.57%</td>
+<td>+12.6%</td><td class="up">+1.96%</td><td>1.6%</td>
+<td>2,476</td><td class="up">1.9 倍</td>
+<td>站上</td>
+<td class="up">1.98</td><td>12.6</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/3131.TWO/technical-analysis" target="_blank">3131</a></td>
+<td>弘塑<span class="tag">上櫃</span></td><td>半導體業</td>
+<td class="chips"><span class="chip good">營收成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip bad">月減</span><span class="chip good">獲利</span><span class="chip bad">高本益比</span></td>
+<td class="up">15% → 42% → 43%</td><td>2475</td><td class="up">+2.70%</td>
+<td>+14.8%</td><td class="dn">-0.40%</td><td>1.4%</td>
+<td>424</td><td class="">1.3 倍</td>
+<td>未站上</td>
+<td class="up">27.27</td><td>43.8</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/4155.TW/technical-analysis" target="_blank">4155</a></td>
+<td>訊映<span class="tag">上市</span></td><td>生技醫療業</td>
+<td class="chips"><span class="chip good">營收成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip good">獲利</span><span class="chip good">低本益比</span></td>
+<td class="up">23% → 34% → 49%</td><td>14.6</td><td class="dn">-1.68%</td>
+<td>+3.5%</td><td class="up">+1.04%</td><td>1.2%</td>
+<td>247</td><td class="">0.6 倍</td>
+<td>未站上</td>
+<td class="up">0.74</td><td>8.5</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/5009.TWO/technical-analysis" target="_blank">5009</a></td>
+<td>榮剛<span class="tag">上櫃</span></td><td>鋼鐵工業</td>
+<td class="chips"><span class="chip good">營收成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip bad">月減</span><span class="chip good">獲利</span></td>
+<td class="up">13% → 17% → 39%</td><td>32.6</td><td class="up">+1.88%</td>
+<td>+3.5%</td><td class="dn">-2.10%</td><td>1.4%</td>
+<td>1,372</td><td class="">1.1 倍</td>
+<td>未站上</td>
+<td class="up">1.00</td><td>15.5</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2535.TW/technical-analysis" target="_blank">2535</a></td>
+<td>達欣工<span class="tag">上市</span></td><td>建材營造</td>
+<td class="chips"><span class="chip good">營收成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip good">獲利</span><span class="chip good">低本益比</span></td>
+<td class="up">20% → 21% → 44%</td><td>89.1</td><td class="dn">-0.78%</td>
+<td>+3.6%</td><td class="dn">-2.09%</td><td>0.2%</td>
+<td>215</td><td class="">0.5 倍</td>
+<td>未站上</td>
+<td class="up">6.32</td><td>8.7</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/1773.TW/technical-analysis" target="_blank">1773</a></td>
+<td>勝一<span class="tag">上市</span></td><td>化學工業</td>
+<td class="chips"><span class="chip good">營收成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip good">獲利</span></td>
+<td class="up">20% → 34% → 45%</td><td>167.5</td><td class="up">+1.82%</td>
+<td>+14.3%</td><td class="up">+5.02%</td><td>1.3%</td>
+<td>737</td><td class="">1.2 倍</td>
+<td>站上</td>
+<td class="up">4.38</td><td>20.9</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2607.TW/technical-analysis" target="_blank">2607</a></td>
+<td>榮運<span class="tag">上市</span></td><td>航運業</td>
+<td class="chips"><span class="chip good">營收成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip good">獲利</span><span class="chip good">低本益比</span></td>
+<td class="up">25% → 41% → 49%</td><td>53.1</td><td class="dn">-1.12%</td>
+<td>+16.7%</td><td class="up">+2.71%</td><td>0.5%</td>
+<td>347</td><td class="">1.1 倍</td>
+<td>站上</td>
+<td class="up">2.68</td><td>10.6</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/3372.TWO/technical-analysis" target="_blank">3372</a></td>
+<td>典範<span class="tag">上櫃</span></td><td>半導體業</td>
+<td class="chips"><span class="chip good">營收成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip bad">虧損</span><span class="chip mid">本益比無</span></td>
+<td class="up">12% → 23% → 30%</td><td>16.3</td><td class="up">+3.16%</td>
+<td>+15.6%</td><td class="up">+6.19%</td><td>6.4%</td>
+<td>626</td><td class="">0.6 倍</td>
+<td>站上</td>
+<td class="dn">-0.10</td><td>-</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/6136.TW/technical-analysis" target="_blank">6136</a></td>
+<td>富爾特<span class="tag">上市</span></td><td>通信網路業</td>
+<td class="chips"><span class="chip good">營收成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip bad">虧損</span></td>
+<td class="up">15% → 27% → 32%</td><td>24.95</td><td class="up">+0.20%</td>
+<td>+4.2%</td><td class="dn">-0.60%</td><td>0.6%</td>
+<td>215</td><td class="">0.6 倍</td>
+<td>站上</td>
+<td class="dn">-0.04</td><td>33.7</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2460.TW/technical-analysis" target="_blank">2460</a></td>
+<td>建通<span class="tag">上市</span></td><td>電子零組件業</td>
+<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip good">獲利</span></td>
+<td class="up">59% → 71% → 76%</td><td>29.85</td><td class="dn">-1.16%</td>
+<td>+6.2%</td><td class="up">+3.47%</td><td>2.8%</td>
+<td>329</td><td class="">0.5 倍</td>
+<td>未站上</td>
+<td class="up">0.26</td><td>-</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/3004.TW/technical-analysis" target="_blank">3004</a></td>
+<td>豐達科<span class="tag">上市</span></td><td>鋼鐵工業</td>
+<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip good">獲利</span></td>
+<td class="up">47% → 53% → 62%</td><td>117.5</td><td class="up">+0.43%</td>
+<td>+3.1%</td><td class="dn">-1.26%</td><td>1.6%</td>
+<td>334</td><td class="">0.3 倍</td>
+<td>未站上</td>
+<td class="up">4.01</td><td>18.3</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/3023.TW/technical-analysis" target="_blank">3023</a></td>
+<td>信邦<span class="tag">上市</span></td><td>電子零組件業</td>
+<td class="chips"><span class="chip good">營收成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip good">獲利</span></td>
+<td class="up">18% → 29% → 32%</td><td>307.5</td><td class="dn">-1.13%</td>
+<td>+12.6%</td><td class="dn">-3.00%</td><td>2.5%</td>
+<td>908</td><td class="">1.0 倍</td>
+<td>未站上</td>
+<td class="up">7.37</td><td>23.0</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/1723.TW/technical-analysis" target="_blank">1723</a></td>
+<td>中碳<span class="tag">上市</span></td><td>化學工業</td>
+<td class="chips"><span class="chip good">營收成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip bad">月減</span><span class="chip good">獲利</span></td>
+<td class="up">32% → 46% → 47%</td><td>80</td><td class="dn">-0.62%</td>
+<td>+0.0%</td><td class="dn">-7.30%</td><td>2.7%</td>
+<td>554</td><td class="">1.0 倍</td>
+<td>未站上</td>
+<td class="up">2.07</td><td>25.7</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/6664.TWO/technical-analysis" target="_blank">6664</a></td>
+<td>群翊<span class="tag">上櫃</span></td><td>電子零組件業</td>
+<td class="chips"><span class="chip good">營收成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip good">獲利</span></td>
+<td class="up">19% → 30% → 32%</td><td>370</td><td class="up">+3.21%</td>
+<td>+19.5%</td><td class="up">+2.92%</td><td>2.5%</td>
+<td>389</td><td class="up">1.5 倍</td>
+<td>站上</td>
+<td class="up">7.29</td><td>22.3</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/6259.TWO/technical-analysis" target="_blank">6259</a></td>
+<td>百徽<span class="tag">上櫃</span></td><td>電子零組件業</td>
+<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip bad">月減</span><span class="chip good">獲利</span></td>
+<td class="up">83% → 92% → 94%</td><td>29.3</td><td class="up">+0.51%</td>
+<td>+8.5%</td><td class="dn">-7.72%</td><td>1.9%</td>
+<td>206</td><td class="">0.4 倍</td>
+<td>未站上</td>
+<td class="up">1.05</td><td>19.7</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2646.TW/technical-analysis" target="_blank">2646</a></td>
+<td>星宇航空<span class="tag">上市</span></td><td>航運業</td>
+<td class="chips"><span class="chip good">營收成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip bad">月減</span><span class="chip bad">虧損</span><span class="chip mid">本益比無</span></td>
+<td class="up">41% → 43% → 48%</td><td>20.05</td><td class="dn">-0.74%</td>
+<td>+0.0%</td><td class="dn">-3.84%</td><td>0.9%</td>
+<td>4,053</td><td class="">0.7 倍</td>
+<td>未站上</td>
+<td class="dn">-0.11</td><td>-</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2401.TW/technical-analysis" target="_blank">2401</a></td>
+<td>凌陽<span class="tag">上市</span></td><td>半導體業</td>
+<td class="chips"><span class="chip good">營收成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip bad">月減</span><span class="chip good">獲利</span><span class="chip bad">高本益比</span></td>
+<td class="up">35% → 38% → 41%</td><td>26.05</td><td class="up">+1.96%</td>
+<td>+11.1%</td><td class="up">+0.58%</td><td>2.8%</td>
+<td>2,143</td><td class="">1.1 倍</td>
+<td>未站上</td>
+<td class="up">0.35</td><td>260.5</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/6223.TWO/technical-analysis" target="_blank">6223</a></td>
+<td>旺矽<span class="tag">上櫃</span></td><td>半導體業</td>
+<td class="chips"><span class="chip good">營收高成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip good">獲利</span><span class="chip bad">高本益比</span></td>
+<td class="up">65% → 66% → 70%</td><td>5185</td><td class="dn">-4.25%</td>
+<td>+8.2%</td><td class="up">+3.08%</td><td>1.6%</td>
+<td>1,072</td><td class="">1.1 倍</td>
+<td>未站上</td>
+<td class="up">28.08</td><td>111.0</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/8070.TW/technical-analysis" target="_blank">8070</a></td>
+<td>長華*<span class="tag">上市</span></td><td>電子通路業</td>
+<td class="chips"><span class="chip good">營收成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip good">月增</span><span class="chip good">獲利</span></td>
+<td class="up">33% → 34% → 38%</td><td>49.7</td><td class="up">0.00%</td>
+<td>+19.6%</td><td class="dn">-3.31%</td><td>0.2%</td>
+<td>1,598</td><td class="">0.4 倍</td>
+<td>站上</td>
+<td class="up">1.30</td><td>29.4</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/8415.TWO/technical-analysis" target="_blank">8415</a></td>
+<td>大國鋼<span class="tag">上櫃</span></td><td>鋼鐵工業</td>
+<td class="chips"><span class="chip good">營收成長</span><span class="chip good">YoY 加速</span><span class="chip good">今年累計成長</span><span class="chip bad">月減</span><span class="chip good">獲利</span><span class="chip good">低本益比</span></td>
+<td class="up">37% → 37% → 38%</td><td>35.15</td><td class="dn">-0.85%</td>
+<td>+2.3%</td><td class="dn">-4.35%</td><td>2.9%</td>
+<td>718</td><td class="">0.8 倍</td>
+<td>未站上</td>
+<td class="up">2.17</td><td>8.8</td></tr></tbody></table></div></div>
+<div class="page" data-p="three" hidden><h2>三率三升 <span class="count">319 檔・115Q2 vs 115Q1，單季毛利率、營益率、淨利率皆較上季提升，且營收 YoY 為正、未往下</span></h2>
+<h3>技術面轉強或潛伏（一K站三線／多頭排列／潛伏）<span class="count">95 檔</span></h3><div class="scroll"><table><thead><tr><th>代號</th><th>名稱</th><th>產業</th><th>技術面</th><th>毛利率%</th><th>營益率%</th><th>淨利率%</th><th>營收YoY</th><th>收盤</th><th>漲跌</th><th>量(張)</th><th>季線</th><th>EPS</th><th>本益比</th></tr></thead><tbody><tr><td><a href="https://tw.stock.yahoo.com/quote/3006.TW/technical-analysis" target="_blank">3006</a></td>
 <td>晶豪科<span class="tag">上市</span></td><td>半導體業</td>
 <td><span class="chip good">一K站三線</span></td>
 <td>47.5 → <b>68.7</b></td><td>31.0 → <b>51.4</b></td><td>28.4 → <b>42.3</b></td>
@@ -223,27 +628,7 @@ ul.news{list-style:none;padding:0;margin:0;font-size:13.5px}ul.news li{padding:7
 <td><span class="chip good">一K站三線</span></td>
 <td>23.0 → <b>25.3</b></td><td>1.9 → <b>6.7</b></td><td>-0.8 → <b>4.1</b></td>
 <td class="up">+4.22%</td><td>50.1</td><td class="up">+0.60%</td><td>35</td><td>未站上</td>
-<td class="up">0.84</td><td>-</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/6693.TWO/technical-analysis" target="_blank">6693</a></td>
-<td>廣閎科<span class="tag">上櫃</span></td><td>半導體業</td>
-<td><span class="chip good">類大甲</span></td>
-<td>28.8 → <b>32.3</b></td><td>10.7 → <b>18.3</b></td><td>10.2 → <b>15.3</b></td>
-<td class="up">+114.20%</td><td>218</td><td class="up">+4.06%</td><td>3,929</td><td>站上</td>
-<td class="up">3.38</td><td>43.8</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/4721.TWO/technical-analysis" target="_blank">4721</a></td>
-<td>美琪瑪<span class="tag">上櫃</span></td><td>化學工業</td>
-<td><span class="chip good">類大甲</span></td>
-<td>25.7 → <b>26.6</b></td><td>20.1 → <b>20.7</b></td><td>16.5 → <b>16.9</b></td>
-<td class="up">+72.35%</td><td>79.8</td><td class="up">+3.10%</td><td>916</td><td>站上</td>
-<td class="up">3.51</td><td>16.1</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/4906.TW/technical-analysis" target="_blank">4906</a></td>
-<td>正文<span class="tag">上市</span></td><td>通信網路業</td>
-<td><span class="chip good">類大甲</span></td>
-<td>10.4 → <b>12.2</b></td><td>-6.6 → <b>-3.2</b></td><td>-4.2 → <b>-0.9</b></td>
-<td class="up">+56.09%</td><td>40.2</td><td class="up">+6.77%</td><td>13,405</td><td>站上</td>
-<td class="dn">-0.42</td><td>335.0</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/4540.TW/technical-analysis" target="_blank">4540</a></td>
-<td>全球傳動<span class="tag">上市</span></td><td>電機機械</td>
-<td><span class="chip good">類大甲</span></td>
-<td>13.9 → <b>20.8</b></td><td>-5.4 → <b>6.0</b></td><td>-2.8 → <b>6.1</b></td>
-<td class="up">+45.04%</td><td>62.6</td><td class="up">+4.33%</td><td>5,085</td><td>站上</td>
-<td class="up">0.25</td><td>-</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2305.TW/technical-analysis" target="_blank">2305</a></td>
+<td class="up">0.84</td><td>-</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2305.TW/technical-analysis" target="_blank">2305</a></td>
 <td>全友<span class="tag">上市</span></td><td>電腦及週邊設備業</td>
 <td><span class="chip good">多頭排列</span></td>
 <td>42.2 → <b>47.9</b></td><td>7.5 → <b>23.6</b></td><td>20.2 → <b>29.3</b></td>
@@ -283,7 +668,12 @@ ul.news{list-style:none;padding:0;margin:0;font-size:13.5px}ul.news li{padding:7
 <td><span class="chip good">多頭排列</span></td>
 <td>23.0 → <b>28.1</b></td><td>8.5 → <b>12.5</b></td><td>9.5 → <b>17.4</b></td>
 <td class="up">+114.30%</td><td>112.5</td><td class="dn">-3.02%</td><td>2,758</td><td>站上</td>
-<td class="up">1.60</td><td>48.9</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/5355.TWO/technical-analysis" target="_blank">5355</a></td>
+<td class="up">1.60</td><td>48.9</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/6693.TWO/technical-analysis" target="_blank">6693</a></td>
+<td>廣閎科<span class="tag">上櫃</span></td><td>半導體業</td>
+<td><span class="chip good">多頭排列</span></td>
+<td>28.8 → <b>32.3</b></td><td>10.7 → <b>18.3</b></td><td>10.2 → <b>15.3</b></td>
+<td class="up">+114.20%</td><td>218</td><td class="up">+4.06%</td><td>3,929</td><td>站上</td>
+<td class="up">3.38</td><td>43.8</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/5355.TWO/technical-analysis" target="_blank">5355</a></td>
 <td>佳總<span class="tag">上櫃</span></td><td>電子零組件業</td>
 <td><span class="chip good">多頭排列</span></td>
 <td>-10.0 → <b>7.8</b></td><td>-30.5 → <b>-5.8</b></td><td>-20.0 → <b>-3.3</b></td>
@@ -313,7 +703,12 @@ ul.news{list-style:none;padding:0;margin:0;font-size:13.5px}ul.news li{padding:7
 <td><span class="chip good">多頭排列</span></td>
 <td>19.5 → <b>23.8</b></td><td>10.2 → <b>14.6</b></td><td>8.3 → <b>11.4</b></td>
 <td class="up">+81.32%</td><td>180</td><td class="up">+9.76%</td><td>2,048</td><td>站上</td>
-<td class="up">1.86</td><td>59.4</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/8089.TWO/technical-analysis" target="_blank">8089</a></td>
+<td class="up">1.86</td><td>59.4</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/4721.TWO/technical-analysis" target="_blank">4721</a></td>
+<td>美琪瑪<span class="tag">上櫃</span></td><td>化學工業</td>
+<td><span class="chip good">多頭排列</span></td>
+<td>25.7 → <b>26.6</b></td><td>20.1 → <b>20.7</b></td><td>16.5 → <b>16.9</b></td>
+<td class="up">+72.35%</td><td>79.8</td><td class="up">+3.10%</td><td>916</td><td>站上</td>
+<td class="up">3.51</td><td>16.1</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/8089.TWO/technical-analysis" target="_blank">8089</a></td>
 <td>康全電訊<span class="tag">上櫃</span></td><td>通信網路業</td>
 <td><span class="chip good">多頭排列</span></td>
 <td>22.5 → <b>40.8</b></td><td>-74.6 → <b>-44.0</b></td><td>-66.0 → <b>-30.1</b></td>
@@ -348,12 +743,12 @@ ul.news{list-style:none;padding:0;margin:0;font-size:13.5px}ul.news li{padding:7
 <td><span class="chip good">多頭排列</span></td>
 <td>18.0 → <b>24.8</b></td><td>7.4 → <b>15.5</b></td><td>14.4 → <b>31.1</b></td>
 <td class="up">+56.26%</td><td>1165</td><td class="dn">-1.69%</td><td>10,810</td><td>站上</td>
-<td class="up">11.70</td><td>77.6</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/8109.TWO/technical-analysis" target="_blank">8109</a></td>
-<td>博大<span class="tag">上櫃</span></td><td>電子零組件業</td>
+<td class="up">11.70</td><td>77.6</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/4906.TW/technical-analysis" target="_blank">4906</a></td>
+<td>正文<span class="tag">上市</span></td><td>通信網路業</td>
 <td><span class="chip good">多頭排列</span></td>
-<td>50.1 → <b>50.6</b></td><td>35.6 → <b>36.5</b></td><td>30.4 → <b>30.9</b></td>
-<td class="up">+56.12%</td><td>134.5</td><td class="up">+1.89%</td><td>171</td><td>站上</td>
-<td class="up">3.84</td><td>18.1</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/4545.TW/technical-analysis" target="_blank">4545</a></td>
+<td>10.4 → <b>12.2</b></td><td>-6.6 → <b>-3.2</b></td><td>-4.2 → <b>-0.9</b></td>
+<td class="up">+56.09%</td><td>40.2</td><td class="up">+6.77%</td><td>13,405</td><td>站上</td>
+<td class="dn">-0.42</td><td>335.0</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/4545.TW/technical-analysis" target="_blank">4545</a></td>
 <td>銘鈺<span class="tag">上市</span></td><td>電子零組件業</td>
 <td><span class="chip good">多頭排列</span></td>
 <td>15.2 → <b>17.5</b></td><td>0.6 → <b>3.3</b></td><td>3.1 → <b>3.3</b></td>
@@ -398,7 +793,12 @@ ul.news{list-style:none;padding:0;margin:0;font-size:13.5px}ul.news li{padding:7
 <td><span class="chip good">多頭排列</span></td>
 <td>20.1 → <b>21.0</b></td><td>10.1 → <b>11.0</b></td><td>8.4 → <b>11.2</b></td>
 <td class="up">+45.66%</td><td>687</td><td class="dn">-1.72%</td><td>14,249</td><td>站上</td>
-<td class="up">8.04</td><td>49.7</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/7556.TWO/technical-analysis" target="_blank">7556</a></td>
+<td class="up">8.04</td><td>49.7</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/4540.TW/technical-analysis" target="_blank">4540</a></td>
+<td>全球傳動<span class="tag">上市</span></td><td>電機機械</td>
+<td><span class="chip good">多頭排列</span></td>
+<td>13.9 → <b>20.8</b></td><td>-5.4 → <b>6.0</b></td><td>-2.8 → <b>6.1</b></td>
+<td class="up">+45.04%</td><td>62.6</td><td class="up">+4.33%</td><td>5,085</td><td>站上</td>
+<td class="up">0.25</td><td>-</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/7556.TWO/technical-analysis" target="_blank">7556</a></td>
 <td>意德士<span class="tag">上櫃</span></td><td>半導體業</td>
 <td><span class="chip good">多頭排列</span></td>
 <td>39.2 → <b>42.2</b></td><td>23.9 → <b>25.5</b></td><td>32.2 → <b>38.4</b></td>
@@ -598,8 +998,83 @@ ul.news{list-style:none;padding:0;margin:0;font-size:13.5px}ul.news li{padding:7
 <td><span class="chip good">多頭排列</span></td>
 <td>-16.9 → <b>-5.6</b></td><td>-25.3 → <b>-15.1</b></td><td>-28.2 → <b>-17.8</b></td>
 <td class="up">+0.28%</td><td>10.7</td><td class="dn">-4.04%</td><td>6,186</td><td>站上</td>
-<td class="dn">-1.32</td><td>-</td></tr></tbody></table></div>
-<details><summary>其他三率三升個股（238 檔）</summary><div class="scroll"><table><thead><tr><th>代號</th><th>名稱</th><th>產業</th><th>技術面</th><th>毛利率%</th><th>營益率%</th><th>淨利率%</th><th>營收YoY</th><th>收盤</th><th>漲跌</th><th>量(張)</th><th>季線</th><th>EPS</th><th>本益比</th></tr></thead><tbody><tr><td><a href="https://tw.stock.yahoo.com/quote/1591.TWO/technical-analysis" target="_blank">1591</a></td>
+<td class="dn">-1.32</td><td>-</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/3176.TWO/technical-analysis" target="_blank">3176</a></td>
+<td>基亞<span class="tag">上櫃</span></td><td>生技醫療業</td>
+<td><span class="chip good">潛伏</span></td>
+<td>53.2 → <b>60.4</b></td><td>-25.6 → <b>6.9</b></td><td>-28.3 → <b>-0.0</b></td>
+<td class="up">+197.40%</td><td>37.35</td><td class="dn">-1.06%</td><td>281</td><td>站上</td>
+<td class="dn">-0.57</td><td>-</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2382.TW/technical-analysis" target="_blank">2382</a></td>
+<td>廣達<span class="tag">上市</span></td><td>電腦及週邊設備業</td>
+<td><span class="chip good">潛伏</span></td>
+<td>4.8 → <b>5.0</b></td><td>2.8 → <b>3.3</b></td><td>2.6 → <b>2.8</b></td>
+<td class="up">+177.45%</td><td>336.5</td><td class="dn">-0.59%</td><td>9,824</td><td>站上</td>
+<td class="up">12.93</td><td>14.7</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2383.TW/technical-analysis" target="_blank">2383</a></td>
+<td>台光電<span class="tag">上市</span></td><td>電子零組件業</td>
+<td><span class="chip good">潛伏</span></td>
+<td>29.4 → <b>33.9</b></td><td>21.6 → <b>26.9</b></td><td>16.1 → <b>20.9</b></td>
+<td class="up">+129.85%</td><td>4920</td><td class="dn">-2.57%</td><td>2,147</td><td>未站上</td>
+<td class="up">42.46</td><td>76.9</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2540.TW/technical-analysis" target="_blank">2540</a></td>
+<td>愛山林<span class="tag">上市</span></td><td>建材營造</td>
+<td><span class="chip good">潛伏</span></td>
+<td>16.7 → <b>20.2</b></td><td>1.0 → <b>4.0</b></td><td>-0.7 → <b>1.3</b></td>
+<td class="up">+98.38%</td><td>47.6</td><td class="dn">-2.86%</td><td>462</td><td>未站上</td>
+<td class="up">0.02</td><td>-</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2427.TW/technical-analysis" target="_blank">2427</a></td>
+<td>三商電<span class="tag">上市</span></td><td>資訊服務業</td>
+<td><span class="chip good">潛伏</span></td>
+<td>18.9 → <b>31.9</b></td><td>3.6 → <b>7.3</b></td><td>2.9 → <b>7.2</b></td>
+<td class="up">+74.78%</td><td>23.25</td><td class="dn">-0.64%</td><td>269</td><td>站上</td>
+<td class="up">0.73</td><td>16.4</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/6190.TWO/technical-analysis" target="_blank">6190</a></td>
+<td>萬泰科<span class="tag">上櫃</span></td><td>通信網路業</td>
+<td><span class="chip good">潛伏</span></td>
+<td>15.2 → <b>15.3</b></td><td>5.5 → <b>7.3</b></td><td>3.8 → <b>6.2</b></td>
+<td class="up">+71.82%</td><td>69.3</td><td class="up">+1.02%</td><td>1,041</td><td>未站上</td>
+<td class="up">1.35</td><td>30.5</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2609.TW/technical-analysis" target="_blank">2609</a></td>
+<td>陽明<span class="tag">上市</span></td><td>航運業</td>
+<td><span class="chip good">潛伏</span></td>
+<td>7.3 → <b>17.5</b></td><td>1.9 → <b>12.4</b></td><td>3.9 → <b>12.7</b></td>
+<td class="up">+56.17%</td><td>58.4</td><td class="dn">-2.01%</td><td>23,607</td><td>站上</td>
+<td class="up">2.05</td><td>13.2</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/8109.TWO/technical-analysis" target="_blank">8109</a></td>
+<td>博大<span class="tag">上櫃</span></td><td>電子零組件業</td>
+<td><span class="chip good">潛伏</span></td>
+<td>50.1 → <b>50.6</b></td><td>35.6 → <b>36.5</b></td><td>30.4 → <b>30.9</b></td>
+<td class="up">+56.12%</td><td>134.5</td><td class="up">+1.89%</td><td>171</td><td>站上</td>
+<td class="up">3.84</td><td>18.1</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2327.TW/technical-analysis" target="_blank">2327</a></td>
+<td>國巨*<span class="tag">上市</span></td><td>電子零組件業</td>
+<td><span class="chip good">潛伏</span></td>
+<td>38.1 → <b>38.5</b></td><td>25.2 → <b>26.4</b></td><td>21.1 → <b>21.3</b></td>
+<td class="up">+51.80%</td><td>548</td><td class="dn">-5.52%</td><td>41,164</td><td>未站上</td>
+<td class="up">8.48</td><td>36.9</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2472.TW/technical-analysis" target="_blank">2472</a></td>
+<td>立隆電<span class="tag">上市</span></td><td>電子零組件業</td>
+<td><span class="chip good">潛伏</span></td>
+<td>30.0 → <b>31.5</b></td><td>18.7 → <b>21.7</b></td><td>13.5 → <b>15.3</b></td>
+<td class="up">+51.19%</td><td>213</td><td class="dn">-2.52%</td><td>1,505</td><td>未站上</td>
+<td class="up">3.98</td><td>21.7</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2049.TW/technical-analysis" target="_blank">2049</a></td>
+<td>上銀<span class="tag">上市</span></td><td>電機機械</td>
+<td><span class="chip good">潛伏</span></td>
+<td>31.9 → <b>34.2</b></td><td>9.9 → <b>13.8</b></td><td>8.6 → <b>10.9</b></td>
+<td class="up">+42.30%</td><td>335.5</td><td class="up">+3.07%</td><td>2,190</td><td>未站上</td>
+<td class="up">4.03</td><td>50.8</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2108.TW/technical-analysis" target="_blank">2108</a></td>
+<td>南帝<span class="tag">上市</span></td><td>橡膠工業</td>
+<td><span class="chip good">潛伏</span></td>
+<td>27.2 → <b>32.8</b></td><td>12.4 → <b>19.7</b></td><td>10.8 → <b>16.4</b></td>
+<td class="up">+41.83%</td><td>28.2</td><td class="dn">-1.74%</td><td>458</td><td>未站上</td>
+<td class="up">1.28</td><td>15.8</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2353.TW/technical-analysis" target="_blank">2353</a></td>
+<td>宏碁<span class="tag">上市</span></td><td>電腦及週邊設備業</td>
+<td><span class="chip good">潛伏</span></td>
+<td>11.2 → <b>11.4</b></td><td>1.1 → <b>2.1</b></td><td>1.8 → <b>3.3</b></td>
+<td class="up">+38.41%</td><td>31.4</td><td class="dn">-1.10%</td><td>6,310</td><td>站上</td>
+<td class="up">0.96</td><td>18.7</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2420.TW/technical-analysis" target="_blank">2420</a></td>
+<td>新巨<span class="tag">上市</span></td><td>電子零組件業</td>
+<td><span class="chip good">潛伏</span></td>
+<td>47.8 → <b>50.4</b></td><td>29.8 → <b>34.9</b></td><td>29.1 → <b>32.3</b></td>
+<td class="up">+33.83%</td><td>53.9</td><td class="up">0.00%</td><td>168</td><td>未站上</td>
+<td class="up">2.30</td><td>12.1</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2009.TW/technical-analysis" target="_blank">2009</a></td>
+<td>第一銅<span class="tag">上市</span></td><td>鋼鐵工業</td>
+<td><span class="chip good">潛伏</span></td>
+<td>11.2 → <b>13.3</b></td><td>9.3 → <b>11.4</b></td><td>9.6 → <b>11.0</b></td>
+<td class="up">+30.27%</td><td>39.15</td><td class="up">0.00%</td><td>1,673</td><td>站上</td>
+<td class="up">0.49</td><td>38.0</td></tr></tbody></table></div>
+<details><summary>其他三率三升個股（224 檔）</summary><div class="scroll"><table><thead><tr><th>代號</th><th>名稱</th><th>產業</th><th>技術面</th><th>毛利率%</th><th>營益率%</th><th>淨利率%</th><th>營收YoY</th><th>收盤</th><th>漲跌</th><th>量(張)</th><th>季線</th><th>EPS</th><th>本益比</th></tr></thead><tbody><tr><td><a href="https://tw.stock.yahoo.com/quote/1591.TWO/technical-analysis" target="_blank">1591</a></td>
 <td>駿吉-KY<span class="tag">上櫃</span></td><td>電機機械</td>
 <td><span class="chip good">站上三線</span></td>
 <td>31.7 → <b>45.1</b></td><td>-34.3 → <b>-7.0</b></td><td>-33.9 → <b>5.9</b></td>
@@ -644,12 +1119,7 @@ ul.news{list-style:none;padding:0;margin:0;font-size:13.5px}ul.news li{padding:7
 <td><span class="chip good">站上三線</span></td>
 <td>36.9 → <b>41.2</b></td><td>21.1 → <b>28.3</b></td><td>20.1 → <b>21.2</b></td>
 <td class="up">+74.23%</td><td>108</td><td class="up">+9.64%</td><td>2,259</td><td>站上</td>
-<td class="up">2.01</td><td>13.4</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/6190.TWO/technical-analysis" target="_blank">6190</a></td>
-<td>萬泰科<span class="tag">上櫃</span></td><td>通信網路業</td>
-<td><span class="chip good">站上三線</span></td>
-<td>15.2 → <b>15.3</b></td><td>5.5 → <b>7.3</b></td><td>3.8 → <b>6.2</b></td>
-<td class="up">+71.82%</td><td>69.3</td><td class="up">+1.02%</td><td>1,041</td><td>未站上</td>
-<td class="up">1.35</td><td>30.5</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/7842.TWO/technical-analysis" target="_blank">7842</a></td>
+<td class="up">2.01</td><td>13.4</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/7842.TWO/technical-analysis" target="_blank">7842</a></td>
 <td>天能綠電<span class="tag">上櫃</span></td><td>綠能環保</td>
 <td><span class="chip good">站上三線</span></td>
 <td>5.5 → <b>6.4</b></td><td>3.4 → <b>4.2</b></td><td>2.8 → <b>3.3</b></td>
@@ -839,12 +1309,7 @@ ul.news{list-style:none;padding:0;margin:0;font-size:13.5px}ul.news li{padding:7
 <td><span class="chip mid">整理中</span></td>
 <td>35.1 → <b>40.0</b></td><td>10.6 → <b>19.3</b></td><td>10.5 → <b>18.1</b></td>
 <td class="up">+198.72%</td><td>180.5</td><td class="dn">-0.82%</td><td>281</td><td>未站上</td>
-<td class="up">4.00</td><td>36.2</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/3176.TWO/technical-analysis" target="_blank">3176</a></td>
-<td>基亞<span class="tag">上櫃</span></td><td>生技醫療業</td>
-<td><span class="chip mid">整理中</span></td>
-<td>53.2 → <b>60.4</b></td><td>-25.6 → <b>6.9</b></td><td>-28.3 → <b>-0.0</b></td>
-<td class="up">+197.40%</td><td>37.35</td><td class="dn">-1.06%</td><td>281</td><td>站上</td>
-<td class="dn">-0.57</td><td>-</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/4934.TW/technical-analysis" target="_blank">4934</a></td>
+<td class="up">4.00</td><td>36.2</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/4934.TW/technical-analysis" target="_blank">4934</a></td>
 <td>太極<span class="tag">上市</span></td><td>光電業</td>
 <td><span class="chip mid">整理中</span></td>
 <td>-74.7 → <b>-35.7</b></td><td>-258.9 → <b>-197.3</b></td><td>-226.3 → <b>-157.3</b></td>
@@ -864,12 +1329,7 @@ ul.news{list-style:none;padding:0;margin:0;font-size:13.5px}ul.news li{padding:7
 <td><span class="chip mid">整理中</span></td>
 <td>54.8 → <b>57.5</b></td><td>41.3 → <b>46.9</b></td><td>35.1 → <b>38.4</b></td>
 <td class="up">+180.90%</td><td>2650</td><td class="dn">-1.85%</td><td>1,245</td><td>站上</td>
-<td class="up">7.75</td><td>228.1</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2382.TW/technical-analysis" target="_blank">2382</a></td>
-<td>廣達<span class="tag">上市</span></td><td>電腦及週邊設備業</td>
-<td><span class="chip mid">整理中</span></td>
-<td>4.8 → <b>5.0</b></td><td>2.8 → <b>3.3</b></td><td>2.6 → <b>2.8</b></td>
-<td class="up">+177.45%</td><td>336.5</td><td class="dn">-0.59%</td><td>9,824</td><td>站上</td>
-<td class="up">12.93</td><td>14.7</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/8271.TW/technical-analysis" target="_blank">8271</a></td>
+<td class="up">7.75</td><td>228.1</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/8271.TW/technical-analysis" target="_blank">8271</a></td>
 <td>宇瞻<span class="tag">上市</span></td><td>半導體業</td>
 <td><span class="chip mid">整理中</span></td>
 <td>49.3 → <b>51.3</b></td><td>32.8 → <b>36.1</b></td><td>26.6 → <b>28.7</b></td>
@@ -909,12 +1369,7 @@ ul.news{list-style:none;padding:0;margin:0;font-size:13.5px}ul.news li{padding:7
 <td><span class="chip mid">整理中</span></td>
 <td>27.2 → <b>27.7</b></td><td>9.9 → <b>12.4</b></td><td>8.5 → <b>9.1</b></td>
 <td class="up">+131.32%</td><td>53.2</td><td class="dn">-1.48%</td><td>14</td><td>未站上</td>
-<td class="up">2.80</td><td>10.9</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2383.TW/technical-analysis" target="_blank">2383</a></td>
-<td>台光電<span class="tag">上市</span></td><td>電子零組件業</td>
-<td><span class="chip mid">整理中</span></td>
-<td>29.4 → <b>33.9</b></td><td>21.6 → <b>26.9</b></td><td>16.1 → <b>20.9</b></td>
-<td class="up">+129.85%</td><td>4920</td><td class="dn">-2.57%</td><td>2,147</td><td>未站上</td>
-<td class="up">42.46</td><td>76.9</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/6716.TWO/technical-analysis" target="_blank">6716</a></td>
+<td class="up">2.80</td><td>10.9</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/6716.TWO/technical-analysis" target="_blank">6716</a></td>
 <td>應廣<span class="tag">上櫃</span></td><td>半導體業</td>
 <td><span class="chip mid">整理中</span></td>
 <td>35.9 → <b>43.1</b></td><td>12.1 → <b>21.2</b></td><td>12.7 → <b>19.6</b></td>
@@ -939,12 +1394,7 @@ ul.news{list-style:none;padding:0;margin:0;font-size:13.5px}ul.news li{padding:7
 <td><span class="chip mid">整理中</span></td>
 <td>19.6 → <b>20.3</b></td><td>5.7 → <b>7.0</b></td><td>5.2 → <b>6.4</b></td>
 <td class="up">+102.78%</td><td>30.25</td><td class="up">+0.83%</td><td>6</td><td>-</td>
-<td class="up">1.33</td><td>12.4</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2540.TW/technical-analysis" target="_blank">2540</a></td>
-<td>愛山林<span class="tag">上市</span></td><td>建材營造</td>
-<td><span class="chip mid">整理中</span></td>
-<td>16.7 → <b>20.2</b></td><td>1.0 → <b>4.0</b></td><td>-0.7 → <b>1.3</b></td>
-<td class="up">+98.38%</td><td>47.6</td><td class="dn">-2.86%</td><td>462</td><td>未站上</td>
-<td class="up">0.02</td><td>-</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/6578.TWO/technical-analysis" target="_blank">6578</a></td>
+<td class="up">1.33</td><td>12.4</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/6578.TWO/technical-analysis" target="_blank">6578</a></td>
 <td>達邦蛋白<span class="tag">上櫃</span></td><td>農業科技</td>
 <td><span class="chip mid">整理中</span></td>
 <td>21.9 → <b>26.1</b></td><td>0.9 → <b>9.4</b></td><td>6.8 → <b>8.5</b></td>
@@ -1019,12 +1469,7 @@ ul.news{list-style:none;padding:0;margin:0;font-size:13.5px}ul.news li{padding:7
 <td><span class="chip mid">整理中</span></td>
 <td>39.5 → <b>56.2</b></td><td>12.5 → <b>36.1</b></td><td>18.4 → <b>41.2</b></td>
 <td class="up">+78.21%</td><td>354</td><td class="dn">-9.00%</td><td>3,408</td><td>站上</td>
-<td class="up">2.96</td><td>89.4</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2427.TW/technical-analysis" target="_blank">2427</a></td>
-<td>三商電<span class="tag">上市</span></td><td>資訊服務業</td>
-<td><span class="chip mid">整理中</span></td>
-<td>18.9 → <b>31.9</b></td><td>3.6 → <b>7.3</b></td><td>2.9 → <b>7.2</b></td>
-<td class="up">+74.78%</td><td>23.25</td><td class="dn">-0.64%</td><td>269</td><td>站上</td>
-<td class="up">0.73</td><td>16.4</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/3043.TW/technical-analysis" target="_blank">3043</a></td>
+<td class="up">2.96</td><td>89.4</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/3043.TW/technical-analysis" target="_blank">3043</a></td>
 <td>科風<span class="tag">上市</span></td><td>其他電子業</td>
 <td><span class="chip mid">整理中</span></td>
 <td>23.0 → <b>26.1</b></td><td>-3.5 → <b>5.9</b></td><td>0.4 → <b>6.5</b></td>
@@ -1079,12 +1524,7 @@ ul.news{list-style:none;padding:0;margin:0;font-size:13.5px}ul.news li{padding:7
 <td><span class="chip mid">整理中</span></td>
 <td>30.5 → <b>33.8</b></td><td>20.1 → <b>23.7</b></td><td>11.7 → <b>15.2</b></td>
 <td class="up">+58.26%</td><td>49.65</td><td class="dn">-0.30%</td><td>43</td><td>站上</td>
-<td class="up">2.33</td><td>9.6</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2609.TW/technical-analysis" target="_blank">2609</a></td>
-<td>陽明<span class="tag">上市</span></td><td>航運業</td>
-<td><span class="chip mid">整理中</span></td>
-<td>7.3 → <b>17.5</b></td><td>1.9 → <b>12.4</b></td><td>3.9 → <b>12.7</b></td>
-<td class="up">+56.17%</td><td>58.4</td><td class="dn">-2.01%</td><td>23,607</td><td>站上</td>
-<td class="up">2.05</td><td>13.2</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/6606.TW/technical-analysis" target="_blank">6606</a></td>
+<td class="up">2.33</td><td>9.6</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/6606.TW/technical-analysis" target="_blank">6606</a></td>
 <td>建德工業<span class="tag">上市</span></td><td>電機機械</td>
 <td><span class="chip mid">整理中</span></td>
 <td>40.8 → <b>45.1</b></td><td>24.6 → <b>32.9</b></td><td>15.2 → <b>20.5</b></td>
@@ -1114,22 +1554,12 @@ ul.news{list-style:none;padding:0;margin:0;font-size:13.5px}ul.news li{padding:7
 <td><span class="chip mid">整理中</span></td>
 <td>27.9 → <b>29.5</b></td><td>5.0 → <b>12.9</b></td><td>2.8 → <b>9.5</b></td>
 <td class="up">+51.95%</td><td>31.95</td><td class="dn">-1.39%</td><td>58</td><td>站上</td>
-<td class="up">1.22</td><td>11.6</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2327.TW/technical-analysis" target="_blank">2327</a></td>
-<td>國巨*<span class="tag">上市</span></td><td>電子零組件業</td>
-<td><span class="chip mid">整理中</span></td>
-<td>38.1 → <b>38.5</b></td><td>25.2 → <b>26.4</b></td><td>21.1 → <b>21.3</b></td>
-<td class="up">+51.80%</td><td>548</td><td class="dn">-5.52%</td><td>41,164</td><td>未站上</td>
-<td class="up">8.48</td><td>36.9</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2428.TW/technical-analysis" target="_blank">2428</a></td>
+<td class="up">1.22</td><td>11.6</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2428.TW/technical-analysis" target="_blank">2428</a></td>
 <td>興勤<span class="tag">上市</span></td><td>電子零組件業</td>
 <td><span class="chip mid">整理中</span></td>
 <td>34.0 → <b>37.5</b></td><td>19.9 → <b>24.7</b></td><td>13.8 → <b>25.4</b></td>
 <td class="up">+51.21%</td><td>251.5</td><td class="dn">-1.37%</td><td>628</td><td>未站上</td>
-<td class="up">7.55</td><td>17.9</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2472.TW/technical-analysis" target="_blank">2472</a></td>
-<td>立隆電<span class="tag">上市</span></td><td>電子零組件業</td>
-<td><span class="chip mid">整理中</span></td>
-<td>30.0 → <b>31.5</b></td><td>18.7 → <b>21.7</b></td><td>13.5 → <b>15.3</b></td>
-<td class="up">+51.19%</td><td>213</td><td class="dn">-2.52%</td><td>1,505</td><td>未站上</td>
-<td class="up">3.98</td><td>21.7</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/3646.TWO/technical-analysis" target="_blank">3646</a></td>
+<td class="up">7.55</td><td>17.9</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/3646.TWO/technical-analysis" target="_blank">3646</a></td>
 <td>艾恩特<span class="tag">上櫃</span></td><td>電子零組件業</td>
 <td><span class="chip mid">整理中</span></td>
 <td>23.6 → <b>24.7</b></td><td>-1.8 → <b>3.1</b></td><td>-8.5 → <b>-1.3</b></td>
@@ -1209,22 +1639,12 @@ ul.news{list-style:none;padding:0;margin:0;font-size:13.5px}ul.news li{padding:7
 <td><span class="chip mid">整理中</span></td>
 <td>48.0 → <b>49.7</b></td><td>33.2 → <b>35.1</b></td><td>26.7 → <b>27.2</b></td>
 <td class="up">+43.33%</td><td>1210</td><td class="up">0.00%</td><td>782</td><td>未站上</td>
-<td class="up">29.91</td><td>23.3</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2049.TW/technical-analysis" target="_blank">2049</a></td>
-<td>上銀<span class="tag">上市</span></td><td>電機機械</td>
-<td><span class="chip mid">整理中</span></td>
-<td>31.9 → <b>34.2</b></td><td>9.9 → <b>13.8</b></td><td>8.6 → <b>10.9</b></td>
-<td class="up">+42.30%</td><td>335.5</td><td class="up">+3.07%</td><td>2,190</td><td>未站上</td>
-<td class="up">4.03</td><td>50.8</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2441.TW/technical-analysis" target="_blank">2441</a></td>
+<td class="up">29.91</td><td>23.3</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2441.TW/technical-analysis" target="_blank">2441</a></td>
 <td>超豐<span class="tag">上市</span></td><td>半導體業</td>
 <td><span class="chip mid">整理中</span></td>
 <td>23.6 → <b>24.2</b></td><td>19.6 → <b>20.5</b></td><td>16.9 → <b>16.9</b></td>
 <td class="up">+41.98%</td><td>122</td><td class="dn">-1.61%</td><td>2,178</td><td>站上</td>
-<td class="up">2.98</td><td>22.6</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2108.TW/technical-analysis" target="_blank">2108</a></td>
-<td>南帝<span class="tag">上市</span></td><td>橡膠工業</td>
-<td><span class="chip mid">整理中</span></td>
-<td>27.2 → <b>32.8</b></td><td>12.4 → <b>19.7</b></td><td>10.8 → <b>16.4</b></td>
-<td class="up">+41.83%</td><td>28.2</td><td class="dn">-1.74%</td><td>458</td><td>未站上</td>
-<td class="up">1.28</td><td>15.8</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/4974.TWO/technical-analysis" target="_blank">4974</a></td>
+<td class="up">2.98</td><td>22.6</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/4974.TWO/technical-analysis" target="_blank">4974</a></td>
 <td>亞泰<span class="tag">上櫃</span></td><td>電子零組件業</td>
 <td><span class="chip mid">整理中</span></td>
 <td>13.1 → <b>14.9</b></td><td>8.8 → <b>10.3</b></td><td>8.3 → <b>9.6</b></td>
@@ -1234,12 +1654,7 @@ ul.news{list-style:none;padding:0;margin:0;font-size:13.5px}ul.news li{padding:7
 <td><span class="chip mid">整理中</span></td>
 <td>63.9 → <b>65.3</b></td><td>20.9 → <b>24.7</b></td><td>17.5 → <b>20.4</b></td>
 <td class="up">+39.40%</td><td>85.2</td><td class="dn">-0.23%</td><td>15</td><td>-</td>
-<td class="up">3.48</td><td>11.8</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2353.TW/technical-analysis" target="_blank">2353</a></td>
-<td>宏碁<span class="tag">上市</span></td><td>電腦及週邊設備業</td>
-<td><span class="chip mid">整理中</span></td>
-<td>11.2 → <b>11.4</b></td><td>1.1 → <b>2.1</b></td><td>1.8 → <b>3.3</b></td>
-<td class="up">+38.41%</td><td>31.4</td><td class="dn">-1.10%</td><td>6,310</td><td>站上</td>
-<td class="up">0.96</td><td>18.7</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/6728.TWO/technical-analysis" target="_blank">6728</a></td>
+<td class="up">3.48</td><td>11.8</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/6728.TWO/technical-analysis" target="_blank">6728</a></td>
 <td>上洋<span class="tag">上櫃</span></td><td>居家生活</td>
 <td><span class="chip mid">整理中</span></td>
 <td>36.9 → <b>37.1</b></td><td>6.8 → <b>8.1</b></td><td>5.4 → <b>6.1</b></td>
@@ -1274,12 +1689,7 @@ ul.news{list-style:none;padding:0;margin:0;font-size:13.5px}ul.news li{padding:7
 <td><span class="chip mid">整理中</span></td>
 <td>18.6 → <b>21.1</b></td><td>4.5 → <b>7.2</b></td><td>6.1 → <b>11.0</b></td>
 <td class="up">+34.08%</td><td>21.2</td><td class="dn">-0.93%</td><td>50</td><td>站上</td>
-<td class="up">1.02</td><td>16.7</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2420.TW/technical-analysis" target="_blank">2420</a></td>
-<td>新巨<span class="tag">上市</span></td><td>電子零組件業</td>
-<td><span class="chip mid">整理中</span></td>
-<td>47.8 → <b>50.4</b></td><td>29.8 → <b>34.9</b></td><td>29.1 → <b>32.3</b></td>
-<td class="up">+33.83%</td><td>53.9</td><td class="up">0.00%</td><td>168</td><td>未站上</td>
-<td class="up">2.30</td><td>12.1</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/6201.TW/technical-analysis" target="_blank">6201</a></td>
+<td class="up">1.02</td><td>16.7</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/6201.TW/technical-analysis" target="_blank">6201</a></td>
 <td>亞弘電<span class="tag">上市</span></td><td>其他電子業</td>
 <td><span class="chip mid">整理中</span></td>
 <td>23.5 → <b>23.5</b></td><td>10.4 → <b>11.2</b></td><td>8.2 → <b>9.6</b></td>
@@ -1314,12 +1724,7 @@ ul.news{list-style:none;padding:0;margin:0;font-size:13.5px}ul.news li{padding:7
 <td><span class="chip mid">整理中</span></td>
 <td>29.2 → <b>32.5</b></td><td>18.5 → <b>21.8</b></td><td>26.4 → <b>61.4</b></td>
 <td class="up">+30.71%</td><td>153.5</td><td class="dn">-0.32%</td><td>111,592</td><td>站上</td>
-<td class="up">4.68</td><td>23.1</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2009.TW/technical-analysis" target="_blank">2009</a></td>
-<td>第一銅<span class="tag">上市</span></td><td>鋼鐵工業</td>
-<td><span class="chip mid">整理中</span></td>
-<td>11.2 → <b>13.3</b></td><td>9.3 → <b>11.4</b></td><td>9.6 → <b>11.0</b></td>
-<td class="up">+30.27%</td><td>39.15</td><td class="up">0.00%</td><td>1,673</td><td>站上</td>
-<td class="up">0.49</td><td>38.0</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/1220.TW/technical-analysis" target="_blank">1220</a></td>
+<td class="up">4.68</td><td>23.1</td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/1220.TW/technical-analysis" target="_blank">1220</a></td>
 <td>台榮<span class="tag">上市</span></td><td>食品工業</td>
 <td><span class="chip mid">整理中</span></td>
 <td>7.8 → <b>9.6</b></td><td>-3.8 → <b>0.2</b></td><td>-3.6 → <b>1.0</b></td>
@@ -1789,8 +2194,8 @@ ul.news{list-style:none;padding:0;margin:0;font-size:13.5px}ul.news li{padding:7
 <td><span class="chip mid">整理中</span></td>
 <td>14.4 → <b>14.6</b></td><td>2.2 → <b>2.6</b></td><td>2.7 → <b>7.3</b></td>
 <td class="up">+0.02%</td><td>49.75</td><td class="up">+0.40%</td><td>104,276</td><td>未站上</td>
-<td class="up">0.77</td><td>63.8</td></tr></tbody></table></div></details>
-<h2>千金股產業龍頭重挫 <span class="count">股價 ≥ 1,000、產業市值前 3 名、今日跌幅 ≥ 5%</span></h2>
+<td class="up">0.77</td><td>63.8</td></tr></tbody></table></div></details></div>
+<div class="page" data-p="leader" hidden><h2>千金股產業龍頭重挫 <span class="count">股價 ≥ 1,000、產業市值前 3 名、今日跌幅 ≥ 5%</span></h2>
 <div class="scroll"><table><thead><tr><th>代號</th><th>名稱</th><th>產業／市值排名</th><th>收盤</th><th>今日</th><th>前5日</th><th>前20日</th><th>量(張)</th><th>法人(張)</th><th>市值(億)</th></tr></thead><tbody><tr><td><a href="https://tw.stock.yahoo.com/quote/2454.TW/technical-analysis" target="_blank">2454</a></td>
 <td>聯發科<span class="tag">上市</span></td><td>半導體業 <span class="tag">第2大</span></td>
 <td>4,910</td><td class="dn">-7.10%</td><td class="up">+17.44%</td><td class="up">+36.74%</td>
@@ -1867,8 +2272,8 @@ ul.news{list-style:none;padding:0;margin:0;font-size:13.5px}ul.news li{padding:7
 <td>2,445</td><td class="up">+4.49%</td><td class="up">+16.42%</td><td class="up">+13.87%</td>
 <td>4,555</td>
 <td class="up">+1003</td>
-<td>4,880</td></tr></tbody></table></div></details>
-<h2>三大法人資金流向 <span class="count">依買賣超金額排行（張數 × 收盤價）</span></h2>
+<td>4,880</td></tr></tbody></table></div></details></div>
+<div class="page" data-p="flow" hidden><h2>三大法人資金流向 <span class="count">依買賣超金額排行（張數 × 收盤價）</span></h2>
 <div class="tabs"><button class="tab on" data-k="total">三大法人合計</button><button class="tab" data-k="foreign">外資</button><button class="tab" data-k="trust">投信</button><button class="tab" data-k="dealer">自營商</button></div><div class="panel" data-k="total">
 <div class="cols"><div><h3 class="up">三大法人合計 買超前 20</h3><div class="scroll"><table class="flow"><thead><tr><th>#</th><th>個股</th><th>收盤</th><th>漲跌</th><th>張數</th><th>金額(億)</th><th>外資(億)</th><th>投信(億)</th><th>自營(億)</th></tr></thead><tbody><tr><td>1</td>
 <td><a href="https://tw.stock.yahoo.com/quote/1303.TW/institutional-trading" target="_blank">1303 南亞</a></td>
@@ -2678,8 +3083,7 @@ ul.news{list-style:none;padding:0;margin:0;font-size:13.5px}ul.news li{padding:7
 <td class="dn">-25</td>
 <td class="dn"><b>-0.60</b></td>
 </tr></tbody></table></div></div></div></div>
-<script>document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('.panel').forEach(p=>p.hidden=p.dataset.k!==b.dataset.k)})</script>
-</div>
+<script>document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('.panel').forEach(p=>p.hidden=p.dataset.k!==b.dataset.k)})</script></div>
 <div class="page" data-p="track" hidden><h2>勝率統計 <span class="count">勝 = 訊號後第 N 個交易日收盤 &gt; 訊號日收盤</span></h2>
 <div class="scroll"><table class="stats"><thead><tr><th>分組</th><th>1 日勝率</th><th>3 日勝率</th><th>5 日勝率</th><th>平均5日報酬</th><th>平均期間最高</th></tr></thead><tbody><tr><td>全部訊號</td><td class="dn"><b>38.4%</b><span class="tag">232筆</span></td><td class="dn"><b>43.6%</b><span class="tag">204筆</span></td><td class="dn"><b>49.4%</b><span class="tag">172筆</span></td><td class="up">+1.89%</td><td class="up">+3.47%</td></tr><tr><td>★ 符合全部條件</td><td class="dn"><b>12.5%</b><span class="tag">8筆</span></td><td class="dn"><b>37.5%</b><span class="tag">8筆</span></td><td class="dn"><b>16.7%</b><span class="tag">6筆</span></td><td class="dn">-1.44%</td><td class="up">+0.40%</td></tr><tr><td>三線上彎</td><td class="dn"><b>30.6%</b><span class="tag">72筆</span></td><td class="dn"><b>31.7%</b><span class="tag">63筆</span></td><td class="dn"><b>42.3%</b><span class="tag">52筆</span></td><td class="up">+1.95%</td><td class="up">+3.30%</td></tr><tr><td>三線未全上彎</td><td class="dn"><b>41.9%</b><span class="tag">160筆</span></td><td class="dn"><b>48.9%</b><span class="tag">141筆</span></td><td class="up"><b>52.5%</b><span class="tag">120筆</span></td><td class="up">+1.87%</td><td class="up">+3.55%</td></tr><tr><td>量 > 5,000 張</td><td class="dn"><b>22.7%</b><span class="tag">22筆</span></td><td class="dn"><b>40.0%</b><span class="tag">20筆</span></td><td class="dn"><b>29.4%</b><span class="tag">17筆</span></td><td class="dn">-1.38%</td><td class="up">+0.66%</td></tr><tr><td>站上季線</td><td class="dn"><b>42.9%</b><span class="tag">105筆</span></td><td class="dn"><b>42.4%</b><span class="tag">92筆</span></td><td class="dn"><b>47.4%</b><span class="tag">76筆</span></td><td class="up">+2.36%</td><td class="up">+4.26%</td></tr><tr><td>未站上季線</td><td class="dn"><b>33.6%</b><span class="tag">116筆</span></td><td class="dn"><b>46.1%</b><span class="tag">102筆</span></td><td class="up"><b>52.8%</b><span class="tag">89筆</span></td><td class="up">+1.56%</td><td class="up">+2.92%</td></tr><tr><td>營收 YoY ≥ 50%</td><td class="dn"><b>43.8%</b><span class="tag">64筆</span></td><td class="up"><b>59.3%</b><span class="tag">59筆</span></td><td class="up"><b>59.3%</b><span class="tag">54筆</span></td><td class="up">+3.80%</td><td class="up">+5.78%</td></tr></tbody></table></div>
 <p class="hint">統計對象：每天「一根K棒站上三線、營收 YoY 為正」的所有個股，自 09/11 起。樣本數少時勝率僅供參考，每天累積後會越來越有參考價值。</p>
@@ -3187,6 +3591,61 @@ ul.news{list-style:none;padding:0;margin:0;font-size:13.5px}ul.news li{padding:7
 <td>28.2</td><td class="dn">-0.89%</td><td class="dn">-1.24%</td><td class="dn">-1.24%</td><td class="dn">-0.53%</td><td class="up">+0.18%</td><td class="up">+0.18%</td><td class="up"><b>勝</b></td></tr><tr><td><a href="https://tw.stock.yahoo.com/quote/2754.TWO/technical-analysis" target="_blank">2754</a></td>
 <td>亞洲藏壽司</td><td>站上</td>
 <td>69.4</td><td class="up">+1.30%</td><td class="dn">-0.14%</td><td class="dn">-0.29%</td><td class="up">+0.14%</td><td class="dn">-0.72%</td><td class="up">+1.30%</td><td class="dn"><b>敗</b></td></tr></tbody></table></div></details></div>
-<div class="page" data-p="news" hidden><h2>重挫個股新聞</h2><div class="cards"><div class="card"><h3>2454 聯發科 <span class="dn">-7.10%</span></h3><ul class="news"><li><a href="https://news.google.com/rss/articles/CBMiS0FVX3lxTE5RLWdsUlhFUklGcUhkWkdzbzBnNXQ0UkVNbEhjblhJZDNONXpMRk04TEd6V1UydllVRHo0bG5sUDRUZGdtQ1FwYjZqNA?oc=5" target="_blank">台股開盤狂飆500點！台積電漲25元、聯發科秒回5000元 13檔漲停「不銹鋼廠」連3燈創史高</a><span class="meta">FTNN　9/30 09:13</span></li><li><a href="https://news.google.com/rss/articles/CBMiiAFBVV95cUxOQlBDclBNV092U3dSaDQ5OHFJYzFOMkdJRTNCUm1ucE9jaWZfbkpjNy1oUEJYZ1FaUVJ1SjdqRzl2VkJpd1Y1WTBwX0pGWTRGZkxCWUMxcHRmQ0IwWm5IYklvS2NrNmZKZm4zYUp3MF9WOHhDRGM5Z2xoUTEyN0lXSWZuWW91NDJH?oc=5" target="_blank">《持股轉讓4-2》聯發科技經理人莊承德0.9萬股</a><span class="meta">富聯網　9/30 07:34</span></li><li><a href="https://news.google.com/rss/articles/CBMiS0FVX3lxTFBwaXd4dWRWNmVvX1dXbktGOWF6SGtSVnpfbHhSTURSMWY4bXJ0Q29LUkNuQ0lNanJ2djd5VVhaNWFlOUhDQXV6amk5TQ?oc=5" target="_blank">股價重挫7％外資卻狂喊目標7300元！這「ASIC大廠」TPU拚出貨300萬顆再搶150億美元ASIC大單</a><span class="meta">FTNN　9/30 07:20</span></li><li><a href="https://news.google.com/rss/articles/CBMiiAFBVV95cUxObXdoYjk5eFpTZ0NtRFJod1RMMGR1SFlyQVJEdENCUlE5Vnl6RzVyZXdSejhEQm5xbmJwemJTODU5bDdyUTVuV2dLYk1VRE5jbWotcnEyZC1sZlFyN3pORXZkNjlFSlhqOE9vWXlhQU1ZbVk1WG9sdGQ1QnJLd01jZnhqaHIySFBx?oc=5" target="_blank">上市申報轉讓：09月29日上市公司董監事持股轉讓申報一覽表</a><span class="meta">富聯網　9/30 07:16</span></li><li><a href="https://news.google.com/rss/articles/CBMiakFVX3lxTE5HNmNlM1dNRWhjQV85MEVMMFJ0Zmlna1U4WjcxLXl2QjlHRGxoYWJGQXlsR0FUaG03ZUI3YlA1TXJfeXNHdTlvb3BCYlotVFhKcUNvdFB0Wms5NC1aSXdfZVlVbE1McTk1T1E?oc=5" target="_blank">資金輪動到高價股！聯發科、大立光、創意誰還能再噴？ 分析師點名2檔轉型大黑馬：明年有機會登萬金- 上市櫃</a><span class="meta">wantrich.chinatimes.com　9/30 07:08</span></li><li><a href="https://news.google.com/rss/articles/CBMiiAFBVV95cUxQUEhEUjdOclgtU1k5TzV0MlZvMkprNDM2V3c5MmFHTldfOGtxZjh1aWVWVGRORGJfRjI4NVg1NUluZ1ZPaUZUSnIxUUZXVjR0YVFOeHJwN0x4Q1ZTSHdDOTV1MEZvRjkzMFJ0bGRKemh1V0xGVHVBa19SOVN2MDRxRzBmemk4YVEt?oc=5" target="_blank">個股：皇翔(2545)9/23～9/29取得聯發科股票92張，每股均價5,068.77元</a><span class="meta">富聯網　9/30 07:07</span></li><li><a href="https://news.google.com/rss/articles/CBMiqwJBVV95cUxNUkNUYzNaSjR4dklnNU52QVdNNW83VHhJbGdjcnczZFl6X0xUZnlmR1RuY294LVlZSGNrY1kwUVQ0Zjc4cktKUlh5dE5HUFdCNnFzLUROV21CSzBNeWtSWHJnam5jSFp1bkRVeVZiRVpoaTFaeDktTWIwY3AybE0wZFVQVlhQeDRuMUFZLWl6MGlPMkk2eTFLSEN3OEk3dmt2czk2Q0NWcFhPV2Z2ZWRCb21iNk94ZjVxVnIzUkd6S1BNdUZ4Sm50WG5LZUlpZFVqQmxMb0g1a3NnTlRuSktFbk5xbG02ODV1akZxNXFnQzlyamtyV0d2MEdVMTduVUtjZnQ1bzQ1T05RUkdjdG4zcG5iSHNNS05Pb3ZPV3Z6YUpyZE5feDZqem95NA?oc=5" target="_blank">ASIC雙雄重挫逾7％能撿了？ 聯發科、創意2大買點曝</a><span class="meta">Yahoo新聞　9/30 07:00</span></li><li><a href="https://news.google.com/rss/articles/CBMi3AJBVV95cUxQREp4Z0ZsRjU3Q2RRY3paOGNFZXRLQ0kwNGM2d0dlLXZEa05qQ19qV0RiM28tQnRudzJzY1JFSzIzVDgtNjk2Ym5fYU9OdHlFT0tVS3pyRlVMdVY1eWp3cUdmMTBWU0xqelplRVhxRTd5b2tCOTF3Sjd5VmhfZnhCVHh6M3hkcF9URXFDQzhiSUxsQkozc1BUSm44Y0xqTUhVSFJwRExCejl2ZUVpTHBITU82cWF1eHRmYXVlUTRzaUFMdVJ6VFZWYzdDLXg3dnlKSVctTFlNVHJxWE42ZDFRcGFPTUw4eTI0Zzlod21hZVZmaFU0NUJZc201bklCU0FaSmZaQWJ3MDdZT3I5NS1YeUNOYUdfRElGdEp0QWdVQkN1SVhmenpUUDFtN2xnVzhXTUN5SGhPTkZ3aUhJQWJGampTWmtQTWYzNmYwTmJYVE16eG9IbmI5RnNrMUs?oc=5" target="_blank">2檔飆股今「抓去關」！它好猛6天飆近3成 這2檔全關到10月6日</a><span class="meta">Yahoo新聞　9/30 05:50</span></li></ul></div><div class="card"><h3>7610 聯友金屬-創 <span class="dn">-5.46%</span></h3><ul class="news"><li><a href="https://news.google.com/rss/articles/CBMibkFVX3lxTE9VcjFaUlhaRlotRW9oVXVuTE5mc1hPb0Rsb2doSWRrN0RjczJRckpUWGc2MTdkbG95bV85bk52VmhodnJ0SEI2MGxHb0JYQTFFU3JiT2tMcWZ0TXlyV0haV01mSFVuMFYyamdiU0NR?oc=5" target="_blank">股王股后帶頭跌！千金股疲軟又爆警訊？萬潤唯一亮燈漲停</a><span class="meta">中時新聞網　9/29 13:43</span></li></ul></div></div><h2>產業新聞 <span class="count">近一天，千金龍頭與選股所在產業</span></h2><div class="cards"><div class="card"><h3>半導體業 <span class="tag">台積電・聯發科・日月光投控</span></h3><ul class="news"><li><a href="https://news.google.com/rss/articles/CBMiUEFVX3lxTE1oeVZUT203NnRYd0Z6OU53LVVDTVJUNnpZc2V2dGttMU5PaXFMejN4Skl5YVZlZnZ3dGN0MXl3M2R3aVVCaHF5bldaWUVzMVhN0gFWQVVfeXFMUFozdEUwVG1ZWHlGeGJCU3JRTWt3RGZfY0c1Wmk4eWJrZmUxNjJqWjlSS1UtQmZ0VEtMbTQ3dmdiS1cxbTgwVU5tanJrS3MtSU5ib0o2Z1E?oc=5" target="_blank">台股開高重返48K！台積電領軍五大權值股全紅 「這些 AI 股」同步上攻</a><span class="meta">UDN　9/30 09:14</span></li><li><a href="https://news.google.com/rss/articles/CBMiS0FVX3lxTE1BQW5wS3c3dE9iTFhkcXpGWGttVDBJaThQX2c0VkYyMTR6ZVJiQlpXN1dJdWNvVTBIb2wwNjNLaEtfMU9QSHBjTk1aZw?oc=5" target="_blank">開盤／費半逆勢漲 連動台股開盤漲超500點</a><span class="meta">三立新聞　9/30 09:13</span></li><li><a href="https://news.google.com/rss/articles/CBMiS0FVX3lxTE5RLWdsUlhFUklGcUhkWkdzbzBnNXQ0UkVNbEhjblhJZDNONXpMRk04TEd6V1UydllVRHo0bG5sUDRUZGdtQ1FwYjZqNA?oc=5" target="_blank">台股開盤狂飆500點！台積電漲25元、聯發科秒回5000元 13檔漲停「不銹鋼廠」連3燈創史高</a><span class="meta">FTNN　9/30 09:13</span></li><li><a href="https://news.google.com/rss/articles/CBMi6wFBVV95cUxQcDJMSlhGTWlHS2l4X2pVY3NkTi1mdlhGTkdydVoxUG83UXZZem1EMkZwLUhIallWZlV0X0U1ekhsZVNRV0dadW1CUFoyS2tPZ1k2NWdtSzNyTHRJNzRwTEFnc0FCazdwR1ctV2NaRmtURHl4QlVaSW5OMEF0b2p4YmtDNmd2cmdCMlJzTnJVNGo0YXRGc0lXanFXYXRKZWI3YXY3VldTb180MXkyWW0weTR6VjNkT1ZKMzJ3MG9tY3JaSXlIRi0xMzdqSFIwLUFfSFhSVS15ckY0VTRvVmFFOGk3clVncjM2RGFr?oc=5" target="_blank">台股早盤漲逾500點 台積電漲25元</a><span class="meta">Yahoo新聞　9/30 09:08</span></li><li><a href="https://news.google.com/rss/articles/CBMiggFBVV95cUxOdk1lOGY5U0VJS0ZVWGk4bmRINE9xenAyV2NENDRMclREdWJuanZfQzYyWGxZSE1ZQWNOdTBxRjJ3RjZrVnhxWWNVRjBCU015a19uZi1JTGpwd2kzbDRIa1FmN0EzODFVVGVGbnZmdFp2dl93UlhhX003Yl91Z0RVanBn?oc=5" target="_blank">台股開盤勁揚579點 台積電開漲20元助攻</a><span class="meta">壹蘋新聞網　9/30 09:05</span></li><li><a href="https://news.google.com/rss/articles/CBMiUkFVX3lxTE01cWNBQjA4T0tsYW03QjRZN1I5OHVyNmtrTzhuenoyQ2o4eTFPTUhpMkNiSEdjVlZuSS1ndFZVanpybG1CdzRocTZhWFE1LXBzbmfSAVBBVV95cUxPSE1MNHQtcFRId1pKWG1UNUxGTXNONTA2MEJsYnh4by0xRE10OVdXbHhxZmlyRkN4ZlNwQUtIYmxWMEo1RXdqWkRxWS0xY1pkaw?oc=5" target="_blank">台積電漲25元重回2500　台股漲579點來到48211</a><span class="meta">ETtoday財經雲　9/30 09:04</span></li><li><a href="https://news.google.com/rss/articles/CBMib0FVX3lxTFBuWnY4SmZBZ2Q0Ny1yVW1BYVRTWE5pbk9UOVpLaU1ZYmdvaDBiTkU1TVVhUEU5dEZldW9mNER4STZTNlJwdk9ZZ1FXM2ZIM2F5Uy1KZmhQU3VHblNMN1ZFRFRsU1J4VDRKWEhsWEJxQQ?oc=5" target="_blank">台股大漲580點收復4萬8 台積電站回2500元、聯發科重返5000元</a><span class="meta">知新聞　9/30 09:03</span></li><li><a href="https://news.google.com/rss/articles/CBMiggFBVV95cUxPNktuYnhwZnRSS3pZWTBHV0ZRZEY2Wm9xbHNmMEgzNHFXYThBMGxDYW9SVm9JY3cyVDZweDkyby05MWhDWDNOdXk3LU10NEdJSEtZOFkwSkExMzlzR2ZRRWZUUldDZDZBV0pLcTRZMkxrYnhLSGpLQTF0OGJwWVpVVnZR?oc=5" target="_blank">半導體擴建與AI伺服器缺貨潮發酵！ABF交期達56週，供應鏈迎逾百億商機-財經焦點情報站</a><span class="meta">CMoney投資網誌　9/30 08:44</span></li></ul></div><div class="card"><h3>綠能環保 <span class="tag">聯友金屬-創・兆聯實業・可寧衛*</span></h3><ul class="news"><li><a href="https://news.google.com/rss/articles/CBMijgFBVV95cUxQVW9JOHdRamNjQ0c2Rks2cEh0SkZUMExGS2V0eE40SnUySWRKTE50ZGFzbk12eUxram5rZFExbVFBNm85WVFEeVFVZ0I1RjNrc0lsOWlzb05SdDBXSUo0ZzVpVzkzSU9UTFRyclhGSVhqdHItcW91YnpYbElaTktGSzJzVlE0c1hENkI5VUVR?oc=5" target="_blank">【09:14 即時新聞】欣厚-KY(4924)股價勁揚10%，短線空方結構測試反彈力道</a><span class="meta">CMoney投資網誌　9/30 09:14</span></li><li><a href="https://news.google.com/rss/articles/CBMiiAFBVV95cUxPamdwemp0bXlDRWpoMHRsRVczeTdrdHhhUWFJUnlyRW1qTlJsUzRCaXdiYUwydmZPUHJCbm9qei0wSjA3VGJKX05ieEwxT1ZKU1ppOFIyU2tMTTZaSUtranJONVI4VXB4MHJqM2tGM1dWUUR2R1BGMGh4YzZTaXBYTWh6OFlmald3?oc=5" target="_blank">《自營商賣超34-23》事欣科(52)、大立光(51)、可寧衛(51)</a><span class="meta">富聯網　9/30 07:32</span></li><li><a href="https://news.google.com/rss/articles/CBMiS0FVX3lxTE4zNEFoelBpZU1KWGFoRE1uVXlyRFpmY042Z1k2eFQzTlBZU18tdFAwM1E0enp5SGk0cTA4dEtIWTg4Rko4ODJMaVR5Yw?oc=5" target="_blank">00929配息又升了？科技優息ETF改版3.0，和00878、0056差在哪？</a><span class="meta">鉅亨網　9/29 11:48</span></li></ul></div><div class="card"><h3>其他電子業 <span class="tag">鴻海・致茂・貿聯-KY</span></h3><ul class="news"><li><a href="https://news.google.com/rss/articles/CBMiggFBVV95cUxPcWdvZDU5dVhydkNkc0ZDY21lNVZqOGZ6dWR2NjRTNFVMdkdmaDhsRDlfMU10WE9GU0lNWmdibGhjS0VqZXMySW9Fd1JYZTRHNGVxZ0JqTVpIc1oyd1h6elB4RHZWWVM3cWZBcVFPbEFEY1pnS2d5aU9VLWQzVm9EalJR?oc=5" target="_blank">AI 伺服器供應鏈獲利創高，鴻海發放 117.5 億分紅平均增逾雙位數-財經焦點情報站</a><span class="meta">CMoney投資網誌　9/30 09:15</span></li><li><a href="https://news.google.com/rss/articles/CBMiS0FVX3lxTFBncWJlVGVEUW5iRjZOcWpsQTdpZkJrZGRPdEx0cjhWdWc5bENXa21IYnEtYlRUd1NTUFJnRFJHOXhaLU84ejE3YU0tUQ?oc=5" target="_blank">睡醒入帳百萬！鴻海分紅今日入帳「這類人」拿最多 AI伺服器是發財關鍵</a><span class="meta">FTNN　9/30 09:12</span></li><li><a href="https://news.google.com/rss/articles/CBMic0FVX3lxTE5Dai1vVHFtX1lMYVY4bllnVkYzYXRXNl9jQzFSdTdybnJ3amFtNENhTFFPVnF2TngyVHJfUTlCZ0ZzYk5LblU2Y1A2OE8tOTBaMFNMd0Y2emtsTWttWkY0Q2dWM1JnLXNVU1JhSThMekRUWFk?oc=5" target="_blank">鴻海員工今早被獎金砸醒！年度分紅入帳，績優員工百萬起跳</a><span class="meta">TechNews 科技新報　9/30 09:10</span></li><li><a href="https://news.google.com/rss/articles/CBMiWEFVX3lxTE9qdmhmSDB6SzQ0N3hiUzdyY01PNkg4OHFMckdLWkdUUW53dkUtc2sxRUNxWm1XRFBWSGw1TFI0bjVNTUdQbXZ6OUVIeEFKcGhuNHhDTXYwRlo?oc=5" target="_blank">2317 鴻海 - 快訊／鴻海分紅獎金今入帳「史上最大包」起床領破百萬- 股市爆料同學會</a><span class="meta">CMoney　9/30 08:38</span></li><li><a href="https://news.google.com/rss/articles/CBMibkFVX3lxTE1Rdk12UWJBc3ZIZGtGS0luVVQ3Z2xxcmt2Q010bXg0X0llcHROSkhzbjQyVFZQX3U3ZndIQjZSMHM0azltQXFZV19kN3dlbDBaeHNvYXJxd3p0QWhybHRsWmFRSzZLbVQ5V1Rja0lR?oc=5" target="_blank">竹科人妻激戰男同事！喊「喜歡流水的棒子」 鴻海印度廠小王賠25萬</a><span class="meta">中時新聞網　9/30 08:34</span></li><li><a href="https://news.google.com/rss/articles/CBMiWkFVX3lxTE4wTjRnZHpGWDczWU1VbXhUWmFJUm0wb25VY1ZDTk4xRXozMFluV0FaOGlZVlBhdmZrYXQzWTI0U2hVMHhuZE02OXVMYXhJeXFRUFNXZlk0eTZ0Z9IBX0FVX3lxTFBoMmEtaE5nLVM3QTRkbEx6SUJoV08wNXhpanhqY2RrenFIVTBPbWNScmJjU1NCQkNDVzh5Rm4tUmJ6STBUSFd6dHNNalV1YkItNzZEOXF6ZEp1REl2SGE0?oc=5" target="_blank">鴻海員工一早香醒了 百萬分紅獎金今入袋</a><span class="meta">money.udn.com　9/30 08:29</span></li><li><a href="https://news.google.com/rss/articles/CBMiyANBVV95cUxQbGM3LVZJQlhiZVA5ZHpuVlBCNS05bkdnQ3I0enRCT3MyQVN2a3lJcXhoSUtmeGt2WkNxMU4zdnBpT2VNOGE0emZZZ2xsUHBLMVFXMU5wMU9sQk0yWVNNTUx0ellNeC12OTBjWnBVTURlT0xLUEIzQVdoZEVFQ1I3bmx1Q1ZDOEhUbGxUYjY4X21OYS11bTZ0WjF5eDhDS3A3QlBBZTI3U0dOa0YtVXJBelAzU1ZqSHF0LWV6ODk5aFVGS05uYlRHeUZZLUFZVW9DSUVfVEUycm9KNHBheE1FMERUVWVmYl9Zd2tzREdqeFpEN21KRVhMa2R0bk1meU5WaU9DS29nNDl3bHpzT1RzZUdiNk5ySlExQVAxV1hBR1JQMUU0d3hMd3ZmVnZma0RHSURqQ3lSNTNMRXFHVHJTdzNieFM4NjIzRGg5T2RoY1hoemh0QWNiRllhVS0wNXZ5ZDU1d01MenEzb2dGZ19YZC1XYjE0TlF3YWVuNE4wUF9GRTQ5aXJBQzlmYnlHcXdZT0NzT1g0dkVsaE1yN1hBbWZUZWotQ1NMX05LVmplM1VlSU9NRi1mU2lyZ2ZBWE5YcHBFaFp4NzE?oc=5" target="_blank">鴻海人被錢砸醒！豪撒117億元「分紅史上最大包」 個人有望拿破百萬元</a><span class="meta">Yahoo股市　9/30 08:22</span></li><li><a href="https://news.google.com/rss/articles/CBMipAJBVV95cUxOanp1N1V2RURYdUgydHFOTzk0bFJsWnVrMzdIZTM0RFVfLWtlM1JxN2xGd19JUkxMQWctaXJaZ1E2VWt0YWpkVTFKVFdnUllzbWpOQkFxNnVMaEdKTWVXOHRLTGUxQl9BZ0ppVmFnWl9PVVdPcHAtUGRqSk9mXzdlSFg5eC1Vc2NHek85eWFJZ1FvMU40Vkt1SDBwY09OaXhIX3BZc2tVU3Z6UE5iNGRuZDNUM2l3dWo2SFBXdzlQZ1ZQNlNnN2xqSmtfanpjQ21ZTTBJZmZLdGpVdUZCbUg4dS1DQ0dIenFUbVRscGdFeXpZZW9heGRnclNySUdWMUxPRjI2T19FbTdFZ3Foc1hJYVZOU2lvclZvZDZBMXpMLWVXd19r?oc=5" target="_blank">年度分紅來了！AI賺大錢 鴻海員工爽領百萬</a><span class="meta">Yahoo新聞　9/30 08:22</span></li></ul></div><div class="card"><h3>通信網路業 <span class="tag">中華電・智邦・台灣大</span></h3><ul class="news"><li><a href="https://news.google.com/rss/articles/CBMia0FVX3lxTE5va2lnWl9YZGN5MDJhZ2V5VUdrUkx4VEFzSmIxaUxKbTZYbEs0TzE0RjBDaThtYlFIS29CSzFiRGlNZ3hLbEtfd3Nqa0lvbjNRaUc0UGpwalVMWjBXZER2QXRUR1JPSUd3TVRF?oc=5" target="_blank">中華電登《TIME》全球TOP 1％永續企業</a><span class="meta">中時新聞網　9/30 04:10</span></li><li><a href="https://news.google.com/rss/articles/CBMia0FVX3lxTE9kb1BFNTh2cnJTTEo1WXRIWUs5cG5FSC11RktoWWNBZ3Y4Mm1MbjVfZlh1N0JjTzFwTXdOM2ZKbEdmRFd1emFWTlNaZWlocjRpV0Z4dnpRVFY5WlUxcmlfMUJnYVhEMTNicWNr?oc=5" target="_blank">中華電攻海纜 五年內再加碼</a><span class="meta">中時新聞網　9/30 04:10</span></li><li><a href="https://news.google.com/rss/articles/CBMiVkFVX3lxTE9YXzBXLUhHeE9RWGFFcjRCTjVmaDJ0THhKTGFkWU5qa09XVWdlLXd6MWJUQmRuOU1VOHBDTGVrdzFZdndrTGFtTEx2YXhaM0R1aDY3LVJn0gFWQVVfeXFMT1hfMFctSEd4T1FYYUVyNEJONWZoMnRMeEpMYWRZTmprT1dVZ2Utd3oxYlRCZG45TVU4cENMZWt3MVl2d2tMYW1MTHZheFozRHVoNjctUmc?oc=5" target="_blank">中華電永續 排名全球TOP 1%</a><span class="meta">UDN　9/30 03:01</span></li><li><a href="https://news.google.com/rss/articles/CBMiUEFVX3lxTE9GVFl5QnNFV2ZSWVR1QkVNa25HVUZucG5TWWZMRF95UURuMjJqZWZSc1BNOE83alBQajdFNHFvb2VDNnRZb0QyaHgwU3FQWE1P0gFWQVVfeXFMUHJfVDhyVkgyMWt5M09JVVlfVjBrTTJPcnRHcXRhUkh2dV9mbm51Q051VE9WNEJpQ0RjYTJMOE9RbnJrZjNaekhIeFF5ZWFtcHlPYXByb2c?oc=5" target="_blank">中華電強攻次世代通訊</a><span class="meta">UDN　9/30 02:05</span></li><li><a href="https://news.google.com/rss/articles/CBMiZEFVX3lxTE9sZ042Zl9zSVR0TnZ6ZUpkZWFlUU5vdllPZzdLOEhKYk1XSlNnSUFxNEFoTGtMZjRuWHdpbGhCR0hyRXhyZGs3TVlGWHhQdnA2dHRzdlNmNENzcHFJMlRSLUJDWDM?oc=5" target="_blank">討論牆 | 配合公平會審查時程 台灣大宣布延長公開收購精誠期間至11/5</a><span class="meta">LINE TODAY　9/30 01:50</span></li><li><a href="https://news.google.com/rss/articles/CBMiTEFVX3lxTE5wN21UVG4yaWRUT1E1WFpLWDZaMnZHTnNQUlh2QTJaX3NfZHhYQmJSOC1CUEo0UktJaVNhSzliLTBVSUFzMHBSOHRjcVI?oc=5" target="_blank">中華電永續 排名全球 TOP 1%</a><span class="meta">聚財網　9/30 01:41</span></li><li><a href="https://news.google.com/rss/articles/CBMieEFVX3lxTE9tVnJzWkVGeUM2VW9VY1RDR2Y2REJfOU1BcWxqbGQxYTdXTjZiTkJxckI5TEVmMVlMUzBKQjlKVmc5RGJDeC1sX0twNEVjNHR5czBIMFpqUVF4VVQ2Ti1nc3Z0UExSSHFfcG5hOS1FRkR4SU9IcTY4edIBYEFVX3lxTE9PSExuYWlYX0RCZXlNWkZtNkVxN1F0U0ZSZlVPcHg3U3dLdlZQdjY5Y3FKbXNPUUp6d3k4YUpNT21vOXFCUDlmdWlfSnhFdkFUZjlpMGR3YXByRElsRVdCTg?oc=5" target="_blank">配合公平會審議時程 台灣大併精誠 延長30天</a><span class="meta">money.udn.com　9/30 01:40</span></li><li><a href="https://news.google.com/rss/articles/CBMickFVX3lxTFBqbk8xOXJtNnFwakROeDlzRUhsU0VOME9nNE94Y3ZTMkRXaHJSV1ltT3F3ck9HZzF1cHNvSzZKV1RMSE5ua29VTnRwclNzRHBYeUlXbHZuUWQwTFJJdDBHb2JzblhjYUJLZkJZdmtwMmxXZ9IBVkFVX3lxTE5CelI0aGo4TWpUemtic3ZNY1JPWHdYNVFncGlDMVU3NDZLRVlObU1ocDZEbUpDQmJjYUx5N3FTN2JlM1JOMmJfVXZqb2tHejQwN3JHYUlR?oc=5" target="_blank">配合公平會審議時程 台灣大併精誠延長30天</a><span class="meta">UDN　9/30 01:40</span></li></ul></div><div class="card"><h3>電腦及週邊設備業 <span class="tag">廣達・奇鋐・華碩</span></h3><ul class="news"><li><a href="https://news.google.com/rss/articles/CBMiT0FVX3lxTE9jRWlCT25mM0NIUmhGcFV3SVJCRVlYVmFPdDBrTkFReHRYWnR4eXc2b0JtUlFGaWw4QTk4UE1hY19XQzZYMDFibnJSdmpXcW8?oc=5" target="_blank">【光輝十月行情】蓄勢待發？信驊、奇鋐、聯亞...誰是下一檔飆倍股？</a><span class="meta">news.cnyes.com　9/30 08:22</span></li><li><a href="https://news.google.com/rss/articles/CBMiiAFBVV95cUxNRXVyNDluZDRzMDVqbmhsMV85OVNBQlFPbGk5a0xVY1Q3YlRHVUdYZzhQc21meDJtclY3Mml0T2ZUSGU5WkRVN0pmZDBTVnJ3eXNocHlQa09tQmdjQmJwMGRCMHNVMnBMc1F5aW83TDZYU0ZUSktndzQ4dVBMajdGXzRRSXJpdlpJ?oc=5" target="_blank">《自營商買超34-22》智伸科(43)、廣 達(155)、美 律(18)</a><span class="meta">富聯網　9/30 07:32</span></li><li><a href="https://news.google.com/rss/articles/CBMiiAFBVV95cUxNTndTQ0dmSjB0M1RCd19wRTdVTDQyeE5nRldkUzBGakw5c3JvY3JVQ20xMW1GRjZJa3Z6ZERwSFNyUDFTWGtHOVN4S2NmNjlIN3NmN1lSV1FUOGVJTDZ6MS1ZNEtqc0IxcjBhbjZuZ0lvNzlCeVpMdkxuU0FUVVVONDdYdGJLX0Z5?oc=5" target="_blank">《自營商買超34-12》創 意(55)、華 碩(81)、合庫金(847)</a><span class="meta">富聯網　9/30 07:32</span></li><li><a href="https://news.google.com/rss/articles/CBMiiAFBVV95cUxQMnM4YVQwY1NrLUlWSXBTRFBMc1R2U3JjbHZSYURiSVFtSXJjZkF3eXVjcW5pNmkzUXFmMENxVjRMUi1iNFVOYUJWMm5oV18xSDJQMV94akxGbUp0dDlybEVzYXljMEhTVWI1WXI1YVNNUE1SZC1jODZaSktIQUJBSVpMVG9TUzRH?oc=5" target="_blank">《9月29日融資動態18-10》四維航(4.12%)、奇 鋐(4.10%)</a><span class="meta">富聯網　9/30 07:31</span></li><li><a href="https://news.google.com/rss/articles/CBMiggFBVV95cUxOR0pXeVNpejVNVHNpbTFKeE1ueHdEbDdQUXpxajUxRVFvelFjNjVyeTBmVnJDMjhLNUhqNjZmZnFuT2x5N2ZfSl8wcmxHeFpaNEp1QjdBQXctaF9vSHk2V1VRY01VTHYtNVlvbjZvcFB1RFRuVmt1eGlPQmtnM3BZMHd3?oc=5" target="_blank">外商直接投資年增90%！AI伺服器與平台經濟雙升級，廣達及緯創加速佈局-財經焦點情報站</a><span class="meta">CMoney投資網誌　9/30 06:44</span></li><li><a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTE5ZMkFWNkNjZGNhRy1Ga0tLb3JXbHYxOUlTU2VyZ05Gel96MW5IOUpzRjNmWFBfN3BQY1lOQ1ZRa0tBclJwanB3dFQ0Y0JsNmlMU2RkNWNmQUlSYjRnQXJn?oc=5" target="_blank">焦點股／輝達散熱認證台廠缺席！奇鋐、雙鴻雙雙跌逾5% 健策反創新高| 產經</a><span class="meta">非凡新聞台　9/30 05:37</span></li><li><a href="https://news.google.com/rss/articles/CBMiW0FVX3lxTE9IN3JjdDJpT0I2blFud0x2czBIMXktblFnYVdpOVJLNl9RZno4ekJRVl9LRjRoX2tUYXFBOG43a2t6MExybEYtdTFNUkZqeTAyeFZCeFMxZzJDVGfSAVtBVV95cUxPSDdyY3QyaU9CNm5RbndMdnMwSDF5LW5RZ2FXaTlSSzZfUWZ6OHpCUVZfS0Y0aF9rVGFxQThuN2trejBMcmxGLXUxTVJGankwMnhWQnhTMWcyQ1Rn?oc=5" target="_blank">取得Lumus授權 廣達聚焦下一代AR光波導</a><span class="meta">自由財經　9/30 05:30</span></li><li><a href="https://news.google.com/rss/articles/CBMiUEFVX3lxTFBYVVhOdWs0T291QmVJZzRIZnQtcFlreXdLQXI1Uk5YeWdRSmRiWmlpS1hXTlpGZzJjZ0tOUjdWb1FSOVNIRWpST3J5NGFFY1VV0gFWQVVfeXFMTXpYWWlMV0MxcUZqblpZNTJEOTJEdjE3b0VLNGtubm44TjJYUk04U0F2WEZqV2UyX015dzVKYmdEUkVabFFyaXoxU1ZzNDdjWWlCamQyLUE?oc=5" target="_blank">蘋果新品一波波 帶旺台鏈！鴻海、廣達、仁寶有望受惠</a><span class="meta">UDN　9/30 02:30</span></li></ul></div><div class="card"><h3>電子零組件業 <span class="tag">台達電・欣興・台光電</span></h3><ul class="news"><li><a href="https://news.google.com/rss/articles/CBMiakFVX3lxTE5jZnJCekQ2eHQ1UTd2bW44SjlBaG55aFhmazEyaG02OUxJODByTkU2anptTDlUV2xmaE96OFhob1hjakhleHpKcmxjX1lLTjdwR0hReUxlZEVucnI1bVNFUk9BaDlqMGZVMlE?oc=5" target="_blank">法人狂砍800億元！瑤池金母有動作了日月光、台達電、金像電、台燿...00981A最新調倉標的1次看- 上市櫃</a><span class="meta">wantrich.chinatimes.com　9/30 08:09</span></li><li><a href="https://news.google.com/rss/articles/CBMiiAFBVV95cUxNa3NjaTVBWDl1OXE1bDN2bUVMV3hPZDRWaDlaa2VRMUVNQU9yRE9ScTNKYzFvSWNiNVl2a1lFOFVuR3dKR3Y0MUVoTzU5WDVEZ1hzOUktZktxMTNzYmM4VE9CaDRvbjJDVTNkWmkyODUydmZxOWJ3Sk9XYmxJWmR2Vy1jNEdhWmFi?oc=5" target="_blank">《自營商買超34-26》欣 興(103)、晶 技(315)、同欣電(11)</a><span class="meta">富聯網　9/30 07:32</span></li><li><a href="https://news.google.com/rss/articles/CBMiYkFVX3lxTE1WdUpabzViZFhHWEFtYkJrZU9IcmJscnFrQ1FLUkNSVDVndEdSLW5mUjBBeEM5VmY0YXRpVWVhLTFhYWlJYVpFaTJnLThucUtEa3R3eW5XbEw5UFRyazRzUk1R0gFiQVVfeXFMTVZ1SlpvNWJkWEdYQW1iQmtlT0hyYmxycWtDUUtSQ1JUNWd0R1ItbmZSMEF4QzlWZjRhdGlVZWEtMWFhaUlhWkVpMmctOG5xS0RrdHd5bldsTDlQVHJrNHNSTVE?oc=5" target="_blank">9月營收誰最狂　台廠34強出列</a><span class="meta">鏡週刊Mirror Media　9/30 06:45</span></li><li><a href="https://news.google.com/rss/articles/CBMiYkFVX3lxTFAwanBtaW5Fc2FlQ2Z1Tm5wYTJBbTFhR0V5aFRfdkN4UHlpWnQtbzY1aThKMnhTcDBsWXQyWU5xcUNHeFZsbWNkMmkteHZrZ19RTXppR1ZPTGpqQXZrSVotVzl30gFiQVVfeXFMUDBqcG1pbkVzYWVDZnVObnBhMkFtMWFHRXloVF92Q3hQeWladC1vNjVpOEoyeFNwMGxZdDJZTnFxQ0d4VmxtY2QyaS14dmtnX1FNemlHVk9MampBdmtJWi1XOXc?oc=5" target="_blank">短線震盪！外資調節買超「8檔」</a><span class="meta">鏡週刊Mirror Media　9/30 06:00</span></li><li><a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTE9EbDJ3ZVNCTW9tTWRoeWE4aFFsQWRORzRRd3cwcjNJRzZGeHNvOEFBMmRXZ3FpLXhXeHVCNmRFN24taDF1TTIwQzBaR1dUc2xZMjlfYmNsdzBpa2xoVFMw?oc=5" target="_blank">衝刺季底作帳15檔壓軸登場- 日報</a><span class="meta">工商時報　9/30 03:00</span></li><li><a href="https://news.google.com/rss/articles/CBMiWEFVX3lxTE00ck90Y3AwN1VzUjNNOFc1X3JyaUlPQXBEYmpQOE94TF96cjRoM3ZpWllxMDliSVVXUjNFS0VoMVF4TG8zMVhhTFZMS0ljZWFGZVdnNWs5cnQ?oc=5" target="_blank">2383 台光電 - 台光電115年第三季財務報告董事會預計召開日期為115年10... - 股市爆料同學會</a><span class="meta">CMoney　9/30 00:37</span></li><li><a href="https://news.google.com/rss/articles/CBMiU0FVX3lxTFBYSC1FOXZmSnVKcWVpck5EYjRvcjRCWjE0eDVtaUQ1cFpvRmEyb2VGNlZvdEwtUXg1OUM0aVNrNmFlWkF1eWwtMmtTM2x0OEVvUFVn?oc=5" target="_blank">台達電(2308) 個股概覽 | 個股 - 股市</a><span class="meta">CMoney　9/30 00:10</span></li><li><a href="https://news.google.com/rss/articles/CBMiWEFVX3lxTE0yLTNTektKM252WENfRlcxbGhpRDFibVFUNm9QTE5oeVhaUEV4VV9BQ0ZEUUdmMVpIV3dITVctVWh4Nm1BS0lNRGh3dXk0cDhMVjFySDA1ODg?oc=5" target="_blank">千金股解密—台光電2383</a><span class="meta">自由時報　9/29 23:35</span></li></ul></div><div class="card"><h3>光電業 <span class="tag">大立光・群創・友達</span></h3><ul class="news"><li><a href="https://news.google.com/rss/articles/CBMijgFBVV95cUxObzMya1hfTndZN1pacmxITk9jWkFUWW9jOFBocnhmaUVwWGZkUFV0RGxHT05BMmxfNVdPWTlTWjRnYkVzMlVUS1BZbm9yejdBdjNuVzVFNzNfOV9kWmFPUFdkTWtJVkVqamdaek9rUFUyTHpzX19tMTVPRFJZRVlEVl9HM0pRQnppLUFjNkJR?oc=5" target="_blank">【09:18 即時新聞】友達(2409)亮燈漲停，短線多方買盤急拉成盤面焦點</a><span class="meta">CMoney投資網誌　9/30 09:18</span></li><li><a href="https://news.google.com/rss/articles/CBMigAFBVV95cUxPWG9aU3A4SmJueklucFZRUVMxX0VwdXhoMF9oTm0yeU1GdDlFYUVmdjU4R1p4NDc2Z2Z2akEteDBqblNMcy14NE41OWdoc2hXZmxJbUZhRGdHcEc3VkhNaV94MF8wYWg5MDJaYnZVRks4ODNTNVdiYVJlOGhYWm1JdQ?oc=5" target="_blank">聯電、友達噴漲，群創為何卡在50元？杜金龍買在49元「一張都沒賣」：已上車丟著不管，空手等「這價位」再追進</a><span class="meta">今周刊　9/30 09:15</span></li><li><a href="https://news.google.com/rss/articles/CBMijgFBVV95cUxPa2JRVVN1ZWxDcTcyOXJFZmxYa1BfQmVQdUpDUjhGX1dnMUtac1piNnJQeGRDeGowc25OeHY5bmRMQUxRa21SSWlXMkdsb2lESzF6SlV2TFVFSk1kLWt3RmFETjh4WDNlX0xCSjA4cVctT09WOFZ2bm02ekFWSmpub2VfeklzWU56UXM1OGhn?oc=5" target="_blank">【09:08 即時新聞】睿生光電(6861)亮燈漲停，印度與工業檢測題材受關注</a><span class="meta">CMoney投資網誌　9/30 09:08</span></li><li><a href="https://news.google.com/rss/articles/CBMi1gNBVV95cUxQamRMY2l5eG0zakZ1aDZWaWVMNExMY1h5LUZ2RUhZR2RWVVpib0dTWmlTSTNweVpRSURQbGZxYzdPVVBGWjVrd1YtQUoyTTJpcGc3LUxhZ0ljclAybC0tT1RRaDYwaEV6cmtXTXF5QkZFcEdGSy1DSUg5VTFtdG5MUU5GdmQ0eU5nZ3Nmb0R6VTJ3ZDBTT05CRm80RDloN212WkRSOTg4dUx4RTVKUjl6ZUsyWXRyRDdMRzJEaUpFQ3JhM3dDSWJTZUJKSWtmSDJSS0V2TlZydGhuOUNfTzlQems1S3JUQm9ZSFNnS3h0c0VHcFlYTnJ4QnplU1BCX0RwUUdPU2hkeXc3SGNTbkNDbXVIcVo4cHc2bTBBMDk0SGRJazNEQ2drNHFYNzAtamV0SEpaeE9zeWhHQVFPV3U1eklVTl9YNVVXWG9lQ2F5c1BKdGVOTmVQanBjdWFFVmFDbTc3Z0gzNl9iazgyWXg5TXkxWXhMYXZIZWpiOHVRSnFQdFZlNkk0U0Z1WWs1ajJyZjhHV3FQZnRQVkVUUXFjZmZySnhTRU4zU3BiZVJ3TloxUVFFMk5NN1BrU2IxQnVZRWgwQnNVUDVsV0ZZOFhGMmtBcGltUQ?oc=5" target="_blank">【當沖樂1】誰是台股沖浪王？群創日均量26萬張奪冠 南亞科「吸金」3兆元</a><span class="meta">Yahoo股市　9/30 09:07</span></li><li><a href="https://news.google.com/rss/articles/CBMijgFBVV95cUxNS0RwUUIyQXBTODQtUU1CX3lBWVg0bkhXa3BDYlNMeXJWU1JuTks0S0ZPNjRYa2FBVEpETmd2QVh2NDFkM09OQ3UzbFlmZTB0TlJQLXRkZG1IMFVSX0paaEhtX3N0bUVkRTQ5SkllZXpIN0RoakR2Zy1NVXhfS2ZoNnFxSmxPbkstNFJfUnVB?oc=5" target="_blank">【09:01 即時新聞】悅城(6405)亮燈漲停，光電薄化題材帶動買盤集中</a><span class="meta">CMoney投資網誌　9/30 09:01</span></li><li><a href="https://news.google.com/rss/articles/CBMiiAFBVV95cUxOVGdrdnBqLTRaVXN6T2hoUXUwYXZWS2s1QVdyQ3FYT0dxZmh3YWlJekJob294MVJaZi15dk5LTmxid3lHM2NMUWY5bmtIcmQ1LUxuUzd1REF2U01fZkdBeFhXUl9LRXZROFlQOUxneEp1ZVFMa3RzTVpEZ2xvdWVoYUYxNXZjSG04?oc=5" target="_blank">《光電股》注意股：GIS-KY 近5日漲36.70%</a><span class="meta">富聯網　9/30 08:02</span></li><li><a href="https://news.google.com/rss/articles/CBMiiAFBVV95cUxNeEhQWEhLbktiRUJLNFNYWXBXT1ZvWkxKUGhyUkdZX0JOUmg4dlUxbEEwOXVHTE5wckVfNTg5aDdNYzhTbXdkRVZqb2tKZVNkdU1MdTI1QmJaa1hXTmx6RWFCU0xvNG93bTRXZnNOWGVmNUpBbHZaMjM5QUtUMUgzdFFadFRLOXZ2?oc=5" target="_blank">《光電股》注意股：由田 近5日漲4.50%</a><span class="meta">富聯網　9/30 07:52</span></li><li><a href="https://news.google.com/rss/articles/CBMiiAFBVV95cUxQdjRFVzZmbW4wenpxbkF0LUJ6bWFuTXZDR3ByQkdmcnBRNno1NDBYQS1DSWVUUG5qcE1sQ2thWE9kZ2JVeVVSZzRkbFZRamxVd3JDN0phQ2RuaV9PalFfRGNoZkgtWWpsQ3liM3ZsdnhsWlQ2MEloRDVlcW5HSmhsTGFYSDlPZnVF?oc=5" target="_blank">《自營商買超34-24》上品(26)、群 創(1261)、競 國(15)</a><span class="meta">富聯網　9/30 07:32</span></li></ul></div><div class="card"><h3>電機機械 <span class="tag">亞德客-KY・華城・東元</span></h3><ul class="news"><li><a href="https://news.google.com/rss/articles/CBMiU0FVX3lxTE4tc2pkOS1Vem5SX3N4NGEzaVdkeGI5Tnk2TXNVRUtKUGlkekNoaHVieTZfUWMzQ1ZySnRBQi1mbG16aFNCQjliMXQ4SkUxdzI3cGZ3?oc=5" target="_blank">華城(1519) 個股概覽 | 個股 - 股市</a><span class="meta">CMoney　9/29 21:09</span></li><li><a href="https://news.google.com/rss/articles/CBMiekFVX3lxTE5UWHVCRDZtUUNsTktSTFdzMkJ1QUhLSVh0X3dGaGtORmhvTHhxbkk4SnZIN0dWalFEcTQ4eFVJdjE5WUh6NFJkYmRKQ0xTQXo3V1NBTmRKam5SaUFhOWVjOThpNlZkMGtvMExWSmlLZlBpdmw0Q0ZjdGJB?oc=5" target="_blank">東元攜安達康首登新加坡資料中心展 推模組化方案搶東南亞AI商機</a><span class="meta">BigGo 財經　9/29 19:25</span></li><li><a href="https://news.google.com/rss/articles/CBMiT0FVX3lxTFBmX2NJdXk5TEdsZjJDTTR4RUt4OENHYXNJd0pOLXBJR190dFRZM0drQU95c2V3blhHVEhqNTBEVExkbUIwNVZEQjdNa0RuUkU?oc=5" target="_blank">東元攜安達康參與新加坡Data Center World亮相MDC整合方案 攻東南亞AI基建商機</a><span class="meta">鉅亨網　9/29 18:55</span></li><li><a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTE1qUXVhcEVPWDJzLUd2NDBRNFBHMWFyN29BbWc0cHBDaG9JdU12d0Jhdko1MG9GNGtFVzBGMUtMeTVDOUt0bjZaXzVuVGMwczhvQWRnanFJREZsTmI5ajB30gFkQVVfeXFMUFMzOEx5djM1Z3RPczhqWHYyMTRXMFRUaXJBQ3lwQ2NyRHVPNHNMX3VSYU5JaDBDVEF1Nnp4VzVyVnp5S1hHcUFjLWpuU3dVTnMxdWhUZ2FOa1RpWGU4ams0dVlqUA?oc=5" target="_blank">東元攜手子公司安達康科技 赴星展示模組化資料中心產品</a><span class="meta">自由財經　9/29 18:52</span></li><li><a href="https://news.google.com/rss/articles/CBMiVkFVX3lxTE5zQVpNRDBHNU5QV01LYmtfYmRiNU9sWXY5RUhibnpEOUlYczJmelRiUjJNU1h2WW4tRDJmdzN2QlQ4UEVoZjJnaE1DMGlueVRtWUJXN3Z30gFWQVVfeXFMTnNBWk1EMEc1TlBXTUtia19iZGI1T2xZdjlFSGJuekQ5SVhzMmZ6VGJSMk1TWHZZbi1EMmZ3M3ZCVDhQRWhmMmdoTUMwaW55VG1ZQlc3dnc?oc=5" target="_blank">搶攻東南亞 AI 基建商機 東元首赴新加坡展出模組化資料中心整合方案</a><span class="meta">UDN　9/29 17:38</span></li><li><a href="https://news.google.com/rss/articles/CBMiTEFVX3lxTFA0Zl9jYVRZQzRVQmpIN2lpcTFGcDNVZXNEYVM3UURsTG0zYTRVX0dXNmdjWk8tcTFwQmM0ejdrWjZIdEMyM09nZWVYMFA?oc=5" target="_blank">東元在新加坡展示模組化資料中心 攻東南亞AIDC商機</a><span class="meta">聚財網　9/29 16:59</span></li><li><a href="https://news.google.com/rss/articles/CBMiWkFVX3lxTE9UZHg3TGJBU09pX3BMZmwyWmxWWllhWVJ5X0RnWEJtNWxLazNYYkVuYXVWRFlSMHYycFNPWGNkeE90ZEYzVWpSSTlxZ21IZ1VvU2NmR0FwT2pZQdIBX0FVX3lxTE44czVnMnF3SEREdFpHM3hYOHdwSHM2cW5sTUNxNjBOdVpacTBxY0FtV3Z5b2lyZ1BKbGdZLXdNUlFETjdKbGxVWV9VTmNQNGxjM3RzbHFySUFFZFRBa1VF?oc=5" target="_blank">東元在新加坡展示模組化資料中心　攻東南亞AIDC商機</a><span class="meta">money.udn.com　9/29 16:37</span></li><li><a href="https://news.google.com/rss/articles/CBMiXkFVX3lxTE0tQXg0eDdDRTJWOHlkUlpHQmtZQm9kN1QtTWhBOE1mRVNKNjJoQVQ3WHVsaktDTTQ0RXlfbWpZdG1kNE16UnBlWmliVHJyRFROZHJEX3NfYmdkYWJuTWc?oc=5" target="_blank">東協財經／ 東元在新加坡展示模組化資料中心 攻東南亞AIDC商機</a><span class="meta">中央社 CNA　9/29 16:25</span></li></ul></div><div class="card"><h3>生技醫療業 <span class="tag">藥華藥・康霈*・禾榮科</span></h3><ul class="news"><li><a href="https://news.google.com/rss/articles/CBMiiAFBVV95cUxNa2FYTlRBRVp0SG5QR1VMeS01QV9TVlVlZE5vRVRqWDFfTFQ2b3FDUEJHd0VsdmNiT1E1UW5DUTdRYnBsWGVQenVfM1daQ2FrREJNc01ZTFFobjgzbTRUdGwxZVM5Z0VwcWZ0dlE2Y2hfelBZSjZpZVY3QUdOSWdvaGM4NFdXNEM0?oc=5" target="_blank">《熱門族群》藥證、授權催化 新藥股旺到2027年</a><span class="meta">富聯網　9/30 08:21</span></li><li><a href="https://news.google.com/rss/articles/CBMiiAFBVV95cUxPX3lLYUhZeWxyQnc2bUJkUmM2UjZmUEpIMTBaNlh0VzNCX2o2ZFFXV2c3UGtCdUZkY2lKZjJNZW9ITjNaX21sZHFfUzdaT01uSlZvclRtWklMTlF0cHRxcWJ6Y0x0dkRwaTZIXzFabnBaeVB5WlEzTmp1Z0x2cTBqdmJ5R0JBQTVH?oc=5" target="_blank">《外資》賣超股：東捷、台新新光金、英業達</a><span class="meta">富聯網　9/30 07:29</span></li><li><a href="https://news.google.com/rss/articles/CBMiWEFVX3lxTE40OXhScU96SXBQRngzQ0h2SmtCZ2Jma1FhdDlIeUdELWpUSFhUZVhHcWJ3czNUN1ozTDFQaVdiTVdDbUR6WTd5cTdvakNuSHh0TzlXMHZPcGg?oc=5" target="_blank">6446 藥華藥- ❤️生技股星期3盤中點重如下； - 股市爆料同學會</a><span class="meta">CMoney　9/30 05:25</span></li><li><a href="https://news.google.com/rss/articles/CBMibkFVX3lxTFBkcDlwaXd5blNLR3pScmRpWG1veDVVZE4yRWd3WnBQVGhuOFZ1b0Iwb0VGLVIzalpBMmQ5MXRoMmZ3VDlKVGhKVmJ1RFNvbHBBZzRLYTdJSjJYa1FaMW5qUFVaVU4xQ2t0Z0JxTjhB?oc=5" target="_blank">《9/29日法人賣超》外資賣超前三名：北極星藥業(-657張)、康霈*(-631張)、沛爾生醫*-創(-597張)</a><span class="meta">genetinfo.com　9/30 02:16</span></li><li><a href="https://news.google.com/rss/articles/CBMibkFVX3lxTE43OUY0czFyWGpRcmItUVgyeHpBQWJwdXl3UnNRTC1rcDBQZVZsa1loWjViRlBieks2ZDhzT3ltR3FwV2FRejFCMVFGeHk5Q2ZHV3lma25sUlY2VGsxVUlFZV9DSmFlZ0IxeUN5aTJB?oc=5" target="_blank">《9/29日法人買超》外資買超前三名：鑽石投資(1155張)、高端疫苗(740張)、國光生(450張)</a><span class="meta">genetinfo.com　9/30 02:16</span></li><li><a href="https://news.google.com/rss/articles/CBMiVkFVX3lxTE1RbUdkdmdYUjl3ZWxqVVBYUklUTEdJaFdqMFkwQ1AxTkNVaUN5THJmeE0wWHl4YWY5eWlSTFhiRzhKWm5IbkpVajJlWVlCV2xjRHRtREJ30gFWQVVfeXFMTVFtR2R2Z1hSOXdlbGpVUFhSSVRMR0loV2owWTBDUDFOQ1VpQ3lMcmZ4TTBYeXhhZjl5aVJMWGJHOEpabkhuSlVqMmVZWUJXbGNEdG1EQnc?oc=5" target="_blank">訊聯智藥申請創新板IPO</a><span class="meta">UDN　9/30 02:05</span></li><li><a href="https://news.google.com/rss/articles/CBMilwFBVV95cUxQb09KcVkzX0s3S1FNbzIxVXh6VzFNTjFERDVSTnliLWd6X0tMNDF5blZSazFHSmpIWDVWa2tHSkl1b3k4ODhCY3FrY2hFNEptcV9YcF9IU3RMRVF5VjFoZml0azhnSkxsZm5ja1Fzb3R4dHhDT05DdHZxeUFTcnFmckRhcV9mQVZfazMwa2UxMXJWRWNGTTdv?oc=5" target="_blank">2026 台灣生技醫療如何國際化論壇</a><span class="meta">全球醫療採購網　9/29 20:31</span></li><li><a href="https://news.google.com/rss/articles/CBMiUkFVX3lxTE9UZG81cnR2NkpsME5uUWVLYk9mSEJ4bDlBUlViRURvMDIwd2RmbkpST3M4RVp0ZFJhN01acFpCUE1Ud1BJSDhUMUMtU1BZLURVUmc?oc=5" target="_blank">蘇巧慧輔選張錦豪 允推新北智慧生醫產業廊帶、社宅</a><span class="meta">蕃新聞　9/29 16:22</span></li></ul></div></div></div>
+<div class="page" data-p="news" hidden><h2>重挫個股新聞</h2><div class="cards"><div class="card"><h3>2454 聯發科 <span class="dn">-7.10%</span></h3><ul class="news"><li><a href="https://news.google.com/rss/articles/CBMipAJBVV95cUxQOEpFRGI2QjNfYnFZOF80T3p6QmFnN0lJTFdLclA4cVUtZ09nMThhakNuUlpGSGNwLWhPdDBTX1kxcGYtWjc0djRxX2hZTDZoUTNrdDJ2NFBSc2xNRzlxVXk1dTc3RzNHbDZxX2R3ZDZmQ0s1LXZoZzQ4cjBZLXlVcnVHTVJVc1NMazgydmFuMkN0MlhFbmxLNFo0U21RZEczQWFmaDZsVDlnTUNWdUZveXdlcTloVFdJTnhqMkZFcTdQc2hmZFhCVERUYmlpWnQ3R21RazY3LU1LaGxqOUxZWXhrc0UtZVUzQi14MHhtekswc1FMQUdodmpCdGVyMmNGREgtM3hubTEyVkQ1YlJ6UTdrRGhBT0dOLVlJNEtNZVZBbXVI?oc=5" target="_blank">突破4萬8！台股大漲522點 台積電開盤價曝光</a><span class="meta">Yahoo股市　9/30 09:32</span></li><li><a href="https://news.google.com/rss/articles/CBMidEFVX3lxTE42M2RjTVM1OHFHYkt3QWxPUFkzaWoyWEw3eVRQOER2VWVZai11cmlZODhLWUk3TkU1cnNyMW51bVFiNzlIRjQyZ2RyWGUxcVZockliY3dlZU5HdWg0M3VmWHR3THRKYm02MmljcmNXTk5RWFc3?oc=5" target="_blank">聯發科昨重挫7.1％失守5000元！市場瘋傳Google TPU「掉單」 公司駁斥：不實傳言| 台股雜談| 股市</a><span class="meta">udn.com　9/30 09:32</span></li><li><a href="https://news.google.com/rss/articles/CBMimwNBVV95cUxPN2d5SWVheUJWMHZNZmFHWGxoMTUwc3RzRklwNmtpdU1FSXFNcWFBQkl2bmRXemFMR2pMQ1ZVU1ozZ2NwMkNDVWVlc0J4S1hBVV9XTVpwN2xSam1rZVRteUJFdXBpaDNDVF93cXBvVHNpRjhFbjZNZkRkbVBMMi13T3R6eU0wcjdQQlNXdVFaUUZjT0J0b3BqVkpOeXNUZzA2NDF4cWt3aDF0VzU4UmhIOUw5bGxxZGszb0pMc3hSbUlMaUtCREpPeVZFeVNyemd4TEtWaTdObURQcTVJSERRNkZMVmdhXzFLa2JwWWhjWEdYTWN2YXpLTGdjMGRWUmpaUEZCNGZNeThjSHRWdnZHS2JmaXhKMzkzOUpKRk5QbHc4WnlSRUVRQ2hiREJOS3VFN3k2MG1jQXJXaDFsRlBUSXVSdnUwdEtZc3FDdmIwZWdzR2pzcDN1MmRxQk1LRVplaWlidC16ZlVpOFp3NkNnZ2VmRmNlRGhIRndXWVA2S2hNMmVaZFlIMDRSZ3JSanpuVnN0cllta2JQT28?oc=5" target="_blank">台股開盤狂飆500點！台積電漲25元、聯發科秒回5000元 13檔漲停「不銹鋼廠」連3燈創史高</a><span class="meta">Yahoo股市　9/30 09:30</span></li><li><a href="https://news.google.com/rss/articles/CBMingJBVV95cUxNQmlwN0NVSnhqeXo3cmV4MzA3dmFlNndoc0cycVRsa3Ntcl9Zb2htWE5idEVneG84NzBGek8ydzlNemVBUkZIX2FOcU05T19ZVHBMYlVkTG9qRDk0ZEZhOTNWV3QtYUdYZXI3QjJtanZaYzBLTjJNS2JBVWV0MlRDS2ZyaVRKSkhVZ2JudTJtVk55VlFEWEdMTkpZVXpOSWhnWjRxdXdpY2NiTkRUeDNEb3g4X0huM1Z0MTNLdmxGUzhwc3g5NlBrU080M1dCU1hjSTRQa2FGSU1CV0dKUVFaSkVibHZHSnQ1aVNZNkpqdTNpZjA5VjFBcTRYTDJlZFJFME02Ui1tYm9DYjIwQjUxaTN3c2NZVEtiZzRrYmtR?oc=5" target="_blank">台股漲559點！重返48000關卡 「這檔被動」攻漲停</a><span class="meta">Yahoo股市　9/30 09:26</span></li><li><a href="https://news.google.com/rss/articles/CBMiiAFBVV95cUxOQlBDclBNV092U3dSaDQ5OHFJYzFOMkdJRTNCUm1ucE9jaWZfbkpjNy1oUEJYZ1FaUVJ1SjdqRzl2VkJpd1Y1WTBwX0pGWTRGZkxCWUMxcHRmQ0IwWm5IYklvS2NrNmZKZm4zYUp3MF9WOHhDRGM5Z2xoUTEyN0lXSWZuWW91NDJH?oc=5" target="_blank">《持股轉讓4-2》聯發科技經理人莊承德0.9萬股</a><span class="meta">富聯網　9/30 07:34</span></li><li><a href="https://news.google.com/rss/articles/CBMiS0FVX3lxTFBwaXd4dWRWNmVvX1dXbktGOWF6SGtSVnpfbHhSTURSMWY4bXJ0Q29LUkNuQ0lNanJ2djd5VVhaNWFlOUhDQXV6amk5TQ?oc=5" target="_blank">股價重挫7％外資卻狂喊目標7300元！這「ASIC大廠」TPU拚出貨300萬顆再搶150億美元ASIC大單</a><span class="meta">FTNN　9/30 07:20</span></li><li><a href="https://news.google.com/rss/articles/CBMiiAFBVV95cUxObXdoYjk5eFpTZ0NtRFJod1RMMGR1SFlyQVJEdENCUlE5Vnl6RzVyZXdSejhEQm5xbmJwemJTODU5bDdyUTVuV2dLYk1VRE5jbWotcnEyZC1sZlFyN3pORXZkNjlFSlhqOE9vWXlhQU1ZbVk1WG9sdGQ1QnJLd01jZnhqaHIySFBx?oc=5" target="_blank">上市申報轉讓：09月29日上市公司董監事持股轉讓申報一覽表</a><span class="meta">富聯網　9/30 07:16</span></li><li><a href="https://news.google.com/rss/articles/CBMiakFVX3lxTE5HNmNlM1dNRWhjQV85MEVMMFJ0Zmlna1U4WjcxLXl2QjlHRGxoYWJGQXlsR0FUaG03ZUI3YlA1TXJfeXNHdTlvb3BCYlotVFhKcUNvdFB0Wms5NC1aSXdfZVlVbE1McTk1T1E?oc=5" target="_blank">資金輪動到高價股！聯發科、大立光、創意誰還能再噴？ 分析師點名2檔轉型大黑馬：明年有機會登萬金- 上市櫃</a><span class="meta">旺得富理財網　9/30 07:08</span></li></ul></div><div class="card"><h3>7610 聯友金屬-創 <span class="dn">-5.46%</span></h3><ul class="news"><li><a href="https://news.google.com/rss/articles/CBMibkFVX3lxTE9VcjFaUlhaRlotRW9oVXVuTE5mc1hPb0Rsb2doSWRrN0RjczJRckpUWGc2MTdkbG95bV85bk52VmhodnJ0SEI2MGxHb0JYQTFFU3JiT2tMcWZ0TXlyV0haV01mSFVuMFYyamdiU0NR?oc=5" target="_blank">股王股后帶頭跌！千金股疲軟又爆警訊？萬潤唯一亮燈漲停</a><span class="meta">中時新聞網　9/29 13:43</span></li></ul></div></div><h2>產業新聞 <span class="count">近一天，千金龍頭與選股所在產業</span></h2><div class="cards"><div class="card"><h3>半導體業 <span class="tag">台積電・聯發科・日月光投控</span></h3><ul class="news"><li><a href="https://news.google.com/rss/articles/CBMipAJBVV95cUxQOEpFRGI2QjNfYnFZOF80T3p6QmFnN0lJTFdLclA4cVUtZ09nMThhakNuUlpGSGNwLWhPdDBTX1kxcGYtWjc0djRxX2hZTDZoUTNrdDJ2NFBSc2xNRzlxVXk1dTc3RzNHbDZxX2R3ZDZmQ0s1LXZoZzQ4cjBZLXlVcnVHTVJVc1NMazgydmFuMkN0MlhFbmxLNFo0U21RZEczQWFmaDZsVDlnTUNWdUZveXdlcTloVFdJTnhqMkZFcTdQc2hmZFhCVERUYmlpWnQ3R21RazY3LU1LaGxqOUxZWXhrc0UtZVUzQi14MHhtekswc1FMQUdodmpCdGVyMmNGREgtM3hubTEyVkQ1YlJ6UTdrRGhBT0dOLVlJNEtNZVZBbXVI?oc=5" target="_blank">突破4萬8！台股大漲522點 台積電開盤價曝光</a><span class="meta">Yahoo股市　9/30 09:32</span></li><li><a href="https://news.google.com/rss/articles/CBMic0FVX3lxTE0zb3gtN3dZaGxld1FkM185WHNuMHZ6cHJJVWNGVWptSmoxRFFkMnZRNnc1SVFYYm9ONWRLQmdiLV9qYndUbEZhX2tsQndJd05hN0NaaWxGRl9BbWxQblljYkxIT1BDYUgxaF9vaHVrNVdYRms?oc=5" target="_blank">聯發科昨重挫7.1％失守5000元！市場瘋傳Google TPU「掉單」 公司駁斥：不實傳言| 台股雜談| 股市</a><span class="meta">udn.com　9/30 09:32</span></li><li><a href="https://news.google.com/rss/articles/CBMimwNBVV95cUxPN2d5SWVheUJWMHZNZmFHWGxoMTUwc3RzRklwNmtpdU1FSXFNcWFBQkl2bmRXemFMR2pMQ1ZVU1ozZ2NwMkNDVWVlc0J4S1hBVV9XTVpwN2xSam1rZVRteUJFdXBpaDNDVF93cXBvVHNpRjhFbjZNZkRkbVBMMi13T3R6eU0wcjdQQlNXdVFaUUZjT0J0b3BqVkpOeXNUZzA2NDF4cWt3aDF0VzU4UmhIOUw5bGxxZGszb0pMc3hSbUlMaUtCREpPeVZFeVNyemd4TEtWaTdObURQcTVJSERRNkZMVmdhXzFLa2JwWWhjWEdYTWN2YXpLTGdjMGRWUmpaUEZCNGZNeThjSHRWdnZHS2JmaXhKMzkzOUpKRk5QbHc4WnlSRUVRQ2hiREJOS3VFN3k2MG1jQXJXaDFsRlBUSXVSdnUwdEtZc3FDdmIwZWdzR2pzcDN1MmRxQk1LRVplaWlidC16ZlVpOFp3NkNnZ2VmRmNlRGhIRndXWVA2S2hNMmVaZFlIMDRSZ3JSanpuVnN0cllta2JQT28?oc=5" target="_blank">台股開盤狂飆500點！台積電漲25元、聯發科秒回5000元 13檔漲停「不銹鋼廠」連3燈創史高</a><span class="meta">Yahoo股市　9/30 09:30</span></li><li><a href="https://news.google.com/rss/articles/CBMi_wJBVV95cUxNZ3JPUmN6RWRmZzFGY2RVbzJFUjZ0enBUREdhdHE1b05ESjZENzdsX2ZzTDlOYjg5WVBscWY2MndhLTlLZzlOSnA5RXdCYlZROW9vXzJxU0F0RDJGYmRkWWRMU1RnMXRJcDBmajlfR2xPV1V1aEVHNXBpRlZ6LXh0OFVZZzZjUDFoYllpQlduMEtNVUZMbTRsbzUtcTc3cFN5OTN3b0FNT2lkSElScENGTFprZG8tMFZwTXNKYUdIanhMZTRHaDMtMC13ckstYi12eHRhcjRUMzlBTEpvSWdHTEdCbEJINWZVNUpTU1MxeUVpRkwxTVBtWm04VUZNcFBBOTZDR3kycHFGT0lHbjRJUGRaZEl4Wm9DaHZBQThXODNOWUpNZXEyZmFmQVh5LUtUazJsUVNUb1hpdDd3VVJZMXBBMlRjdGRaazY3ZFZXY1JsR0pSRlloOTIxcTdIbzUwbHdiYnBOUlVXcm5DelAwU2VaRlpfX1NuS0hCQldnaw?oc=5" target="_blank">黃仁勳1動作發酵！台積電漲30元至2505元 分析師：有望戰2510元</a><span class="meta">Yahoo股市　9/30 09:25</span></li><li><a href="https://news.google.com/rss/articles/CBMiUkFVX3lxTFA1clozQWRjamNLMFc5Ujc4NjBqOU5YMHRmQ2wydkZxS2ItdlJTTFhOVXNTRmdqbkFvbEhzUEpZNjRnQ0JGZENKY0pobWZuajR6ZmfSAVdBVV95cUxOT1lJeTJHdVBYNGtYOU1CMm1YYkY1VE9RWEV5b3BvRVVYdFUxQ0kzRzFrZno2Y29ILW1UN0trMlBKYmlKS2M2R1hoa0cyV2VwMC1Xbm4wYlU?oc=5" target="_blank">三星喊2029晶圓代工客戶增至4倍⋯劍指AI、HPC市場！網笑：彎道超車台積電</a><span class="meta">udn.com　9/30 09:23</span></li><li><a href="https://news.google.com/rss/articles/CBMid0FVX3lxTE1BQ1RRNXlKU2Z4WUJlRzFWeFBqbWVVN1lqTDhsV0VVUmdhTmtjZXJGaUZTWTZELUh0ZjZKXzZpNVlWT2xMRmM1TUdVbnZ6OHZTTjVGZ0NqWlhSS3hSQ1AwQXJMV1J4QU1Tdlo2WmVmbjdIb093cXhj0gFfQVVfeXFMTWFud0t6WkpXRV91UlhtM2NTZXdlY0lITHVMTWhSM0Izc2pBdXFIb3c4RnotVnBaWE01RkJZdVM3OHRna3gzaUhNUVRWY2JrUklleU9tTHpSQU1kLTRvMTA?oc=5" target="_blank">台積電衝上2505元　台股早盤漲逾500點站回48000點</a><span class="meta">經濟日報　9/30 09:21</span></li><li><a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTE9WLTBnSUR4LWVocFZRN1hkbFNCaFZ1cnNxeVFhZV8ybDRZcTF0SDhULTNxSi03RzVOSkhfZ3dmOWQ4NFMybDhRd05tUXdDQkgyWmpYSWVfMU52RlpPODNj?oc=5" target="_blank">權值三王向前衝！台股早盤大漲逾500點重返48K 台積電站上2,500元</a><span class="meta">工商時報　9/30 09:19</span></li><li><a href="https://news.google.com/rss/articles/CBMiUEFVX3lxTE1oeVZUT203NnRYd0Z6OU53LVVDTVJUNnpZc2V2dGttMU5PaXFMejN4Skl5YVZlZnZ3dGN0MXl3M2R3aVVCaHF5bldaWUVzMVhN0gFWQVVfeXFMUFozdEUwVG1ZWHlGeGJCU3JRTWt3RGZfY0c1Wmk4eWJrZmUxNjJqWjlSS1UtQmZ0VEtMbTQ3dmdiS1cxbTgwVU5tanJrS3MtSU5ib0o2Z1E?oc=5" target="_blank">台股開高重返48K！台積電領軍五大權值股全紅 「這些 AI 股」同步上攻</a><span class="meta">udn.com　9/30 09:14</span></li></ul></div><div class="card"><h3>綠能環保 <span class="tag">聯友金屬-創・兆聯實業・可寧衛*</span></h3><ul class="news"><li><a href="https://news.google.com/rss/articles/CBMijgFBVV95cUxQVW9JOHdRamNjQ0c2Rks2cEh0SkZUMExGS2V0eE40SnUySWRKTE50ZGFzbk12eUxram5rZFExbVFBNm85WVFEeVFVZ0I1RjNrc0lsOWlzb05SdDBXSUo0ZzVpVzkzSU9UTFRyclhGSVhqdHItcW91YnpYbElaTktGSzJzVlE0c1hENkI5VUVR?oc=5" target="_blank">【09:14 即時新聞】欣厚-KY(4924)股價勁揚10%，短線空方結構測試反彈力道</a><span class="meta">CMoney投資網誌　9/30 09:14</span></li><li><a href="https://news.google.com/rss/articles/CBMiiAFBVV95cUxPamdwemp0bXlDRWpoMHRsRVczeTdrdHhhUWFJUnlyRW1qTlJsUzRCaXdiYUwydmZPUHJCbm9qei0wSjA3VGJKX05ieEwxT1ZKU1ppOFIyU2tMTTZaSUtranJONVI4VXB4MHJqM2tGM1dWUUR2R1BGMGh4YzZTaXBYTWh6OFlmald3?oc=5" target="_blank">《自營商賣超34-23》事欣科(52)、大立光(51)、可寧衛(51)</a><span class="meta">富聯網　9/30 07:32</span></li><li><a href="https://news.google.com/rss/articles/CBMiS0FVX3lxTE4zNEFoelBpZU1KWGFoRE1uVXlyRFpmY042Z1k2eFQzTlBZU18tdFAwM1E0enp5SGk0cTA4dEtIWTg4Rko4ODJMaVR5Yw?oc=5" target="_blank">00929配息又升了？科技優息ETF改版3.0，和00878、0056差在哪？</a><span class="meta">鉅亨網　9/29 11:48</span></li></ul></div><div class="card"><h3>其他電子業 <span class="tag">鴻海・致茂・貿聯-KY</span></h3><ul class="news"><li><a href="https://news.google.com/rss/articles/CBMigAFBVV95cUxPcVJ2Y1RnbUJCaDYyVTU0Z2dVeFlZaFdwbExhNjVSTTlUb0RGT3lXWWpianBSU0VHcDJORG82XzZISWpWUVVHLWw2cktfcExJeFZzSDM4eDFyYUk2MG9EZktBdXYtb0c1dzdiRWNzdTF2Ukg2TXBkVkY4bDY1bnhMRtIBX0FVX3lxTFBBNlA2RHQwNFpKU3gzUmhJWkdMTXdhQXNkQzRBcmNQVTZ6UmFVRUQ5RkZ4eUhQMms4TXdzRmZXMUp1Qm94TW53T2tsME9pVk9RU0RwRUVLVUN1bHBvTEd3?oc=5" target="_blank">鴻海員工分紅獎金入帳　表現優異者逾百萬元入袋</a><span class="meta">經濟日報　9/30 09:30</span></li><li><a href="https://news.google.com/rss/articles/CBMimwNBVV95cUxPN2d5SWVheUJWMHZNZmFHWGxoMTUwc3RzRklwNmtpdU1FSXFNcWFBQkl2bmRXemFMR2pMQ1ZVU1ozZ2NwMkNDVWVlc0J4S1hBVV9XTVpwN2xSam1rZVRteUJFdXBpaDNDVF93cXBvVHNpRjhFbjZNZkRkbVBMMi13T3R6eU0wcjdQQlNXdVFaUUZjT0J0b3BqVkpOeXNUZzA2NDF4cWt3aDF0VzU4UmhIOUw5bGxxZGszb0pMc3hSbUlMaUtCREpPeVZFeVNyemd4TEtWaTdObURQcTVJSERRNkZMVmdhXzFLa2JwWWhjWEdYTWN2YXpLTGdjMGRWUmpaUEZCNGZNeThjSHRWdnZHS2JmaXhKMzkzOUpKRk5QbHc4WnlSRUVRQ2hiREJOS3VFN3k2MG1jQXJXaDFsRlBUSXVSdnUwdEtZc3FDdmIwZWdzR2pzcDN1MmRxQk1LRVplaWlidC16ZlVpOFp3NkNnZ2VmRmNlRGhIRndXWVA2S2hNMmVaZFlIMDRSZ3JSanpuVnN0cllta2JQT28?oc=5" target="_blank">台股開盤狂飆500點！台積電漲25元、聯發科秒回5000元 13檔漲停「不銹鋼廠」連3燈創史高</a><span class="meta">Yahoo股市　9/30 09:30</span></li><li><a href="https://news.google.com/rss/articles/CBMiswNBVV95cUxQczdoY2Q0T1JnaUFDM1NNMEVsUjNCVGg3VDlLcFk0ZFF5d0hWUHhCckZjUWNKNzlTcHFFUGVWbGNYeS0xZXJCcXpOUWJRSkFyRVlRMWdFT3Jqd2JsbmdEZVIyNG9UVnBEbm0tODdmaGZoZWQ5RlhkZ3hkdDQ3a3EzVmZ1MUx2d09kODJnRXBCWF9PQld1aFlFdFNOUFM0RnBxZUktb2lFSXZrWGpCRFJtQ1BxWERjdkp1ci1pU2NFS2h4bHZ5V0pteEhqUWJ2eDliTnpFa1JCaUxyaG9ERDhKWEp2MEJfZWQ2SEtRY1QxQXZ0c1hNTW96V1VTUUx0Q3lyQUNsdm1RVTZURmE4eVY3YlNxcF9Nbm53OVk2dHNGYTJnS3ZWM1I2QW84Q0ZBSE8xUGs5STR1ZXVfRWU5MmF2X2JjUWVNZXZHYkJKXzJfUzNVWGhGWGJuazh4RnNqZWFNRFV1NTFuWXBZVEo0eFZwd3N3SWxzTi1KQm05R1lXS1RIenJyVmlTb2RxUHlqQnJOX2ZPNVZiR1RtX3BZNUlZSG5OVFJkZm1wbk1ncURyVkJFWXc?oc=5" target="_blank">睡醒入帳百萬！鴻海分紅今日入帳「這類人」拿最多 AI伺服器是發財關鍵</a><span class="meta">Yahoo股市　9/30 09:26</span></li><li><a href="https://news.google.com/rss/articles/CBMiggFBVV95cUxPcWdvZDU5dVhydkNkc0ZDY21lNVZqOGZ6dWR2NjRTNFVMdkdmaDhsRDlfMU10WE9GU0lNWmdibGhjS0VqZXMySW9Fd1JYZTRHNGVxZ0JqTVpIc1oyd1h6elB4RHZWWVM3cWZBcVFPbEFEY1pnS2d5aU9VLWQzVm9EalJR?oc=5" target="_blank">AI 伺服器供應鏈獲利創高，鴻海發放 117.5 億分紅平均增逾雙位數-財經焦點情報站</a><span class="meta">CMoney投資網誌　9/30 09:15</span></li><li><a href="https://news.google.com/rss/articles/CBMic0FVX3lxTE5Dai1vVHFtX1lMYVY4bllnVkYzYXRXNl9jQzFSdTdybnJ3amFtNENhTFFPVnF2TngyVHJfUTlCZ0ZzYk5LblU2Y1A2OE8tOTBaMFNMd0Y2emtsTWttWkY0Q2dWM1JnLXNVU1JhSThMekRUWFk?oc=5" target="_blank">鴻海員工今早被獎金砸醒！年度分紅入帳，績優員工百萬起跳</a><span class="meta">TechNews 科技新報　9/30 09:10</span></li><li><a href="https://news.google.com/rss/articles/CBMiWEFVX3lxTE9qdmhmSDB6SzQ0N3hiUzdyY01PNkg4OHFMckdLWkdUUW53dkUtc2sxRUNxWm1XRFBWSGw1TFI0bjVNTUdQbXZ6OUVIeEFKcGhuNHhDTXYwRlo?oc=5" target="_blank">2317 鴻海 - 快訊／鴻海分紅獎金今入帳「史上最大包」起床領破百萬- 股市爆料同學會</a><span class="meta">CMoney　9/30 08:38</span></li><li><a href="https://news.google.com/rss/articles/CBMibkFVX3lxTE1Rdk12UWJBc3ZIZGtGS0luVVQ3Z2xxcmt2Q010bXg0X0llcHROSkhzbjQyVFZQX3U3ZndIQjZSMHM0azltQXFZV19kN3dlbDBaeHNvYXJxd3p0QWhybHRsWmFRSzZLbVQ5V1Rja0lR?oc=5" target="_blank">竹科人妻激戰男同事！喊「喜歡流水的棒子」 鴻海印度廠小王賠25萬</a><span class="meta">中時新聞網　9/30 08:34</span></li><li><a href="https://news.google.com/rss/articles/CBMiWkFVX3lxTE4wTjRnZHpGWDczWU1VbXhUWmFJUm0wb25VY1ZDTk4xRXozMFluV0FaOGlZVlBhdmZrYXQzWTI0U2hVMHhuZE02OXVMYXhJeXFRUFNXZlk0eTZ0Z9IBX0FVX3lxTFBoMmEtaE5nLVM3QTRkbEx6SUJoV08wNXhpanhqY2RrenFIVTBPbWNScmJjU1NCQkNDVzh5Rm4tUmJ6STBUSFd6dHNNalV1YkItNzZEOXF6ZEp1REl2SGE0?oc=5" target="_blank">鴻海員工一早香醒了 百萬分紅獎金今入袋</a><span class="meta">經濟日報　9/30 08:29</span></li></ul></div><div class="card"><h3>通信網路業 <span class="tag">中華電・智邦・台灣大</span></h3><ul class="news"><li><a href="https://news.google.com/rss/articles/CBMia0FVX3lxTE5va2lnWl9YZGN5MDJhZ2V5VUdrUkx4VEFzSmIxaUxKbTZYbEs0TzE0RjBDaThtYlFIS29CSzFiRGlNZ3hLbEtfd3Nqa0lvbjNRaUc0UGpwalVMWjBXZER2QXRUR1JPSUd3TVRF?oc=5" target="_blank">中華電登《TIME》全球TOP 1％永續企業</a><span class="meta">中時新聞網　9/30 04:10</span></li><li><a href="https://news.google.com/rss/articles/CBMia0FVX3lxTE9kb1BFNTh2cnJTTEo1WXRIWUs5cG5FSC11RktoWWNBZ3Y4Mm1MbjVfZlh1N0JjTzFwTXdOM2ZKbEdmRFd1emFWTlNaZWlocjRpV0Z4dnpRVFY5WlUxcmlfMUJnYVhEMTNicWNr?oc=5" target="_blank">中華電攻海纜 五年內再加碼</a><span class="meta">中時新聞網　9/30 04:10</span></li><li><a href="https://news.google.com/rss/articles/CBMiVkFVX3lxTE9YXzBXLUhHeE9RWGFFcjRCTjVmaDJ0THhKTGFkWU5qa09XVWdlLXd6MWJUQmRuOU1VOHBDTGVrdzFZdndrTGFtTEx2YXhaM0R1aDY3LVJn0gFWQVVfeXFMT1hfMFctSEd4T1FYYUVyNEJONWZoMnRMeEpMYWRZTmprT1dVZ2Utd3oxYlRCZG45TVU4cENMZWt3MVl2d2tMYW1MTHZheFozRHVoNjctUmc?oc=5" target="_blank">中華電永續 排名全球TOP 1%</a><span class="meta">udn.com　9/30 03:01</span></li><li><a href="https://news.google.com/rss/articles/CBMiUEFVX3lxTE9GVFl5QnNFV2ZSWVR1QkVNa25HVUZucG5TWWZMRF95UURuMjJqZWZSc1BNOE83alBQajdFNHFvb2VDNnRZb0QyaHgwU3FQWE1P0gFWQVVfeXFMUHJfVDhyVkgyMWt5M09JVVlfVjBrTTJPcnRHcXRhUkh2dV9mbm51Q051VE9WNEJpQ0RjYTJMOE9RbnJrZjNaekhIeFF5ZWFtcHlPYXByb2c?oc=5" target="_blank">中華電強攻次世代通訊</a><span class="meta">udn.com　9/30 02:05</span></li><li><a href="https://news.google.com/rss/articles/CBMiZEFVX3lxTE9sZ042Zl9zSVR0TnZ6ZUpkZWFlUU5vdllPZzdLOEhKYk1XSlNnSUFxNEFoTGtMZjRuWHdpbGhCR0hyRXhyZGs3TVlGWHhQdnA2dHRzdlNmNENzcHFJMlRSLUJDWDM?oc=5" target="_blank">討論牆 | 配合公平會審查時程 台灣大宣布延長公開收購精誠期間至11/5</a><span class="meta">LINE TODAY　9/30 01:50</span></li><li><a href="https://news.google.com/rss/articles/CBMiTEFVX3lxTE5wN21UVG4yaWRUT1E1WFpLWDZaMnZHTnNQUlh2QTJaX3NfZHhYQmJSOC1CUEo0UktJaVNhSzliLTBVSUFzMHBSOHRjcVI?oc=5" target="_blank">中華電永續 排名全球 TOP 1%</a><span class="meta">聚財網　9/30 01:41</span></li><li><a href="https://news.google.com/rss/articles/CBMieEFVX3lxTE9tVnJzWkVGeUM2VW9VY1RDR2Y2REJfOU1BcWxqbGQxYTdXTjZiTkJxckI5TEVmMVlMUzBKQjlKVmc5RGJDeC1sX0twNEVjNHR5czBIMFpqUVF4VVQ2Ti1nc3Z0UExSSHFfcG5hOS1FRkR4SU9IcTY4edIBYEFVX3lxTE9PSExuYWlYX0RCZXlNWkZtNkVxN1F0U0ZSZlVPcHg3U3dLdlZQdjY5Y3FKbXNPUUp6d3k4YUpNT21vOXFCUDlmdWlfSnhFdkFUZjlpMGR3YXByRElsRVdCTg?oc=5" target="_blank">配合公平會審議時程 台灣大併精誠 延長30天</a><span class="meta">經濟日報　9/30 01:40</span></li><li><a href="https://news.google.com/rss/articles/CBMickFVX3lxTFBqbk8xOXJtNnFwakROeDlzRUhsU0VOME9nNE94Y3ZTMkRXaHJSV1ltT3F3ck9HZzF1cHNvSzZKV1RMSE5ua29VTnRwclNzRHBYeUlXbHZuUWQwTFJJdDBHb2JzblhjYUJLZkJZdmtwMmxXZ9IBVkFVX3lxTE5CelI0aGo4TWpUemtic3ZNY1JPWHdYNVFncGlDMVU3NDZLRVlObU1ocDZEbUpDQmJjYUx5N3FTN2JlM1JOMmJfVXZqb2tHejQwN3JHYUlR?oc=5" target="_blank">配合公平會審議時程 台灣大併精誠延長30天</a><span class="meta">udn.com　9/30 01:40</span></li></ul></div><div class="card"><h3>電腦及週邊設備業 <span class="tag">廣達・奇鋐・華碩</span></h3><ul class="news"><li><a href="https://news.google.com/rss/articles/CBMiT0FVX3lxTE9jRWlCT25mM0NIUmhGcFV3SVJCRVlYVmFPdDBrTkFReHRYWnR4eXc2b0JtUlFGaWw4QTk4UE1hY19XQzZYMDFibnJSdmpXcW8?oc=5" target="_blank">【光輝十月行情】蓄勢待發？信驊、奇鋐、聯亞...誰是下一檔飆倍股？</a><span class="meta">news.cnyes.com　9/30 08:22</span></li><li><a href="https://news.google.com/rss/articles/CBMiiAFBVV95cUxNRXVyNDluZDRzMDVqbmhsMV85OVNBQlFPbGk5a0xVY1Q3YlRHVUdYZzhQc21meDJtclY3Mml0T2ZUSGU5WkRVN0pmZDBTVnJ3eXNocHlQa09tQmdjQmJwMGRCMHNVMnBMc1F5aW83TDZYU0ZUSktndzQ4dVBMajdGXzRRSXJpdlpJ?oc=5" target="_blank">《自營商買超34-22》智伸科(43)、廣 達(155)、美 律(18)</a><span class="meta">富聯網　9/30 07:32</span></li><li><a href="https://news.google.com/rss/articles/CBMiiAFBVV95cUxNTndTQ0dmSjB0M1RCd19wRTdVTDQyeE5nRldkUzBGakw5c3JvY3JVQ20xMW1GRjZJa3Z6ZERwSFNyUDFTWGtHOVN4S2NmNjlIN3NmN1lSV1FUOGVJTDZ6MS1ZNEtqc0IxcjBhbjZuZ0lvNzlCeVpMdkxuU0FUVVVONDdYdGJLX0Z5?oc=5" target="_blank">《自營商買超34-12》創 意(55)、華 碩(81)、合庫金(847)</a><span class="meta">富聯網　9/30 07:32</span></li><li><a href="https://news.google.com/rss/articles/CBMiiAFBVV95cUxQMnM4YVQwY1NrLUlWSXBTRFBMc1R2U3JjbHZSYURiSVFtSXJjZkF3eXVjcW5pNmkzUXFmMENxVjRMUi1iNFVOYUJWMm5oV18xSDJQMV94akxGbUp0dDlybEVzYXljMEhTVWI1WXI1YVNNUE1SZC1jODZaSktIQUJBSVpMVG9TUzRH?oc=5" target="_blank">《9月29日融資動態18-10》四維航(4.12%)、奇 鋐(4.10%)</a><span class="meta">富聯網　9/30 07:31</span></li><li><a href="https://news.google.com/rss/articles/CBMiggFBVV95cUxOR0pXeVNpejVNVHNpbTFKeE1ueHdEbDdQUXpxajUxRVFvelFjNjVyeTBmVnJDMjhLNUhqNjZmZnFuT2x5N2ZfSl8wcmxHeFpaNEp1QjdBQXctaF9vSHk2V1VRY01VTHYtNVlvbjZvcFB1RFRuVmt1eGlPQmtnM3BZMHd3?oc=5" target="_blank">外商直接投資年增90%！AI伺服器與平台經濟雙升級，廣達及緯創加速佈局-財經焦點情報站</a><span class="meta">CMoney投資網誌　9/30 06:44</span></li><li><a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTE5ZMkFWNkNjZGNhRy1Ga0tLb3JXbHYxOUlTU2VyZ05Gel96MW5IOUpzRjNmWFBfN3BQY1lOQ1ZRa0tBclJwanB3dFQ0Y0JsNmlMU2RkNWNmQUlSYjRnQXJn?oc=5" target="_blank">焦點股／輝達散熱認證台廠缺席！奇鋐、雙鴻雙雙跌逾5% 健策反創新高| 產經</a><span class="meta">非凡新聞台　9/30 05:37</span></li><li><a href="https://news.google.com/rss/articles/CBMiW0FVX3lxTE9IN3JjdDJpT0I2blFud0x2czBIMXktblFnYVdpOVJLNl9RZno4ekJRVl9LRjRoX2tUYXFBOG43a2t6MExybEYtdTFNUkZqeTAyeFZCeFMxZzJDVGfSAVtBVV95cUxPSDdyY3QyaU9CNm5RbndMdnMwSDF5LW5RZ2FXaTlSSzZfUWZ6OHpCUVZfS0Y0aF9rVGFxQThuN2trejBMcmxGLXUxTVJGankwMnhWQnhTMWcyQ1Rn?oc=5" target="_blank">取得Lumus授權 廣達聚焦下一代AR光波導</a><span class="meta">自由財經　9/30 05:30</span></li><li><a href="https://news.google.com/rss/articles/CBMiUEFVX3lxTFBYVVhOdWs0T291QmVJZzRIZnQtcFlreXdLQXI1Uk5YeWdRSmRiWmlpS1hXTlpGZzJjZ0tOUjdWb1FSOVNIRWpST3J5NGFFY1VV0gFWQVVfeXFMTXpYWWlMV0MxcUZqblpZNTJEOTJEdjE3b0VLNGtubm44TjJYUk04U0F2WEZqV2UyX015dzVKYmdEUkVabFFyaXoxU1ZzNDdjWWlCamQyLUE?oc=5" target="_blank">蘋果新品一波波 帶旺台鏈！鴻海、廣達、仁寶有望受惠</a><span class="meta">udn.com　9/30 02:30</span></li></ul></div><div class="card"><h3>電子零組件業 <span class="tag">台達電・欣興・台光電</span></h3><ul class="news"><li><a href="https://news.google.com/rss/articles/CBMijgFBVV95cUxNYUJ5SHQ1VU9yM2RrTGlQTl9CVjZZNkcwWHA3WW5fbVp0dFBBSU1ZWTFnMTgzNUIwQTdIMWNuQ29sZVIyQXM3bm5FTno1UmpJRDN0Nms2emIyQ0hsTUxiTlVCOEQ2QXZERE1IODFoR3Z4TmVLcXBXMVQ0c2d0ZndtOTJGdUk2dkRESUxUTVdn?oc=5" target="_blank">【09/30 產業即時新聞】電子中游-電源供應器族群大漲 3.84%：權值股台達電領軍，AI 伺服器高瓦數需求點火</a><span class="meta">CMoney投資網誌　9/30 09:30</span></li><li><a href="https://news.google.com/rss/articles/CBMiUkFVX3lxTFBtZ2FxLWt4LUlKQmFqRVJ5aUlTT3lSU2E1ZVFFejdYNDZjTks1RzRxREstMGF1anVTRnhhRnEwdWJDb1Q4Ry1TaVRPSDBfWFRPNGc?oc=5" target="_blank">長抱勝過短進出 主動式ETF看操盤00991A報酬達75%</a><span class="meta">蕃新聞　9/30 09:24</span></li><li><a href="https://news.google.com/rss/articles/CBMigAFBVV95cUxPa0NwckhGNERrU1NsemhYeWFETElaaW9pNnhSNm5oRkJnOFhvd3I4ejVFbGtmWE9BdGhRazlDcVRxeEpyb0hybVhLRXIyYVZMQW1fekJ2RTlKeTVzTENodjZ1YkJEMFo4TW15SHNfSkdSdzBadkpSRXdTX050N1ZfaA?oc=5" target="_blank">00415A可以買？募集時間、配息、成分股有哪些？1萬元申購打包台積電、欣興、聯發科…前10大持股一次看</a><span class="meta">今周刊　9/30 09:00</span></li><li><a href="https://news.google.com/rss/articles/CBMiakFVX3lxTE5jZnJCekQ2eHQ1UTd2bW44SjlBaG55aFhmazEyaG02OUxJODByTkU2anptTDlUV2xmaE96OFhob1hjakhleHpKcmxjX1lLTjdwR0hReUxlZEVucnI1bVNFUk9BaDlqMGZVMlE?oc=5" target="_blank">法人狂砍800億元！瑤池金母有動作了日月光、台達電、金像電、台燿...00981A最新調倉標的1次看- 上市櫃</a><span class="meta">旺得富理財網　9/30 08:09</span></li><li><a href="https://news.google.com/rss/articles/CBMiiAFBVV95cUxNa3NjaTVBWDl1OXE1bDN2bUVMV3hPZDRWaDlaa2VRMUVNQU9yRE9ScTNKYzFvSWNiNVl2a1lFOFVuR3dKR3Y0MUVoTzU5WDVEZ1hzOUktZktxMTNzYmM4VE9CaDRvbjJDVTNkWmkyODUydmZxOWJ3Sk9XYmxJWmR2Vy1jNEdhWmFi?oc=5" target="_blank">《自營商買超34-26》欣 興(103)、晶 技(315)、同欣電(11)</a><span class="meta">富聯網　9/30 07:32</span></li><li><a href="https://news.google.com/rss/articles/CBMiYkFVX3lxTE1WdUpabzViZFhHWEFtYkJrZU9IcmJscnFrQ1FLUkNSVDVndEdSLW5mUjBBeEM5VmY0YXRpVWVhLTFhYWlJYVpFaTJnLThucUtEa3R3eW5XbEw5UFRyazRzUk1R0gFiQVVfeXFMTVZ1SlpvNWJkWEdYQW1iQmtlT0hyYmxycWtDUUtSQ1JUNWd0R1ItbmZSMEF4QzlWZjRhdGlVZWEtMWFhaUlhWkVpMmctOG5xS0RrdHd5bldsTDlQVHJrNHNSTVE?oc=5" target="_blank">9月營收誰最狂　台廠34強出列</a><span class="meta">鏡週刊Mirror Media　9/30 06:45</span></li><li><a href="https://news.google.com/rss/articles/CBMiYkFVX3lxTFAwanBtaW5Fc2FlQ2Z1Tm5wYTJBbTFhR0V5aFRfdkN4UHlpWnQtbzY1aThKMnhTcDBsWXQyWU5xcUNHeFZsbWNkMmkteHZrZ19RTXppR1ZPTGpqQXZrSVotVzl30gFiQVVfeXFMUDBqcG1pbkVzYWVDZnVObnBhMkFtMWFHRXloVF92Q3hQeWladC1vNjVpOEoyeFNwMGxZdDJZTnFxQ0d4VmxtY2QyaS14dmtnX1FNemlHVk9MampBdmtJWi1XOXc?oc=5" target="_blank">短線震盪！外資調節買超「8檔」</a><span class="meta">鏡週刊Mirror Media　9/30 06:00</span></li><li><a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTE9EbDJ3ZVNCTW9tTWRoeWE4aFFsQWRORzRRd3cwcjNJRzZGeHNvOEFBMmRXZ3FpLXhXeHVCNmRFN24taDF1TTIwQzBaR1dUc2xZMjlfYmNsdzBpa2xoVFMw?oc=5" target="_blank">衝刺季底作帳15檔壓軸登場- 日報</a><span class="meta">工商時報　9/30 03:00</span></li></ul></div><div class="card"><h3>光電業 <span class="tag">大立光・群創・友達</span></h3><ul class="news"><li><a href="https://news.google.com/rss/articles/CBMijgFBVV95cUxOWlJBREFJVVFjakV0TDhhU2daT1N5N1Jud1A3ZGdyNU1OMU05eS1ndzRPOU1saS11Zk9HcVFValZXcGRlOXV5WGJUSDdTdFpzTHd0Q3Q5VlZGRkdQajhiSmZKTmRZdTkyYzMwRGhaTVE4S29QNFlXT0NpYUFVUlpRMkNXSGVfM2VWOTVrTmlB?oc=5" target="_blank">【09/30 產業即時新聞】智慧顯示器族群強勢大漲 雙虎亮燈引爆面板回神契機</a><span class="meta">CMoney投資網誌　9/30 09:30</span></li><li><a href="https://news.google.com/rss/articles/CBMijgFBVV95cUxObzMya1hfTndZN1pacmxITk9jWkFUWW9jOFBocnhmaUVwWGZkUFV0RGxHT05BMmxfNVdPWTlTWjRnYkVzMlVUS1BZbm9yejdBdjNuVzVFNzNfOV9kWmFPUFdkTWtJVkVqamdaek9rUFUyTHpzX19tMTVPRFJZRVlEVl9HM0pRQnppLUFjNkJR?oc=5" target="_blank">【09:18 即時新聞】友達(2409)亮燈漲停，短線多方買盤急拉成盤面焦點</a><span class="meta">CMoney投資網誌　9/30 09:18</span></li><li><a href="https://news.google.com/rss/articles/CBMigAFBVV95cUxPWG9aU3A4SmJueklucFZRUVMxX0VwdXhoMF9oTm0yeU1GdDlFYUVmdjU4R1p4NDc2Z2Z2akEteDBqblNMcy14NE41OWdoc2hXZmxJbUZhRGdHcEc3VkhNaV94MF8wYWg5MDJaYnZVRks4ODNTNVdiYVJlOGhYWm1JdQ?oc=5" target="_blank">聯電、友達噴漲，群創為何卡在50元？杜金龍買在49元「一張都沒賣」：已上車丟著不管，空手等「這價位」再追進</a><span class="meta">今周刊　9/30 09:15</span></li><li><a href="https://news.google.com/rss/articles/CBMijgFBVV95cUxPa2JRVVN1ZWxDcTcyOXJFZmxYa1BfQmVQdUpDUjhGX1dnMUtac1piNnJQeGRDeGowc25OeHY5bmRMQUxRa21SSWlXMkdsb2lESzF6SlV2TFVFSk1kLWt3RmFETjh4WDNlX0xCSjA4cVctT09WOFZ2bm02ekFWSmpub2VfeklzWU56UXM1OGhn?oc=5" target="_blank">【09:08 即時新聞】睿生光電(6861)亮燈漲停，印度與工業檢測題材受關注</a><span class="meta">CMoney投資網誌　9/30 09:08</span></li><li><a href="https://news.google.com/rss/articles/CBMi1gNBVV95cUxQamRMY2l5eG0zakZ1aDZWaWVMNExMY1h5LUZ2RUhZR2RWVVpib0dTWmlTSTNweVpRSURQbGZxYzdPVVBGWjVrd1YtQUoyTTJpcGc3LUxhZ0ljclAybC0tT1RRaDYwaEV6cmtXTXF5QkZFcEdGSy1DSUg5VTFtdG5MUU5GdmQ0eU5nZ3Nmb0R6VTJ3ZDBTT05CRm80RDloN212WkRSOTg4dUx4RTVKUjl6ZUsyWXRyRDdMRzJEaUpFQ3JhM3dDSWJTZUJKSWtmSDJSS0V2TlZydGhuOUNfTzlQems1S3JUQm9ZSFNnS3h0c0VHcFlYTnJ4QnplU1BCX0RwUUdPU2hkeXc3SGNTbkNDbXVIcVo4cHc2bTBBMDk0SGRJazNEQ2drNHFYNzAtamV0SEpaeE9zeWhHQVFPV3U1eklVTl9YNVVXWG9lQ2F5c1BKdGVOTmVQanBjdWFFVmFDbTc3Z0gzNl9iazgyWXg5TXkxWXhMYXZIZWpiOHVRSnFQdFZlNkk0U0Z1WWs1ajJyZjhHV3FQZnRQVkVUUXFjZmZySnhTRU4zU3BiZVJ3TloxUVFFMk5NN1BrU2IxQnVZRWgwQnNVUDVsV0ZZOFhGMmtBcGltUQ?oc=5" target="_blank">【當沖樂1】誰是台股沖浪王？群創日均量26萬張奪冠 南亞科「吸金」3兆元</a><span class="meta">Yahoo股市　9/30 09:07</span></li><li><a href="https://news.google.com/rss/articles/CBMijgFBVV95cUxNS0RwUUIyQXBTODQtUU1CX3lBWVg0bkhXa3BDYlNMeXJWU1JuTks0S0ZPNjRYa2FBVEpETmd2QVh2NDFkM09OQ3UzbFlmZTB0TlJQLXRkZG1IMFVSX0paaEhtX3N0bUVkRTQ5SkllZXpIN0RoakR2Zy1NVXhfS2ZoNnFxSmxPbkstNFJfUnVB?oc=5" target="_blank">【09:01 即時新聞】悅城(6405)亮燈漲停，光電薄化題材帶動買盤集中</a><span class="meta">CMoney投資網誌　9/30 09:01</span></li><li><a href="https://news.google.com/rss/articles/CBMiiAFBVV95cUxOVGdrdnBqLTRaVXN6T2hoUXUwYXZWS2s1QVdyQ3FYT0dxZmh3YWlJekJob294MVJaZi15dk5LTmxid3lHM2NMUWY5bmtIcmQ1LUxuUzd1REF2U01fZkdBeFhXUl9LRXZROFlQOUxneEp1ZVFMa3RzTVpEZ2xvdWVoYUYxNXZjSG04?oc=5" target="_blank">《光電股》注意股：GIS-KY 近5日漲36.70%</a><span class="meta">富聯網　9/30 08:02</span></li><li><a href="https://news.google.com/rss/articles/CBMiiAFBVV95cUxNeEhQWEhLbktiRUJLNFNYWXBXT1ZvWkxKUGhyUkdZX0JOUmg4dlUxbEEwOXVHTE5wckVfNTg5aDdNYzhTbXdkRVZqb2tKZVNkdU1MdTI1QmJaa1hXTmx6RWFCU0xvNG93bTRXZnNOWGVmNUpBbHZaMjM5QUtUMUgzdFFadFRLOXZ2?oc=5" target="_blank">《光電股》注意股：由田 近5日漲4.50%</a><span class="meta">富聯網　9/30 07:52</span></li></ul></div><div class="card"><h3>電機機械 <span class="tag">亞德客-KY・華城・東元</span></h3><ul class="news"><li><a href="https://news.google.com/rss/articles/CBMiU0FVX3lxTE4tc2pkOS1Vem5SX3N4NGEzaVdkeGI5Tnk2TXNVRUtKUGlkekNoaHVieTZfUWMzQ1ZySnRBQi1mbG16aFNCQjliMXQ4SkUxdzI3cGZ3?oc=5" target="_blank">華城(1519) 個股概覽 | 個股 - 股市</a><span class="meta">CMoney　9/29 21:09</span></li><li><a href="https://news.google.com/rss/articles/CBMiekFVX3lxTE5UWHVCRDZtUUNsTktSTFdzMkJ1QUhLSVh0X3dGaGtORmhvTHhxbkk4SnZIN0dWalFEcTQ4eFVJdjE5WUh6NFJkYmRKQ0xTQXo3V1NBTmRKam5SaUFhOWVjOThpNlZkMGtvMExWSmlLZlBpdmw0Q0ZjdGJB?oc=5" target="_blank">東元攜安達康首登新加坡資料中心展 推模組化方案搶東南亞AI商機</a><span class="meta">BigGo 財經　9/29 19:25</span></li><li><a href="https://news.google.com/rss/articles/CBMiT0FVX3lxTFBmX2NJdXk5TEdsZjJDTTR4RUt4OENHYXNJd0pOLXBJR190dFRZM0drQU95c2V3blhHVEhqNTBEVExkbUIwNVZEQjdNa0RuUkU?oc=5" target="_blank">東元攜安達康參與新加坡Data Center World亮相MDC整合方案 攻東南亞AI基建商機</a><span class="meta">鉅亨網　9/29 18:55</span></li><li><a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTE1qUXVhcEVPWDJzLUd2NDBRNFBHMWFyN29BbWc0cHBDaG9JdU12d0Jhdko1MG9GNGtFVzBGMUtMeTVDOUt0bjZaXzVuVGMwczhvQWRnanFJREZsTmI5ajB30gFkQVVfeXFMUFMzOEx5djM1Z3RPczhqWHYyMTRXMFRUaXJBQ3lwQ2NyRHVPNHNMX3VSYU5JaDBDVEF1Nnp4VzVyVnp5S1hHcUFjLWpuU3dVTnMxdWhUZ2FOa1RpWGU4ams0dVlqUA?oc=5" target="_blank">東元攜手子公司安達康科技 赴星展示模組化資料中心產品</a><span class="meta">自由財經　9/29 18:52</span></li><li><a href="https://news.google.com/rss/articles/CBMiZEFVX3lxTFA3TF9JdkI0QUJIcFJmT2xQYWNxTXB6YWpzdkhrUUdUdnpJN1NvNHRic1VCRWt1MnA2ZkhETHZjeGtVeVVVQ1RGQ1dDN0ZlckE3Tm9raVFOcXlYaGxETzQ5VnhrUHY?oc=5" target="_blank">討論牆 | 東元模組化資料中心方案亮相新加坡 搶攻東南亞商機</a><span class="meta">LINE TODAY　9/29 18:02</span></li><li><a href="https://news.google.com/rss/articles/CBMiVkFVX3lxTE5zQVpNRDBHNU5QV01LYmtfYmRiNU9sWXY5RUhibnpEOUlYczJmelRiUjJNU1h2WW4tRDJmdzN2QlQ4UEVoZjJnaE1DMGlueVRtWUJXN3Z30gFWQVVfeXFMTnNBWk1EMEc1TlBXTUtia19iZGI1T2xZdjlFSGJuekQ5SVhzMmZ6VGJSMk1TWHZZbi1EMmZ3M3ZCVDhQRWhmMmdoTUMwaW55VG1ZQlc3dnc?oc=5" target="_blank">搶攻東南亞 AI 基建商機 東元首赴新加坡展出模組化資料中心整合方案</a><span class="meta">udn.com　9/29 17:38</span></li><li><a href="https://news.google.com/rss/articles/CBMiTEFVX3lxTFA0Zl9jYVRZQzRVQmpIN2lpcTFGcDNVZXNEYVM3UURsTG0zYTRVX0dXNmdjWk8tcTFwQmM0ejdrWjZIdEMyM09nZWVYMFA?oc=5" target="_blank">東元在新加坡展示模組化資料中心 攻東南亞AIDC商機</a><span class="meta">聚財網　9/29 16:59</span></li><li><a href="https://news.google.com/rss/articles/CBMiWkFVX3lxTE9UZHg3TGJBU09pX3BMZmwyWmxWWllhWVJ5X0RnWEJtNWxLazNYYkVuYXVWRFlSMHYycFNPWGNkeE90ZEYzVWpSSTlxZ21IZ1VvU2NmR0FwT2pZQdIBX0FVX3lxTE44czVnMnF3SEREdFpHM3hYOHdwSHM2cW5sTUNxNjBOdVpacTBxY0FtV3Z5b2lyZ1BKbGdZLXdNUlFETjdKbGxVWV9VTmNQNGxjM3RzbHFySUFFZFRBa1VF?oc=5" target="_blank">東元在新加坡展示模組化資料中心　攻東南亞AIDC商機</a><span class="meta">經濟日報　9/29 16:37</span></li></ul></div><div class="card"><h3>生技醫療業 <span class="tag">藥華藥・康霈*・禾榮科</span></h3><ul class="news"><li><a href="https://news.google.com/rss/articles/CBMijgFBVV95cUxOVUZPWllibzNzdE9rcXQ5ajhOTURKRG84YUVTZVJoZEt0UUpzd0pJT0dZai1DTHp3RlV3RjlxcjJBWXYwMk5pUnBoMkxMMmR6eVRhZ3ZtU3c4YjRlQm56dDVLNnJBT3NFdlZqM29OQkl4RzFaTlEyWVRiZml5RXFQeGN0dzR4d3k4Mnl6M1FB?oc=5" target="_blank">【09:31 即時新聞】浩鼎(4174)亮燈漲停，新藥與ADC題材成盤中焦點</a><span class="meta">CMoney投資網誌　9/30 09:31</span></li><li><a href="https://news.google.com/rss/articles/CBMiiAFBVV95cUxNa2FYTlRBRVp0SG5QR1VMeS01QV9TVlVlZE5vRVRqWDFfTFQ2b3FDUEJHd0VsdmNiT1E1UW5DUTdRYnBsWGVQenVfM1daQ2FrREJNc01ZTFFobjgzbTRUdGwxZVM5Z0VwcWZ0dlE2Y2hfelBZSjZpZVY3QUdOSWdvaGM4NFdXNEM0?oc=5" target="_blank">《熱門族群》藥證、授權催化 新藥股旺到2027年</a><span class="meta">富聯網　9/30 08:21</span></li><li><a href="https://news.google.com/rss/articles/CBMiWEFVX3lxTE40OXhScU96SXBQRngzQ0h2SmtCZ2Jma1FhdDlIeUdELWpUSFhUZVhHcWJ3czNUN1ozTDFQaVdiTVdDbUR6WTd5cTdvakNuSHh0TzlXMHZPcGg?oc=5" target="_blank">6446 藥華藥- ❤️生技股星期3盤中點重如下； - 股市爆料同學會</a><span class="meta">CMoney　9/30 05:25</span></li><li><a href="https://news.google.com/rss/articles/CBMibkFVX3lxTFBkcDlwaXd5blNLR3pScmRpWG1veDVVZE4yRWd3WnBQVGhuOFZ1b0Iwb0VGLVIzalpBMmQ5MXRoMmZ3VDlKVGhKVmJ1RFNvbHBBZzRLYTdJSjJYa1FaMW5qUFVaVU4xQ2t0Z0JxTjhB?oc=5" target="_blank">《9/29日法人賣超》外資賣超前三名：北極星藥業(-657張)、康霈*(-631張)、沛爾生醫*-創(-597張)</a><span class="meta">genetinfo.com　9/30 02:16</span></li><li><a href="https://news.google.com/rss/articles/CBMibkFVX3lxTE43OUY0czFyWGpRcmItUVgyeHpBQWJwdXl3UnNRTC1rcDBQZVZsa1loWjViRlBieks2ZDhzT3ltR3FwV2FRejFCMVFGeHk5Q2ZHV3lma25sUlY2VGsxVUlFZV9DSmFlZ0IxeUN5aTJB?oc=5" target="_blank">《9/29日法人買超》外資買超前三名：鑽石投資(1155張)、高端疫苗(740張)、國光生(450張)</a><span class="meta">genetinfo.com　9/30 02:16</span></li><li><a href="https://news.google.com/rss/articles/CBMiVkFVX3lxTE1RbUdkdmdYUjl3ZWxqVVBYUklUTEdJaFdqMFkwQ1AxTkNVaUN5THJmeE0wWHl4YWY5eWlSTFhiRzhKWm5IbkpVajJlWVlCV2xjRHRtREJ30gFWQVVfeXFMTVFtR2R2Z1hSOXdlbGpVUFhSSVRMR0loV2owWTBDUDFOQ1VpQ3lMcmZ4TTBYeXhhZjl5aVJMWGJHOEpabkhuSlVqMmVZWUJXbGNEdG1EQnc?oc=5" target="_blank">訊聯智藥申請創新板IPO</a><span class="meta">udn.com　9/30 02:05</span></li><li><a href="https://news.google.com/rss/articles/CBMilwFBVV95cUxQb09KcVkzX0s3S1FNbzIxVXh6VzFNTjFERDVSTnliLWd6X0tMNDF5blZSazFHSmpIWDVWa2tHSkl1b3k4ODhCY3FrY2hFNEptcV9YcF9IU3RMRVF5VjFoZml0azhnSkxsZm5ja1Fzb3R4dHhDT05DdHZxeUFTcnFmckRhcV9mQVZfazMwa2UxMXJWRWNGTTdv?oc=5" target="_blank">2026 台灣生技醫療如何國際化論壇</a><span class="meta">全球醫療採購網　9/29 20:31</span></li><li><a href="https://news.google.com/rss/articles/CBMiUkFVX3lxTE9UZG81cnR2NkpsME5uUWVLYk9mSEJ4bDlBUlViRURvMDIwd2RmbkpST3M4RVp0ZFJhN01acFpCUE1Ud1BJSDhUMUMtU1BZLURVUmc?oc=5" target="_blank">蘇巧慧輔選張錦豪 允推新北智慧生醫產業廊帶、社宅</a><span class="meta">蕃新聞　9/29 16:22</span></li></ul></div></div></div>
+<div class="page" data-p="us" hidden><h2>勝率統計 <span class="count">勝 = 提到後第 5 個交易日收盤 &gt; 提到後第一個收盤；贏大盤 = 報酬高於同期 SPY</span></h2>
+<div class="scroll"><table class="stats"><thead><tr><th>來源</th><th>提到次數</th><th>1 日勝率</th><th>5 日勝率</th><th>平均5日報酬</th><th>贏大盤</th></tr></thead><tbody>
+<tr><td>川普（Truth Social）</td><td>105</td><td class="dn"><b>41.0%</b><span class="tag">105筆</span></td><td class="up"><b>54.0%</b><span class="tag">100筆</span></td><td class="up">+0.52%</td><td class="up">54.0%</td></tr><tr><td>網友熱門・新上榜</td><td>10</td><td class="no">累積中</td><td class="no">累積中</td><td>-</td><td>-</td></tr><tr><td>網友熱門・全部</td><td>10</td><td class="no">累積中</td><td class="no">累積中</td><td>-</td><td>-</td></tr></tbody></table></div>
+<p class="hint">川普貼文自 2025-12-26 起共 6,148 則，同一檔同一天只算一次。網友資料（Reddit 熱門前 10 名，ETF 除外）沒有歷史可回補，從開始記錄那天起每天累積，目前 1 天。</p>
+<h2>川普最近提到 <span class="count">最新 25 筆</span></h2>
+<div class="scroll"><table><thead><tr><th>時間（台灣）</th><th>股票</th><th>貼文摘錄</th><th>提到後至今</th><th>5日報酬</th><th>結果</th></tr></thead><tbody><tr><td>9/27 03:14</td><td><a href="https://finance.yahoo.com/quote/GM" target="_blank"><b>GM</b></a><span class="tag">General Motors</span></td>
+<td class="post"><a href="https://www.trumpstruth.org/statuses/41949" target="_blank">…han the Environmental Monsters that we were building heretofore. Every Manufacturer, from General Motors to Ford to Stellantis, has called me wanting to build here, and now they can! Under my Administration, over 1…</a></td><td class="dn">-0.21%</td><td>-</td><td class="no">追蹤中 1/5</td></tr><tr><td>9/27 03:14</td><td><a href="https://finance.yahoo.com/quote/F" target="_blank"><b>F</b></a><span class="tag">Ford</span></td>
+<td class="post"><a href="https://www.trumpstruth.org/statuses/41949" target="_blank">…tal Monsters that we were building heretofore. Every Manufacturer, from General Motors to Ford to Stellantis, has called me wanting to build here, and now they can! Under my Administration, over 100 $Bill…</a></td><td class="dn">-0.65%</td><td>-</td><td class="no">追蹤中 1/5</td></tr><tr><td>9/27 03:14</td><td><a href="https://finance.yahoo.com/quote/STLA" target="_blank"><b>STLA</b></a><span class="tag">Stellantis</span></td>
+<td class="post"><a href="https://www.trumpstruth.org/statuses/41949" target="_blank">…ters that we were building heretofore. Every Manufacturer, from General Motors to Ford to Stellantis, has called me wanting to build here, and now they can! Under my Administration, over 100 $Billion is being i…</a></td><td class="dn">-4.11%</td><td>-</td><td class="no">追蹤中 1/5</td></tr><tr><td>9/24 08:19</td><td><a href="https://finance.yahoo.com/quote/BA" target="_blank"><b>BA</b></a><span class="tag">Boeing</span></td>
+<td class="post"><a href="https://www.trumpstruth.org/statuses/41855" target="_blank">…ND AMERICAN MANUFACTURING! Today, Türkiye and Bangladesh announced purchases totaling 111 Boeing Airplanes—with options for 50 more—following support from Howard Lutnick and the Department of Commerce. TENS…</a></td><td class="dn">-4.63%</td><td>-</td><td class="no">追蹤中 3/5</td></tr><tr><td>9/23 12:04</td><td><a href="https://finance.yahoo.com/quote/NMAX" target="_blank"><b>NMAX</b></a><span class="tag">Newsmax</span></td>
+<td class="post"><a href="https://www.trumpstruth.org/statuses/41846" target="_blank">Azerbaijan's Hajiyev to Newsmax: Trump Peacemaker, Iran Deal Possible:</a></td><td class="dn">-0.46%</td><td>-</td><td class="no">追蹤中 4/5</td></tr><tr><td>9/22 02:08</td><td><a href="https://finance.yahoo.com/quote/LMT" target="_blank"><b>LMT</b></a><span class="tag">Lockheed Martin</span></td>
+<td class="post"><a href="https://www.trumpstruth.org/statuses/41832" target="_blank">…e from the newly built, and very beautiful, Heliport! I want to thank Jim Taiclet, CEO of Lockheed Martin, who made this valuable contribution to our Country. Our Government has been thinking about doing this…</a></td><td class="dn">-4.33%</td><td class="dn">-3.23%</td><td class="dn"><b>敗</b></td></tr><tr><td>9/15 01:33</td><td><a href="https://finance.yahoo.com/quote/GOOGL" target="_blank"><b>GOOGL</b></a><span class="tag">Google</span></td>
+<td class="post"><a href="https://www.trumpstruth.org/statuses/41720" target="_blank">…ced that China will be doing absolutely nothing to stand in the way of AI, or its future. Google has recently stated that they want to build a massive Plant in Finland, all because they are finding permitti…</a></td><td class="dn">-2.42%</td><td class="up">+1.60%</td><td class="up"><b>勝</b></td></tr><tr><td>9/7 21:50</td><td><a href="https://finance.yahoo.com/quote/AAPL" target="_blank"><b>AAPL</b></a><span class="tag">Apple</span></td>
+<td class="post"><a href="https://www.trumpstruth.org/statuses/41596" target="_blank">…who fund this gaggle of Lunatics, including George Soros, Bill and Melinda Gates, Google, Apple, Visa, Goldman Sachs, Citigroup, WellsFargo, Bank of America, Walmart, Toyota, T-Mobile, and NBC Universal. F…</a></td><td class="up">+4.17%</td><td class="up">+4.78%</td><td class="up"><b>勝</b></td></tr><tr><td>9/7 21:50</td><td><a href="https://finance.yahoo.com/quote/GOOGL" target="_blank"><b>GOOGL</b></a><span class="tag">Google</span></td>
+<td class="post"><a href="https://www.trumpstruth.org/statuses/41596" target="_blank">…people who fund this gaggle of Lunatics, including George Soros, Bill and Melinda Gates, Google, Apple, Visa, Goldman Sachs, Citigroup, WellsFargo, Bank of America, Walmart, Toyota, T-Mobile, and NBC Unive…</a></td><td class="up">+0.76%</td><td class="up">+1.96%</td><td class="up"><b>勝</b></td></tr><tr><td>9/7 21:50</td><td><a href="https://finance.yahoo.com/quote/TM" target="_blank"><b>TM</b></a><span class="tag">Toyota</span></td>
+<td class="post"><a href="https://www.trumpstruth.org/statuses/41596" target="_blank">…tes, Google, Apple, Visa, Goldman Sachs, Citigroup, WellsFargo, Bank of America, Walmart, Toyota, T-Mobile, and NBC Universal. Foreign support includes the Embassy of Japan, the Korea Foundation, Taipei Eco…</a></td><td class="dn">-2.48%</td><td class="up">+2.10%</td><td class="up"><b>勝</b></td></tr><tr><td>9/7 21:50</td><td><a href="https://finance.yahoo.com/quote/WMT" target="_blank"><b>WMT</b></a><span class="tag">Walmart</span></td>
+<td class="post"><a href="https://www.trumpstruth.org/statuses/41596" target="_blank">…elinda Gates, Google, Apple, Visa, Goldman Sachs, Citigroup, WellsFargo, Bank of America, Walmart, Toyota, T-Mobile, and NBC Universal. Foreign support includes the Embassy of Japan, the Korea Foundation, Ta…</a></td><td class="up">+0.71%</td><td class="up">+1.92%</td><td class="up"><b>勝</b></td></tr><tr><td>9/7 21:50</td><td><a href="https://finance.yahoo.com/quote/GS" target="_blank"><b>GS</b></a><span class="tag">Goldman Sachs</span></td>
+<td class="post"><a href="https://www.trumpstruth.org/statuses/41596" target="_blank">…gaggle of Lunatics, including George Soros, Bill and Melinda Gates, Google, Apple, Visa, Goldman Sachs, Citigroup, WellsFargo, Bank of America, Walmart, Toyota, T-Mobile, and NBC Universal. Foreign support includ…</a></td><td class="dn">-11.61%</td><td class="dn">-5.78%</td><td class="dn"><b>敗</b></td></tr><tr><td>9/7 21:50</td><td><a href="https://finance.yahoo.com/quote/BAC" target="_blank"><b>BAC</b></a><span class="tag">Bank of America</span></td>
+<td class="post"><a href="https://www.trumpstruth.org/statuses/41596" target="_blank">…Soros, Bill and Melinda Gates, Google, Apple, Visa, Goldman Sachs, Citigroup, WellsFargo, Bank of America, Walmart, Toyota, T-Mobile, and NBC Universal. Foreign support includes the Embassy of Japan, the Korea Found…</a></td><td class="dn">-11.91%</td><td class="dn">-4.60%</td><td class="dn"><b>敗</b></td></tr><tr><td>9/7 21:50</td><td><a href="https://finance.yahoo.com/quote/C" target="_blank"><b>C</b></a><span class="tag">Citigroup</span></td>
+<td class="post"><a href="https://www.trumpstruth.org/statuses/41596" target="_blank">…tics, including George Soros, Bill and Melinda Gates, Google, Apple, Visa, Goldman Sachs, Citigroup, WellsFargo, Bank of America, Walmart, Toyota, T-Mobile, and NBC Universal. Foreign support includes the Emba…</a></td><td class="dn">-4.34%</td><td class="dn">-0.42%</td><td class="dn"><b>敗</b></td></tr><tr><td>9/7 21:50</td><td><a href="https://finance.yahoo.com/quote/TMUS" target="_blank"><b>TMUS</b></a><span class="tag">T-Mobile</span></td>
+<td class="post"><a href="https://www.trumpstruth.org/statuses/41596" target="_blank">…gle, Apple, Visa, Goldman Sachs, Citigroup, WellsFargo, Bank of America, Walmart, Toyota, T-Mobile, and NBC Universal. Foreign support includes the Embassy of Japan, the Korea Foundation, Taipei Economic and…</a></td><td class="dn">-10.30%</td><td class="dn">-0.67%</td><td class="dn"><b>敗</b></td></tr><tr><td>9/5 06:02</td><td><a href="https://finance.yahoo.com/quote/AAPL" target="_blank"><b>AAPL</b></a><span class="tag">Apple</span></td>
+<td class="post"><a href="https://www.trumpstruth.org/statuses/41516" target="_blank">…Lake America! The support has been overwhelming, including affirmation from Google Maps, Apple Maps, and Microsoft’s Bing Maps. Since the name change, business on the United States side of the Lake has be…</a></td><td class="up">+4.17%</td><td class="up">+4.78%</td><td class="up"><b>勝</b></td></tr><tr><td>9/5 06:02</td><td><a href="https://finance.yahoo.com/quote/MSFT" target="_blank"><b>MSFT</b></a><span class="tag">Microsoft</span></td>
+<td class="post"><a href="https://www.trumpstruth.org/statuses/41516" target="_blank">…he support has been overwhelming, including affirmation from Google Maps, Apple Maps, and Microsoft’s Bing Maps. Since the name change, business on the United States side of the Lake has been absolutely BOOMIN…</a></td><td class="up">+3.04%</td><td class="up">+0.64%</td><td class="up"><b>勝</b></td></tr><tr><td>9/5 06:02</td><td><a href="https://finance.yahoo.com/quote/GOOGL" target="_blank"><b>GOOGL</b></a><span class="tag">Google</span></td>
+<td class="post"><a href="https://www.trumpstruth.org/statuses/41516" target="_blank">…ke Ontario to Lake America! The support has been overwhelming, including affirmation from Google Maps, Apple Maps, and Microsoft’s Bing Maps. Since the name change, business on the United States side of the…</a></td><td class="up">+0.76%</td><td class="up">+1.96%</td><td class="up"><b>勝</b></td></tr><tr><td>9/3 04:09</td><td><a href="https://finance.yahoo.com/quote/AAPL" target="_blank"><b>AAPL</b></a><span class="tag">Apple</span></td>
+<td class="post"><a href="https://www.trumpstruth.org/statuses/41487" target="_blank">Apple Maps has just announced that it has changed the name of Lake Ontario to Lake America, so now that very import…</a></td><td class="up">+0.36%</td><td class="up">+1.24%</td><td class="up"><b>勝</b></td></tr><tr><td>9/3 04:09</td><td><a href="https://finance.yahoo.com/quote/GOOGL" target="_blank"><b>GOOGL</b></a><span class="tag">Google</span></td>
+<td class="post"><a href="https://www.trumpstruth.org/statuses/41487" target="_blank">…name of Lake Ontario to Lake America, so now that very important change of names, between Google Maps and Apple Maps, is complete, ratified, and binding. Thank you for your attention to this matter! Preside…</a></td><td class="dn">-0.46%</td><td class="dn">-1.16%</td><td class="dn"><b>敗</b></td></tr><tr><td>9/2 03:39</td><td><a href="https://finance.yahoo.com/quote/NVDA" target="_blank"><b>NVDA</b></a><span class="tag">Nvidia</span></td>
+<td class="post"><a href="https://www.trumpstruth.org/statuses/41459" target="_blank">Nvidia, Wall Street Firms Strike AI Financing Deal Targeting $500 Billion:</a></td><td class="up">+4.49%</td><td class="up">+2.87%</td><td class="up"><b>勝</b></td></tr><tr><td>8/31 05:36</td><td><a href="https://finance.yahoo.com/quote/GOOGL" target="_blank"><b>GOOGL</b></a><span class="tag">Google</span></td>
+<td class="post"><a href="https://www.trumpstruth.org/statuses/41400" target="_blank">Google Maps changes Lake Ontario to ‘Lake America’ on US phones:</a></td><td class="up">+0.46%</td><td class="dn">-0.29%</td><td class="dn"><b>敗</b></td></tr><tr><td>8/31 02:16</td><td><a href="https://finance.yahoo.com/quote/GM" target="_blank"><b>GM</b></a><span class="tag">General Motors</span></td>
+<td class="post"><a href="https://www.trumpstruth.org/statuses/41397" target="_blank">…he most profitable Car Plants in the World! There are many other examples, for both Ford, General Motors, and others. I’ve revived, and indeed saved, the Automobile Business in our America. That’s because of what I…</a></td><td class="dn">-6.78%</td><td class="dn">-0.61%</td><td class="dn"><b>敗</b></td></tr><tr><td>8/31 02:16</td><td><a href="https://finance.yahoo.com/quote/F" target="_blank"><b>F</b></a><span class="tag">Ford</span></td>
+<td class="post"><a href="https://www.trumpstruth.org/statuses/41397" target="_blank">…I announced that I was running in the 2024 Presidential Election, right at the beginning, Ford was getting ready to close their Big Factory, in Detroit. Then, because I was leading in the Polls, they figu…</a></td><td class="dn">-11.76%</td><td class="up">+0.43%</td><td class="up"><b>勝</b></td></tr><tr><td>8/31 00:15</td><td><a href="https://finance.yahoo.com/quote/BA" target="_blank"><b>BA</b></a><span class="tag">Boeing</span></td>
+<td class="post"><a href="https://www.trumpstruth.org/statuses/41396" target="_blank">…ther incredible Deal, with Bangladesh committing to spend Billions of Dollars to buy more Boeing Aircraft, significantly increasing their initial order. Our President is Making America, and our partners, Gr…</a></td><td class="dn">-9.67%</td><td class="up">+1.42%</td><td class="up"><b>勝</b></td></tr></tbody></table></div>
+<h2>川普提到個股排行</h2>
+<div class="scroll"><table class="stats"><thead><tr><th>代號</th><th>公司</th><th>次數</th><th>1 日勝率</th><th>5 日勝率</th><th>平均5日</th><th>贏大盤</th><th>最近提到</th></tr></thead><tbody><tr><td><a href="https://finance.yahoo.com/quote/AAPL" target="_blank"><b>AAPL</b></a></td><td>Apple</td><td>13</td><td class="dn"><b>38.5%</b><span class="tag">13筆</span></td><td class="up"><b>69.2%</b><span class="tag">13筆</span></td><td class="up">+0.17%</td><td class="up">61.5%</td><td>09/07</td></tr><tr><td><a href="https://finance.yahoo.com/quote/NMAX" target="_blank"><b>NMAX</b></a></td><td>Newsmax</td><td>7</td><td class="up"><b>57.1%</b><span class="tag">7筆</span></td><td class="up"><b>66.7%</b><span class="tag">6筆</span></td><td class="up">+6.02%</td><td class="up">83.3%</td><td>09/23</td></tr><tr><td><a href="https://finance.yahoo.com/quote/GOOGL" target="_blank"><b>GOOGL</b></a></td><td>Google</td><td>7</td><td class="dn"><b>14.3%</b><span class="tag">7筆</span></td><td class="up"><b>71.4%</b><span class="tag">7筆</span></td><td class="up">+2.22%</td><td class="up">57.1%</td><td>09/14</td></tr><tr><td><a href="https://finance.yahoo.com/quote/BA" target="_blank"><b>BA</b></a></td><td>Boeing</td><td>6</td><td class="dn"><b>33.3%</b><span class="tag">6筆</span></td><td class="dn"><b>40.0%</b><span class="tag">5筆</span></td><td class="dn">-3.15%</td><td class="dn">40.0%</td><td>09/24</td></tr><tr><td><a href="https://finance.yahoo.com/quote/WMT" target="_blank"><b>WMT</b></a></td><td>Walmart</td><td>6</td><td class="dn"><b>33.3%</b><span class="tag">6筆</span></td><td class="up"><b>50.0%</b><span class="tag">6筆</span></td><td class="dn">-0.93%</td><td class="up">50.0%</td><td>09/07</td></tr><tr><td><a href="https://finance.yahoo.com/quote/INTC" target="_blank"><b>INTC</b></a></td><td>Intel</td><td>6</td><td class="up"><b>50.0%</b><span class="tag">6筆</span></td><td class="up"><b>50.0%</b><span class="tag">6筆</span></td><td class="up">+1.21%</td><td class="up">50.0%</td><td>08/24</td></tr><tr><td><a href="https://finance.yahoo.com/quote/NVDA" target="_blank"><b>NVDA</b></a></td><td>Nvidia</td><td>5</td><td class="up"><b>60.0%</b><span class="tag">5筆</span></td><td class="up"><b>60.0%</b><span class="tag">5筆</span></td><td class="up">+1.33%</td><td class="up">60.0%</td><td>09/01</td></tr><tr><td><a href="https://finance.yahoo.com/quote/MU" target="_blank"><b>MU</b></a></td><td>Micron</td><td>5</td><td class="dn"><b>40.0%</b><span class="tag">5筆</span></td><td class="dn"><b>40.0%</b><span class="tag">5筆</span></td><td class="dn">-3.53%</td><td class="dn">20.0%</td><td>08/27</td></tr><tr><td><a href="https://finance.yahoo.com/quote/TM" target="_blank"><b>TM</b></a></td><td>Toyota</td><td>4</td><td class="dn"><b>25.0%</b><span class="tag">4筆</span></td><td class="up"><b>50.0%</b><span class="tag">4筆</span></td><td class="up">+0.26%</td><td class="dn">25.0%</td><td>09/07</td></tr><tr><td><a href="https://finance.yahoo.com/quote/GM" target="_blank"><b>GM</b></a></td><td>General Motors</td><td>3</td><td class="dn"><b>33.3%</b><span class="tag">3筆</span></td><td class="up"><b>50.0%</b><span class="tag">2筆</span></td><td class="up">+2.74%</td><td class="up">50.0%</td><td>09/26</td></tr><tr><td><a href="https://finance.yahoo.com/quote/F" target="_blank"><b>F</b></a></td><td>Ford</td><td>3</td><td class="dn"><b>33.3%</b><span class="tag">3筆</span></td><td class="up"><b>100.0%</b><span class="tag">2筆</span></td><td class="up">+0.25%</td><td class="up">50.0%</td><td>09/26</td></tr><tr><td><a href="https://finance.yahoo.com/quote/GS" target="_blank"><b>GS</b></a></td><td>Goldman Sachs</td><td>3</td><td class="up"><b>66.7%</b><span class="tag">3筆</span></td><td class="up"><b>66.7%</b><span class="tag">3筆</span></td><td class="dn">-0.80%</td><td class="up">66.7%</td><td>09/07</td></tr><tr><td><a href="https://finance.yahoo.com/quote/AMZN" target="_blank"><b>AMZN</b></a></td><td>Amazon</td><td>3</td><td class="dn"><b>33.3%</b><span class="tag">3筆</span></td><td class="up"><b>100.0%</b><span class="tag">3筆</span></td><td class="up">+8.67%</td><td class="up">100.0%</td><td>07/24</td></tr><tr><td><a href="https://finance.yahoo.com/quote/NFLX" target="_blank"><b>NFLX</b></a></td><td>Netflix</td><td>3</td><td class="up"><b>66.7%</b><span class="tag">3筆</span></td><td class="dn"><b>33.3%</b><span class="tag">3筆</span></td><td class="up">+7.22%</td><td class="up">66.7%</td><td>04/18</td></tr><tr><td><a href="https://finance.yahoo.com/quote/JPM" target="_blank"><b>JPM</b></a></td><td>JPMorgan</td><td>3</td><td class="dn"><b>33.3%</b><span class="tag">3筆</span></td><td class="dn"><b>33.3%</b><span class="tag">3筆</span></td><td class="dn">-0.39%</td><td class="up">66.7%</td><td>03/19</td></tr><tr><td><a href="https://finance.yahoo.com/quote/LMT" target="_blank"><b>LMT</b></a></td><td>Lockheed Martin</td><td>2</td><td class="dn"><b>0.0%</b><span class="tag">2筆</span></td><td class="dn"><b>0.0%</b><span class="tag">2筆</span></td><td class="dn">-3.53%</td><td class="dn">0.0%</td><td>09/21</td></tr><tr><td><a href="https://finance.yahoo.com/quote/BAC" target="_blank"><b>BAC</b></a></td><td>Bank of America</td><td>2</td><td class="up"><b>100.0%</b><span class="tag">2筆</span></td><td class="up"><b>50.0%</b><span class="tag">2筆</span></td><td class="dn">-2.12%</td><td class="up">50.0%</td><td>09/07</td></tr><tr><td><a href="https://finance.yahoo.com/quote/C" target="_blank"><b>C</b></a></td><td>Citigroup</td><td>2</td><td class="up"><b>100.0%</b><span class="tag">2筆</span></td><td class="up"><b>50.0%</b><span class="tag">2筆</span></td><td class="up">+0.48%</td><td class="up">100.0%</td><td>09/07</td></tr><tr><td><a href="https://finance.yahoo.com/quote/TMUS" target="_blank"><b>TMUS</b></a></td><td>T-Mobile</td><td>2</td><td class="dn"><b>0.0%</b><span class="tag">2筆</span></td><td class="up"><b>50.0%</b><span class="tag">2筆</span></td><td class="up">+0.83%</td><td class="up">100.0%</td><td>09/07</td></tr><tr><td><a href="https://finance.yahoo.com/quote/MSFT" target="_blank"><b>MSFT</b></a></td><td>Microsoft</td><td>2</td><td class="dn"><b>0.0%</b><span class="tag">2筆</span></td><td class="up"><b>50.0%</b><span class="tag">2筆</span></td><td class="dn">-2.50%</td><td class="up">50.0%</td><td>09/04</td></tr><tr><td><a href="https://finance.yahoo.com/quote/RTX" target="_blank"><b>RTX</b></a></td><td>RTX</td><td>2</td><td class="up"><b>50.0%</b><span class="tag">2筆</span></td><td class="up"><b>50.0%</b><span class="tag">2筆</span></td><td class="up">+2.13%</td><td class="up">50.0%</td><td>03/06</td></tr><tr><td><a href="https://finance.yahoo.com/quote/DJT" target="_blank"><b>DJT</b></a></td><td>Trump Media</td><td>2</td><td class="up"><b>50.0%</b><span class="tag">2筆</span></td><td class="dn"><b>0.0%</b><span class="tag">2筆</span></td><td class="dn">-10.35%</td><td class="dn">0.0%</td><td>01/26</td></tr><tr><td><a href="https://finance.yahoo.com/quote/STLA" target="_blank"><b>STLA</b></a></td><td>Stellantis</td><td>1</td><td class="dn"><b>0.0%</b><span class="tag">1筆</span></td><td class="no">累積中</td><td>-</td><td>-</td><td>09/26</td></tr><tr><td><a href="https://finance.yahoo.com/quote/CVX" target="_blank"><b>CVX</b></a></td><td>Chevron</td><td>1</td><td class="dn"><b>0.0%</b><span class="tag">1筆</span></td><td class="up"><b>100.0%</b><span class="tag">1筆</span></td><td class="up">+0.90%</td><td class="dn">0.0%</td><td>08/03</td></tr><tr><td><a href="https://finance.yahoo.com/quote/META" target="_blank"><b>META</b></a></td><td>Meta</td><td>1</td><td class="dn"><b>0.0%</b><span class="tag">1筆</span></td><td class="dn"><b>0.0%</b><span class="tag">1筆</span></td><td class="dn">-6.47%</td><td class="dn">0.0%</td><td>07/24</td></tr><tr><td><a href="https://finance.yahoo.com/quote/TSM" target="_blank"><b>TSM</b></a></td><td>TSMC</td><td>1</td><td class="up"><b>100.0%</b><span class="tag">1筆</span></td><td class="up"><b>100.0%</b><span class="tag">1筆</span></td><td class="up">+1.27%</td><td class="up">100.0%</td><td>07/17</td></tr><tr><td><a href="https://finance.yahoo.com/quote/QCOM" target="_blank"><b>QCOM</b></a></td><td>Qualcomm</td><td>1</td><td class="dn"><b>0.0%</b><span class="tag">1筆</span></td><td class="dn"><b>0.0%</b><span class="tag">1筆</span></td><td class="dn">-5.00%</td><td class="dn">0.0%</td><td>05/13</td></tr><tr><td><a href="https://finance.yahoo.com/quote/GE" target="_blank"><b>GE</b></a></td><td>GE</td><td>1</td><td class="dn"><b>0.0%</b><span class="tag">1筆</span></td><td class="up"><b>100.0%</b><span class="tag">1筆</span></td><td class="up">+1.85%</td><td class="up">100.0%</td><td>05/13</td></tr><tr><td><a href="https://finance.yahoo.com/quote/LLY" target="_blank"><b>LLY</b></a></td><td>Eli Lilly</td><td>1</td><td class="dn"><b>0.0%</b><span class="tag">1筆</span></td><td class="up"><b>100.0%</b><span class="tag">1筆</span></td><td class="up">+2.91%</td><td class="up">100.0%</td><td>05/06</td></tr><tr><td><a href="https://finance.yahoo.com/quote/DIS" target="_blank"><b>DIS</b></a></td><td>Disney</td><td>1</td><td class="dn"><b>0.0%</b><span class="tag">1筆</span></td><td class="dn"><b>0.0%</b><span class="tag">1筆</span></td><td class="dn">-1.02%</td><td class="dn">0.0%</td><td>04/27</td></tr><tr><td><a href="https://finance.yahoo.com/quote/WFC" target="_blank"><b>WFC</b></a></td><td>Wells Fargo</td><td>1</td><td class="up"><b>100.0%</b><span class="tag">1筆</span></td><td class="up"><b>100.0%</b><span class="tag">1筆</span></td><td class="up">+1.75%</td><td class="up">100.0%</td><td>04/23</td></tr><tr><td><a href="https://finance.yahoo.com/quote/PLTR" target="_blank"><b>PLTR</b></a></td><td>Palantir</td><td>1</td><td class="up"><b>100.0%</b><span class="tag">1筆</span></td><td class="up"><b>100.0%</b><span class="tag">1筆</span></td><td class="up">+14.31%</td><td class="up">100.0%</td><td>04/10</td></tr><tr><td><a href="https://finance.yahoo.com/quote/NOC" target="_blank"><b>NOC</b></a></td><td>Northrop Grumman</td><td>1</td><td class="dn"><b>0.0%</b><span class="tag">1筆</span></td><td class="dn"><b>0.0%</b><span class="tag">1筆</span></td><td class="dn">-2.97%</td><td class="dn">0.0%</td><td>03/06</td></tr><tr><td><a href="https://finance.yahoo.com/quote/HON" target="_blank"><b>HON</b></a></td><td>Honeywell</td><td>1</td><td class="up"><b>100.0%</b><span class="tag">1筆</span></td><td class="dn"><b>0.0%</b><span class="tag">1筆</span></td><td class="dn">-0.34%</td><td class="up">100.0%</td><td>03/06</td></tr><tr><td><a href="https://finance.yahoo.com/quote/DELL" target="_blank"><b>DELL</b></a></td><td>Dell</td><td>1</td><td class="up"><b>100.0%</b><span class="tag">1筆</span></td><td class="dn"><b>0.0%</b><span class="tag">1筆</span></td><td class="dn">-3.99%</td><td class="dn">0.0%</td><td>02/08</td></tr><tr><td><a href="https://finance.yahoo.com/quote/MS" target="_blank"><b>MS</b></a></td><td>Morgan Stanley</td><td>1</td><td class="up"><b>100.0%</b><span class="tag">1筆</span></td><td class="dn"><b>0.0%</b><span class="tag">1筆</span></td><td class="dn">-1.55%</td><td class="dn">0.0%</td><td>01/30</td></tr></tbody></table></div>
+<h2>網友今日熱門 <span class="count">Reddit 提及次數排行（ApeWisdom）</span></h2>
+<div class="scroll"><table><thead><tr><th>#</th><th>代號</th><th>名稱</th><th>提及數</th><th>較 24h 前</th><th>最近漲跌</th></tr></thead><tbody><tr><td>1</td><td><a href="https://finance.yahoo.com/quote/MU" target="_blank"><b>MU</b></a></td><td>Micron Technology</td>
+<td>266</td><td class="up">+50.28%</td><td class="up">+1.05%</td></tr><tr><td>3</td><td><a href="https://finance.yahoo.com/quote/META" target="_blank"><b>META</b></a></td><td>Meta Platforms (Facebook)</td>
+<td>91</td><td class="dn">-8.08%</td><td class="up">+3.24%</td></tr><tr><td>4</td><td><a href="https://finance.yahoo.com/quote/BE" target="_blank"><b>BE</b></a></td><td>Bloom Energy</td>
+<td>75</td><td class="up">+158.62%</td><td class="up">+10.80%</td></tr><tr><td>5</td><td><a href="https://finance.yahoo.com/quote/NVDA" target="_blank"><b>NVDA</b></a></td><td>NVIDIA</td>
+<td>72</td><td class="dn">-52.63%</td><td class="dn">-0.72%</td></tr><tr><td>7</td><td><a href="https://finance.yahoo.com/quote/ASTS" target="_blank"><b>ASTS</b></a></td><td>AST SpaceMobile</td>
+<td>69</td><td class="up">+475.00%</td><td class="dn">-2.62%</td></tr><tr><td>8</td><td><a href="https://finance.yahoo.com/quote/ARR" target="_blank"><b>ARR</b></a></td><td>ARMOUR Residential REIT</td>
+<td>69</td><td class="up">+1050.00%</td><td class="up">+0.21%</td></tr><tr><td>9</td><td><a href="https://finance.yahoo.com/quote/TSLA" target="_blank"><b>TSLA</b></a></td><td>Tesla</td>
+<td>62</td><td class="up">+121.43%</td><td class="dn">-1.29%</td></tr><tr><td>10</td><td><a href="https://finance.yahoo.com/quote/SPCX" target="_blank"><b>SPCX</b></a></td><td>SpaceX</td>
+<td>55</td><td class="up">+48.65%</td><td class="up">+2.59%</td></tr><tr><td>11</td><td><a href="https://finance.yahoo.com/quote/GOOGL" target="_blank"><b>GOOGL</b></a></td><td>Alphabet (Google)</td>
+<td>55</td><td class="up">+358.33%</td><td class="dn">-0.53%</td></tr><tr><td>12</td><td><a href="https://finance.yahoo.com/quote/DTE" target="_blank"><b>DTE</b></a></td><td>DTE Energy</td>
+<td>51</td><td class="dn">-12.07%</td><td class="up">+1.29%</td></tr><tr><td>14</td><td><a href="https://finance.yahoo.com/quote/GOOG" target="_blank"><b>GOOG</b></a></td><td>Alphabet (Google)</td>
+<td>47</td><td class="up">+62.07%</td><td>-</td></tr><tr><td>15</td><td><a href="https://finance.yahoo.com/quote/AMD" target="_blank"><b>AMD</b></a></td><td>AMD</td>
+<td>46</td><td class="dn">-17.86%</td><td>-</td></tr><tr><td>16</td><td><a href="https://finance.yahoo.com/quote/RKLB" target="_blank"><b>RKLB</b></a></td><td>Rocket Lab USA</td>
+<td>43</td><td class="up">+330.00%</td><td>-</td></tr><tr><td>17</td><td><a href="https://finance.yahoo.com/quote/AAPL" target="_blank"><b>AAPL</b></a></td><td>Apple</td>
+<td>40</td><td class="up">+110.53%</td><td class="dn">-2.66%</td></tr><tr><td>18</td><td><a href="https://finance.yahoo.com/quote/FICO" target="_blank"><b>FICO</b></a></td><td>FICO</td>
+<td>40</td><td class="up">+900.00%</td><td>-</td></tr><tr><td>19</td><td><a href="https://finance.yahoo.com/quote/RDDT" target="_blank"><b>RDDT</b></a></td><td>Reddit</td>
+<td>39</td><td class="up">+2.63%</td><td>-</td></tr><tr><td>20</td><td><a href="https://finance.yahoo.com/quote/SNDK" target="_blank"><b>SNDK</b></a></td><td>Sandisk</td>
+<td>39</td><td class="up">+34.48%</td><td>-</td></tr><tr><td>21</td><td><a href="https://finance.yahoo.com/quote/AMZN" target="_blank"><b>AMZN</b></a></td><td>Amazon</td>
+<td>38</td><td class="up">+58.33%</td><td class="up">+0.21%</td></tr><tr><td>22</td><td><a href="https://finance.yahoo.com/quote/ORCL" target="_blank"><b>ORCL</b></a></td><td>Oracle</td>
+<td>38</td><td class="up">+35.71%</td><td>-</td></tr><tr><td>23</td><td><a href="https://finance.yahoo.com/quote/NBIS" target="_blank"><b>NBIS</b></a></td><td>Nebius Group</td>
+<td>38</td><td class="up">+216.67%</td><td>-</td></tr></tbody></table></div></div>
 <script>document.querySelectorAll('.ptab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.ptab').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('.page').forEach(p=>p.hidden=p.dataset.p!==b.dataset.p);scrollTo(0,0)})</script>
 </body></html>
