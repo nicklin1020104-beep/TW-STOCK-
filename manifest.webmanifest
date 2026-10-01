@@ -1,6 +1,6 @@
 {
-  "name": "上班偷看股",
-  "short_name": "偷看股",
+  "name": "收盤達人",
+  "short_name": "收盤達人",
   "start_url": "/TW-STOCK-/",
   "scope": "/TW-STOCK-/",
   "display": "standalone",

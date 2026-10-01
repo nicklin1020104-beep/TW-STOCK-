@@ -27,5 +27,5 @@
   <polyline points="96,318 184,282 272,214 352,148 420,104" fill="none" stroke="#ffd166" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
   <circle cx="420" cy="104" r="14" fill="#ffd166"/>
   <!-- 文字 -->
-  <text x="256" y="446" text-anchor="middle" font-family="'Microsoft JhengHei','PingFang TC','Noto Sans TC',sans-serif" font-size="78" font-weight="800" fill="#ffffff" letter-spacing="6">偷看股</text>
+  <text x="256" y="446" text-anchor="middle" font-family="'Microsoft JhengHei','PingFang TC','Noto Sans TC',sans-serif" font-size="68" font-weight="800" fill="#ffffff" letter-spacing="6">收盤達人</text>
 </svg>
