@@ -1,6 +1,6 @@
 {
-  "name": "收盤達人",
-  "short_name": "收盤達人",
+  "name": "飆股情報局",
+  "short_name": "飆股情報局",
   "start_url": "/TW-STOCK-/",
   "scope": "/TW-STOCK-/",
   "display": "standalone",
