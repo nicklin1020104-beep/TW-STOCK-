@@ -4,7 +4,7 @@
   "start_url": "/TW-STOCK-/",
   "scope": "/TW-STOCK-/",
   "display": "standalone",
-  "background_color": "#151922",
+  "background_color": "#d9973a",
   "theme_color": "#151922",
   "icons": [
     { "src": "/TW-STOCK-/icon-192.png", "sizes": "192x192", "type": "image/png" },
