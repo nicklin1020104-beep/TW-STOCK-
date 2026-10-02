@@ -168,12 +168,15 @@ async function updateAll() {
           console.error(`主動式ETF ${e.code} 回補前一日失敗：`, er.message);
         }
       }
-      out.push({ code: e.code, date: h.date, n: rows.length });
+      out.push({ code: e.code, ok: true, date: h.date, n: rows.length });
     } catch (err) {
       console.error(`主動式ETF ${e.code} 抓取失敗：`, err.message);
+      out.push({ code: e.code, ok: false, error: err.message });
     }
     await sleep(1500);
   }
+  fs.mkdirSync(DIR, { recursive: true });
+  fs.writeFileSync(path.join(DIR, 'status.json'), JSON.stringify({ at: new Date().toISOString(), list: out }, null, 1)); // 最近一次抓取結果（除錯用）
   return out;
 }
 
