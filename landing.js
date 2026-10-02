@@ -297,7 +297,7 @@ function pushClient(API) {
   var supported = 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
   var ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   var standalone = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
-  var reg = null, sub = null, prefs = { open: true, close: true };
+  var reg = null, sub = null, prefs = { open: true, close: true }, admin = false;
   function token() { try { return localStorage.getItem('shoupan_token'); } catch (e) { return null; } }
   function api(path, body) {
     var h = { 'Content-Type': 'application/json' }; if (token()) h.Authorization = 'Bearer ' + token();
@@ -328,7 +328,7 @@ function pushClient(API) {
       h += '<div class="push-on">✅ 這台裝置已開啟通知</div><div class="push-opts">' +
         '<label><input type="checkbox" data-k="open"' + (prefs.open ? ' checked' : '') + '> 開盤提醒（08:55：台指期夜盤、費半、今日焦點股、投票截止）</label>' +
         '<label><input type="checkbox" data-k="close"' + (prefs.close ? ' checked' : '') + '> 收盤開獎（13:35：加權收盤、最強族群、你的得分）</label></div>' +
-        '<div class="push-acts"><button type="button" class="push-test" data-kind="open">傳一則開盤測試</button><button type="button" class="push-test" data-kind="close">傳一則收盤測試</button><button type="button" class="push-off">關閉通知</button></div>';
+        '<div class="push-acts">' + (admin ? '<button type="button" class="push-test" data-kind="open">傳一則開盤測試（管理員）</button><button type="button" class="push-test" data-kind="close">傳一則收盤測試（管理員）</button>' : '') + '<button type="button" class="push-off">關閉通知</button></div>';
       mini.innerHTML = '';
     } else {
       h += '<p class="push-tip">開盤前提醒你今天的焦點、收盤後馬上告訴你開獎結果，像 App 一樣跳出通知。</p><button type="button" class="push-enable">🔔 開啟開盤／收盤通知</button>';
@@ -345,7 +345,7 @@ function pushClient(API) {
         return reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: u8(k.key) });
       }).then(function (s) { sub = s; return save(); }).then(function (j) {
         if (j.error) { sub = null; return render(j.error); }
-        render('已開啟！可以按「傳一則測試」試試看');
+        render(admin ? '已開啟！可以按「傳一則測試」試試看' : '已開啟！開盤前和收盤後會通知你');
       });
     }).catch(function (e) { render('開啟失敗：' + (e && e.message ? e.message : e)); });
   }
@@ -364,6 +364,7 @@ function pushClient(API) {
     var c = e.target.closest('.push-opts input'); if (!c || !sub) return;
     prefs[c.dataset.k] = c.checked; save().then(function () { render('已儲存'); });
   });
+  if (token()) api('/api/profile').then(function (j) { if (j.profile && j.profile.admin) { admin = true; if (sub) render(); } }).catch(function () {});
   if (!supported) return render();
   navigator.serviceWorker.register('/TW-STOCK-/sw.js', { scope: '/TW-STOCK-/' }).then(function (r) {
     reg = r; return navigator.serviceWorker.ready;
