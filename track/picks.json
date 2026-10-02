@@ -1,0 +1,689 @@
+{
+ "20260911": [
+  {
+   "code": "2609",
+   "name": "陽明",
+   "mkt": "上市",
+   "industry": "航運業",
+   "close": 59.4,
+   "yoy": 56.170783181394626,
+   "star": true,
+   "okUp": true,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "2618",
+   "name": "長榮航",
+   "mkt": "上市",
+   "industry": "航運業",
+   "close": 42.35,
+   "yoy": 24.91631705549541,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": false
+  },
+  {
+   "code": "4967",
+   "name": "十銓",
+   "mkt": "上市",
+   "industry": "半導體業",
+   "close": 280.5,
+   "yoy": 275.0567709273065,
+   "star": false,
+   "okUp": true,
+   "okVol": false,
+   "above60": true
+  },
+  {
+   "code": "9933",
+   "name": "中鼎",
+   "mkt": "上市",
+   "industry": "其他",
+   "close": 41.7,
+   "yoy": 5.247920692818564,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": true
+  }
+ ],
+ "20260914": [
+  {
+   "code": "8358",
+   "name": "金居",
+   "mkt": "上櫃",
+   "industry": "電子零組件業",
+   "close": 518,
+   "yoy": 59.709504167221084,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": true
+  }
+ ],
+ "20260915": [],
+ "20260916": [
+  {
+   "code": "2352",
+   "name": "佳世達",
+   "mkt": "上市",
+   "industry": "電腦及週邊設備業",
+   "close": 29.15,
+   "yoy": 11.819254751083538,
+   "star": true,
+   "okUp": true,
+   "okVol": true,
+   "above60": false
+  },
+  {
+   "code": "4540",
+   "name": "全球傳動",
+   "mkt": "上市",
+   "industry": "電機機械",
+   "close": 60.4,
+   "yoy": 45.043492645538386,
+   "star": true,
+   "okUp": true,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "3481",
+   "name": "群創",
+   "mkt": "上市",
+   "industry": "光電業",
+   "close": 48.7,
+   "yoy": 0.022929206689571976,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": false
+  },
+  {
+   "code": "2426",
+   "name": "鼎元",
+   "mkt": "上市",
+   "industry": "光電業",
+   "close": 99.8,
+   "yoy": 38.57482029343866,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "2353",
+   "name": "宏碁",
+   "mkt": "上市",
+   "industry": "電腦及週邊設備業",
+   "close": 32,
+   "yoy": 38.41493141468421,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "2382",
+   "name": "廣達",
+   "mkt": "上市",
+   "industry": "電腦及週邊設備業",
+   "close": 340.5,
+   "yoy": 177.453640698528,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "2603",
+   "name": "長榮",
+   "mkt": "上市",
+   "industry": "航運業",
+   "close": 239,
+   "yoy": 48.63589929629481,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "6209",
+   "name": "今國光",
+   "mkt": "上市",
+   "industry": "光電業",
+   "close": 80,
+   "yoy": 106.76387351719937,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "2302",
+   "name": "麗正",
+   "mkt": "上市",
+   "industry": "半導體業",
+   "close": 44.2,
+   "yoy": 87.72217512750316,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "4977",
+   "name": "眾達-KY",
+   "mkt": "上市",
+   "industry": "通信網路業",
+   "close": 176.5,
+   "yoy": 106.21752924846322,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "2340",
+   "name": "台亞",
+   "mkt": "上市",
+   "industry": "半導體業",
+   "close": 33.1,
+   "yoy": 21.873683020341876,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": false
+  },
+  {
+   "code": "2104",
+   "name": "國際中橡",
+   "mkt": "上市",
+   "industry": "橡膠工業",
+   "close": 10.45,
+   "yoy": 0.27948472848104144,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": true
+  },
+  {
+   "code": "1313",
+   "name": "聯成",
+   "mkt": "上市",
+   "industry": "塑膠工業",
+   "close": 11.95,
+   "yoy": 6.038199417554717,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": true
+  },
+  {
+   "code": "2363",
+   "name": "矽統",
+   "mkt": "上市",
+   "industry": "半導體業",
+   "close": 52,
+   "yoy": 81.06426064737752,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": false
+  }
+ ],
+ "20260917": [
+  {
+   "code": "2515",
+   "name": "中工",
+   "mkt": "上市",
+   "industry": "建材營造",
+   "close": 12.05,
+   "yoy": 28.83948243046841,
+   "star": true,
+   "okUp": true,
+   "okVol": true,
+   "above60": false
+  },
+  {
+   "code": "1310",
+   "name": "台苯",
+   "mkt": "上市",
+   "industry": "塑膠工業",
+   "close": 9.03,
+   "yoy": 15.383177361480811,
+   "star": true,
+   "okUp": true,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "2104",
+   "name": "國際中橡",
+   "mkt": "上市",
+   "industry": "橡膠工業",
+   "close": 10.75,
+   "yoy": 0.27948472848104144,
+   "star": false,
+   "okUp": true,
+   "okVol": false,
+   "above60": true
+  },
+  {
+   "code": "1304",
+   "name": "台聚",
+   "mkt": "上市",
+   "industry": "塑膠工業",
+   "close": 12.6,
+   "yoy": 8.722470848002123,
+   "star": false,
+   "okUp": true,
+   "okVol": false,
+   "above60": true
+  }
+ ],
+ "20260918": [
+  {
+   "code": "4763",
+   "name": "材料*-KY",
+   "mkt": "上市",
+   "industry": "化學工業",
+   "close": 50.5,
+   "yoy": 20.823040868540726,
+   "star": true,
+   "okUp": true,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "8422",
+   "name": "可寧衛*",
+   "mkt": "上市",
+   "industry": "綠能環保",
+   "close": 26.55,
+   "yoy": 105.8498562353335,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": true
+  }
+ ],
+ "20260921": [
+  {
+   "code": "6213",
+   "name": "聯茂",
+   "mkt": "上市",
+   "industry": "電子零組件業",
+   "close": 542,
+   "yoy": 97.92882458381861,
+   "star": true,
+   "okUp": true,
+   "okVol": true,
+   "above60": true
+  }
+ ],
+ "20260922": [
+  {
+   "code": "3715",
+   "name": "定穎投控",
+   "mkt": "上市",
+   "industry": "電子零組件業",
+   "close": 128.5,
+   "yoy": 83.96056599949932,
+   "star": true,
+   "okUp": true,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "4958",
+   "name": "臻鼎-KY",
+   "mkt": "上市",
+   "industry": "電子零組件業",
+   "close": 489,
+   "yoy": 41.05228119001421,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": false
+  }
+ ],
+ "20260923": [
+  {
+   "code": "6531",
+   "name": "愛普*",
+   "mkt": "上市",
+   "industry": "半導體業",
+   "close": 987,
+   "yoy": 150.82441845471112,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": true
+  }
+ ],
+ "20260924": [
+  {
+   "code": "1303",
+   "name": "南亞",
+   "mkt": "上市",
+   "industry": "塑膠工業",
+   "close": 238,
+   "yoy": 46.746902846686,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "2492",
+   "name": "華新科",
+   "mkt": "上市",
+   "industry": "電子零組件業",
+   "close": 311.5,
+   "yoy": 45.54208446583508,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": false
+  },
+  {
+   "code": "6155",
+   "name": "鈞寶",
+   "mkt": "上市",
+   "industry": "電子零組件業",
+   "close": 60.2,
+   "yoy": 50.04599448066232,
+   "star": false,
+   "okUp": true,
+   "okVol": false,
+   "above60": true
+  },
+  {
+   "code": "3455",
+   "name": "由田",
+   "mkt": "上櫃",
+   "industry": "光電業",
+   "close": 258,
+   "yoy": 22.429263197873148,
+   "star": false,
+   "okUp": true,
+   "okVol": false,
+   "above60": true
+  }
+ ],
+ "20260929": [
+  {
+   "code": "4958",
+   "name": "臻鼎-KY",
+   "mkt": "上市",
+   "industry": "電子零組件業",
+   "close": 498.5,
+   "yoy": 41.05228119001421,
+   "star": true,
+   "okUp": true,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "2426",
+   "name": "鼎元",
+   "mkt": "上市",
+   "industry": "光電業",
+   "close": 99.8,
+   "yoy": 38.57482029343866,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "3006",
+   "name": "晶豪科",
+   "mkt": "上市",
+   "industry": "半導體業",
+   "close": 285,
+   "yoy": 605.2432014317565,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "1711",
+   "name": "永光",
+   "mkt": "上市",
+   "industry": "化學工業",
+   "close": 40.55,
+   "yoy": 33.157168626164825,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": true
+  }
+ ],
+ "20260930": [
+  {
+   "code": "2618",
+   "name": "長榮航",
+   "mkt": "上市",
+   "industry": "航運業",
+   "close": 42.85,
+   "yoy": 24.91631705549541,
+   "star": true,
+   "okUp": true,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "1605",
+   "name": "華新",
+   "mkt": "上市",
+   "industry": "電器電纜",
+   "close": 38.4,
+   "yoy": 14.970687262674398,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "1802",
+   "name": "台玻",
+   "mkt": "上市",
+   "industry": "玻璃陶瓷",
+   "close": 59.9,
+   "yoy": 32.59146823861491,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "1312",
+   "name": "國喬",
+   "mkt": "上市",
+   "industry": "塑膠工業",
+   "close": 15,
+   "yoy": 89.22674829328686,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "4763",
+   "name": "材料*-KY",
+   "mkt": "上市",
+   "industry": "化學工業",
+   "close": 48.9,
+   "yoy": 20.823040868540726,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "1304",
+   "name": "台聚",
+   "mkt": "上市",
+   "industry": "塑膠工業",
+   "close": 12.65,
+   "yoy": 8.722470848002123,
+   "star": false,
+   "okUp": true,
+   "okVol": false,
+   "above60": true
+  }
+ ],
+ "20261001": [
+  {
+   "code": "2492",
+   "name": "華新科",
+   "mkt": "上市",
+   "industry": "電子零組件業",
+   "close": 329,
+   "yoy": 45.54208446583508,
+   "star": true,
+   "okUp": true,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "2472",
+   "name": "立隆電",
+   "mkt": "上市",
+   "industry": "電子零組件業",
+   "close": 226,
+   "yoy": 51.18935687397397,
+   "star": true,
+   "okUp": true,
+   "okVol": true,
+   "above60": false
+  },
+  {
+   "code": "9933",
+   "name": "中鼎",
+   "mkt": "上市",
+   "industry": "其他",
+   "close": 41.65,
+   "yoy": 5.247920692818564,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": true
+  }
+ ],
+ "20261002": [
+  {
+   "code": "6531",
+   "name": "愛普*",
+   "mkt": "上市",
+   "industry": "半導體業",
+   "close": 1000,
+   "yoy": 150.82441845471112,
+   "star": true,
+   "okUp": true,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "1802",
+   "name": "台玻",
+   "mkt": "上市",
+   "industry": "玻璃陶瓷",
+   "close": 59.5,
+   "yoy": 32.59146823861491,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "2618",
+   "name": "長榮航",
+   "mkt": "上市",
+   "industry": "航運業",
+   "close": 42.35,
+   "yoy": 24.91631705549541,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "2610",
+   "name": "華航",
+   "mkt": "上市",
+   "industry": "航運業",
+   "close": 20.35,
+   "yoy": 27.22342415074881,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": false
+  },
+  {
+   "code": "1312",
+   "name": "國喬",
+   "mkt": "上市",
+   "industry": "塑膠工業",
+   "close": 14.75,
+   "yoy": 89.22674829328686,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "4904",
+   "name": "遠傳",
+   "mkt": "上市",
+   "industry": "通信網路業",
+   "close": 106,
+   "yoy": 15.651609823935727,
+   "star": false,
+   "okUp": true,
+   "okVol": false,
+   "above60": true
+  },
+  {
+   "code": "1309",
+   "name": "台達化",
+   "mkt": "上市",
+   "industry": "塑膠工業",
+   "close": 14.3,
+   "yoy": 6.372348677570834,
+   "star": false,
+   "okUp": true,
+   "okVol": false,
+   "above60": true
+  },
+  {
+   "code": "6005",
+   "name": "群益證",
+   "mkt": "上市",
+   "industry": "金融保險業",
+   "close": 32,
+   "yoy": 45.34586757893414,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": false
+  },
+  {
+   "code": "6442",
+   "name": "光聖",
+   "mkt": "上市",
+   "industry": "通信網路業",
+   "close": 1625,
+   "yoy": 152.24399939889415,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": true
+  }
+ ]
+}

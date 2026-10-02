@@ -1,0 +1,7 @@
+site/
+reports/
+worker/
+*.log
+running.flag
+最新選股.html
+node_modules/
