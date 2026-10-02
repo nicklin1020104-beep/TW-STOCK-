@@ -1714,7 +1714,8 @@ function renderProfile() {
 }
 
 function renderWatch() {
-  return `<h2>自選觀察股 <span class="count watch-where">存在這台裝置</span></h2>
+  return `<div class="lock-card pf-lock"><div class="lock-ic big">🔒</div><h3>登入 Google 才能使用自選股</h3><p>登入後可以把看好的股票加入自選股，依族群自動分組、用 EPS × 本益比算合理價（附外資預估），換手機或電腦也會雲端同步。</p><div class="gsi-lock"></div><div class="lock-sub">只會取得你的名字、信箱與大頭照</div></div>
+<h2>自選觀察股 <span class="count watch-where">存在這台裝置</span></h2>
 <form class="watch-add" onsubmit="return false">
   <input class="watch-input" list="watch-stocks" placeholder="輸入代號或名稱，例如 2330 或 台積電" autocomplete="off">
   <datalist id="watch-stocks"></datalist>
@@ -1771,10 +1772,17 @@ function clientScript() {
     document.documentElement.classList.toggle('gated', !(user && token) && !guest);
     var w = $('.watch-where'); if (w) w.textContent = token ? '已登入，雲端同步' : '存在這台裝置（登入可同步）';
   }
+  // 訪客統計：每台裝置每天記一次（只看介紹頁 < 訪客 < 會員），不記錄個人資料
+  window.__track = function (kind) {
+    var vid = LS.get('shoupan_vid'); if (!vid) { vid = (window.crypto && crypto.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2) + Date.now()); LS.set('shoupan_vid', vid); }
+    try { fetch(API + '/api/visit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ vid: vid, kind: kind }), keepalive: true }); } catch (e) {}
+  };
+  window.__track(token ? 'member' : LS.get('shoupan_guest') ? 'guest' : 'landing');
   function logoutLocal() { token = null; user = null; LS.del('shoupan_token'); LS.del('shoupan_user'); LS.del('shoupan_guest'); showUser(); }
   window.__shoupanLogin = function (resp) {
     api('/api/login', { method: 'POST', body: JSON.stringify({ credential: resp.credential }) }).then(function (j) {
       if (j.error) { $('.auth-note').textContent = j.error; var ge = $('.gate-err'); if (ge) ge.textContent = j.error; return; }
+      window.__track('member');
       token = j.token; user = j.user; LS.set('shoupan_token', token); LS.set('shoupan_user', JSON.stringify(user)); showUser(); loadAdmin(); loadProfile(); loadBoard('week');
       // 把這台裝置的自選股合併到雲端
       api('/api/watchlist').then(function (w) { var merged = (w.codes || []).concat(codes.filter(function (c) { return (w.codes || []).indexOf(c) < 0; })); codes = merged; saveCodes(); renderWatch(); });
@@ -2008,7 +2016,11 @@ function clientScript() {
       var mem = (j.members || []).map(function (m) { return '<tr><td>' + tf(m.created) + '</td><td class="nm">' + esc(m.nickname || '（未取暱稱）') + '</td><td>' + esc(m.name || '') + '</td><td class="hint">' + esc(m.email || '') + '</td><td>' + tf(m.last_login) + '</td></tr>'; }).join('');
       var todayKey = new Date(Date.now() + 8 * 3600000).toISOString().slice(0, 10).replace(/-/g, '');
       var todayN = ((j.signups || []).filter(function (d) { return d.date === todayKey; })[0] || { n: 0 }).n;
+      var vis = (j.visits || []).map(function (d) { return '<tr><td>' + d.date.slice(4, 6) + '/' + d.date.slice(6) + '</td><td><b>' + d.total + '</b></td><td>' + d.members + '</td><td>' + d.guests + '</td><td>' + d.landing + '</td></tr>'; }).join('');
+      var tv = (j.visits || []).filter(function (d) { return d.date === todayKey; })[0];
       box.innerHTML = '<h2>管理員後台 <span class="count">只有你看得到・會員 ' + j.users + ' 人・今天新加入 ' + todayN + ' 人・開啟通知 ' + (j.pushSubs || 0) + ' 台裝置</span></h2>' +
+        '<h3>每日訪客 <span class="count">今天 ' + (tv ? tv.total : 0) + ' 人（會員 ' + (tv ? tv.members : 0) + '・訪客 ' + (tv ? tv.guests : 0) + '・只看介紹頁 ' + (tv ? tv.landing : 0) + '）</span></h3>' +
+        (vis ? '<div class="scroll"><table class="compact"><thead><tr><th>日期</th><th>總人數</th><th>會員</th><th>訪客</th><th>只看介紹頁</th></tr></thead><tbody>' + vis + '</tbody></table></div><p class="hint">以「裝置」計算，同一台裝置一天只算一次；同一天先當訪客、後來登入，算會員。</p>' : '<p class="empty">還沒有訪客資料</p>') +
         '<h3>每日新會員</h3>' + (sign ? '<div class="scroll"><table class="compact"><thead><tr><th>日期</th><th>新會員</th></tr></thead><tbody>' + sign + '</tbody></table></div>' : '<p class="empty">尚無會員</p>') +
         '<h3>最新加入的會員</h3>' + (mem ? '<details><summary>展開名單（最新 100 人）</summary><div class="scroll"><table class="compact"><thead><tr><th>加入時間</th><th>暱稱</th><th>Google 名字</th><th>信箱</th><th>最近登入</th></tr></thead><tbody>' + mem + '</tbody></table></div></details>' : '') +
         '<h3>每日投票總覽</h3>' +

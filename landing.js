@@ -73,7 +73,7 @@ function renderGate() {
 </div></section>
 <footer class="lp-foot"><div class="lp-wrap"><div class="lp-brand"><img src="${logo}" alt="">飆股情報局</div><p>每天收盤後的台股選股情報站・本站內容皆由程式依公開資料自動整理，僅供參考，不構成投資建議。</p><p>© 2026 飆股情報局・<a href="/TW-STOCK-/privacy.html" target="_blank">隱私權政策與服務條款</a></p></div></footer>
 </div>
-<script>document.addEventListener("click",function(e){var g=e.target.closest(".lp-guest");if(!g)return;e.preventDefault();try{localStorage.setItem("shoupan_guest","1")}catch(x){}document.documentElement.classList.remove("gated");scrollTo(0,0);});</script>`;
+<script>document.addEventListener("click",function(e){var g=e.target.closest(".lp-guest");if(!g)return;e.preventDefault();try{localStorage.setItem("shoupan_guest","1")}catch(x){}if(window.__track)window.__track("guest");document.documentElement.classList.remove("gated");scrollTo(0,0);});</script>`;
 }
 
 const GATE_CSS = `#gate{display:none}html.gated #gate{display:block;position:fixed;inset:0;z-index:1000;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;scroll-behavior:smooth}html.gated body{overflow:hidden}
@@ -106,7 +106,7 @@ const GATE_CSS = `#gate{display:none}html.gated #gate{display:block;position:fix
 .sh-tip{font-size:12px;color:var(--mute);margin-top:10px;line-height:1.6}
 .push-box{margin-bottom:6px}.push-tip{font-size:13.5px;color:var(--mute);line-height:1.7}.push-on{font-weight:700;margin:4px 0 8px}.push-opts{display:flex;flex-direction:column;gap:8px;font-size:14px}.push-opts input{margin-right:6px}.push-acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 .push-enable,.push-acts button{font:inherit;font-size:14px;font-weight:700;padding:9px 16px;border-radius:999px;border:1.5px solid var(--accent);background:var(--accent);color:var(--bg);cursor:pointer}.push-acts button{background:var(--card);color:var(--fg);border-color:var(--line);font-weight:600;font-size:13px;padding:7px 14px}.push-small{margin-top:8px;font-size:13px;padding:6px 14px;background:color-mix(in srgb,var(--accent) 10%,transparent);color:var(--accent)}.push-msg{font-size:13px;color:var(--accent);margin-top:8px}
-.lock-card{display:none}html.anon .lock-card{display:block}html.anon .vote-form,html.anon .push-mini{display:none}html.anon .page[data-p="profile"]>:not(.lock-card){display:none}
+.lock-card{display:none}html.anon .lock-card{display:block}html.anon .vote-form,html.anon .push-mini{display:none}html.anon .page[data-p="profile"]>:not(.lock-card),html.anon .page[data-p="watch"]>:not(.lock-card){display:none}
 .vote-lock{margin-top:4px;padding:12px 14px;border-radius:12px;border:1.5px dashed color-mix(in srgb,var(--accent) 45%,var(--line));background:color-mix(in srgb,var(--accent) 5%,var(--bg))}.lock-row{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;font-size:14.5px}.lock-ic{font-size:22px;line-height:1.2}.lock-sub{font-size:12.5px;color:var(--mute);margin-top:3px;line-height:1.6}.gsi-lock{min-height:44px}
 .pf-lock{text-align:center;max-width:460px;margin:30px auto;padding:30px 22px;border-radius:18px;border:1px solid var(--line);background:var(--card)}.pf-lock h3{font-size:19px;margin:8px 0}.pf-lock p{font-size:14px;color:var(--mute);line-height:1.75;margin:0 0 18px}.pf-lock .gsi-lock{display:flex;justify-content:center}.lock-ic.big{font-size:40px}
 .lp-guest{cursor:pointer}.lp-guestnote{font-size:13px;color:var(--mute);margin-top:14px}
