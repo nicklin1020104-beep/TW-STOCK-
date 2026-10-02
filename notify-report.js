@@ -32,6 +32,8 @@ const sign = (v, d = 2) => (v >= 0 ? '+' : '') + Number(v).toFixed(d);
     lines = [
       b.best.length ? '一K站三線＋投信買超：' + names(b.best) : '一K站三線＋投信買超：今日無',
       b.latent.length ? '潛伏股＋投信買超：' + names(b.latent) : '',
+      b.aetfBuy && b.aetfBuy.length ? '主動ETF同步加碼：' + names(b.aetfBuy) : '',
+      b.aetfSell && b.aetfSell.length ? '主動ETF同步減碼：' + names(b.aetfSell) : '',
       '主力鎖碼、三大法人、千張大戶都更新了',
     ];
   }

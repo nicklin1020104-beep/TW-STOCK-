@@ -110,6 +110,7 @@ const GATE_CSS = `#gate{display:none}html.gated #gate{display:block;position:fix
 .vote-lock{margin-top:4px;padding:12px 14px;border-radius:12px;border:1.5px dashed color-mix(in srgb,var(--accent) 45%,var(--line));background:color-mix(in srgb,var(--accent) 5%,var(--bg))}.lock-row{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;font-size:14.5px}.lock-ic{font-size:22px;line-height:1.2}.lock-sub{font-size:12.5px;color:var(--mute);margin-top:3px;line-height:1.6}.gsi-lock{min-height:44px}
 .pf-lock{text-align:center;max-width:460px;margin:30px auto;padding:30px 22px;border-radius:18px;border:1px solid var(--line);background:var(--card)}.pf-lock h3{font-size:19px;margin:8px 0}.pf-lock p{font-size:14px;color:var(--mute);line-height:1.75;margin:0 0 18px}.pf-lock .gsi-lock{display:flex;justify-content:center}.lock-ic.big{font-size:40px}
 .lp-guest{cursor:pointer}.lp-guestnote{font-size:13px;color:var(--mute);margin-top:14px}
+.aetf-h{font-weight:800;font-size:13.5px;margin:6px 0 4px}
 .vote-prize{border-radius:12px;padding:12px 14px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 10%,var(--bg)),var(--bg));border:1px solid color-mix(in srgb,var(--accent) 30%,var(--line))}.vp-title{font-weight:800;font-size:15px;margin-bottom:6px}.vp-row{font-size:13.5px;line-height:1.7}.vp-me{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);font-size:14px;line-height:1.6}`;
 
 // ---- 瀏覽器端：分享圖卡 ----

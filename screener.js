@@ -19,6 +19,7 @@ const { buildRoast } = require('./roast.js');
 const { buildLocked } = require('./chips.js');
 const { getEstimates } = require('./estimates.js');
 const { findCups, CUP_PARAMS } = require('./cup.js');
+const activeEtf = require('./activeetf.js');
 const { renderGate, GATE_CSS, shareScript, pushScript } = require('./landing.js');
 const VOTE_API = 'https://shoupan-api.shoupan.workers.dev';
 // 比賽金鑰：雲端（GitHub Actions）從加密設定讀，本機從 worker/.results-key 讀
@@ -875,6 +876,23 @@ async function main() {
   const bestB = allCross.filter((r) => r.trustLots > 0 && r.lots >= BEST_MIN_LOTS && r.chg < 7);
   const latentTrust = latent.filter((r) => r.trustLots > 0);
 
+  // 主動式 ETF 加碼／減碼（各投信每日公告的持股清單）
+  let aetf = null;
+  try {
+    await activeEtf.updateAll();
+    const closeOf = (c) => {
+      for (let i = T; i >= Math.max(0, T - 5); i--) if (days[i].data[c] && days[i].data[c].close) return days[i].data[c].close;
+      return null;
+    };
+    aetf = activeEtf.analyze(closeOf);
+    // 名稱統一用交易所的簡稱（各投信寫法不同，例如「台灣積體電路製造」）
+    const nm = (c, n) => (today[c] && today[c].name) || n;
+    for (const e of aetf.etfs) for (const x of [...e.buys, ...e.sells, ...e.top]) x.name = nm(x.code, x.name);
+    for (const g of [...aetf.consensusBuy, ...aetf.consensusSell, ...aetf.netBuy, ...aetf.netSell]) { g.name = nm(g.code, g.name); g.mkt = today[g.code] && today[g.code].mkt; }
+  } catch (e) {
+    console.error('主動式ETF失敗：', e.message);
+  }
+
   // 千張大戶
   let holders = { dates: [], rows: [] };
   try {
@@ -1243,6 +1261,8 @@ async function main() {
         best: uniq([...bestA, ...bestB].map((r) => r.name)),
         cup: cups.map((r) => r.name),
         latent: latentTrust.map((r) => r.name),
+        aetfBuy: aetf ? aetf.consensusBuy.slice(0, 3).map((g) => g.name) : [],
+        aetfSell: aetf ? aetf.consensusSell.slice(0, 3).map((g) => g.name) : [],
         roast: Array.isArray(roast) && roast.length ? String(roast[0]).replace(/<[^>]+>/g, "") : null,
       })
     );
@@ -1250,7 +1270,7 @@ async function main() {
     console.error('個股資料輸出失敗：', e.message);
   }
 
-  const html = renderHtml(tradeDate, groupAbove, groupBelow, flow, picks, { locked, voteRecap, roast, topbar, industry, ir50, threeGroups: threeUp.groups, macro, holders, breadth, bestA, bestB, latentTrust, cups, cupTracking, allCross, latent, threeUp, tracking, bigLeaders, crashed, stockNews, industryNews });
+  const html = renderHtml(tradeDate, groupAbove, groupBelow, flow, picks, { locked, voteRecap, roast, topbar, industry, ir50, threeGroups: threeUp.groups, macro, holders, breadth, bestA, bestB, latentTrust, cups, cupTracking, aetf, allCross, latent, threeUp, tracking, bigLeaders, crashed, stockNews, industryNews });
   const dated = path.join(REPORTS, `${tradeDate}.html`);
   fs.writeFileSync(dated, html);
   fs.writeFileSync(path.join(ROOT, '最新選股.html'), html);
@@ -1545,6 +1565,38 @@ function renderLocked({ all, near, params: P, flowFrom }) {
 <p class="hint">「籌碼集中度」＝ 外資＋投信近 ${P.FLOW_DAYS} 日累計淨買超 ÷ 同期成交量。條件欄依序為 大戶／法人／融資／股價。②為必要條件；券商分點（真正的主力進出）有驗證碼無法自動取得，這裡用法人與大戶持股代替。</p>
 <div class="stabs">${tabs.map(([k, t, n], i) => `<button class="stab${i ? '' : ' on'}" data-s="${k}">${t} <b>${n}</b></button>`).join('')}</div>
 ${tabs.map(([k, , , html], i) => `<div class="spage" data-s="${k}"${i ? ' hidden' : ''}>${html}</div>`).join('')}`;
+}
+
+function renderActiveEtf(x) {
+  const md = (d) => (d ? `${+d.slice(4, 6)}/${+d.slice(6)}` : '-');
+  const link = (c) => `https://tw.stock.yahoo.com/quote/${c}/technical-analysis`;
+  const amt = (v) => (v == null ? '-' : `<span class="${v >= 0 ? 'up' : 'dn'}">${v >= 0 ? '+' : ''}${v.toFixed(2)} 億</span>`);
+  const tag = { 新進: 'good', 加碼: 'good', 減碼: 'bad', 出清: 'bad' };
+  const groupTable = (list, side) =>
+    list.length
+      ? `<div class="scroll"><table class="compact"><thead><tr><th>股票</th><th>${side === 'buy' ? '加碼' : '減碼'}的 ETF</th><th>合計金額（估）</th></tr></thead><tbody>${list
+          .slice(0, 10)
+          .map((g) => `<tr><td class="nm"><a href="${link(g.code)}" target="_blank">${g.code}</a> ${g.name}</td><td>${(side === 'buy' ? g.buy : g.sell).length} 檔：${(side === 'buy' ? g.buy : g.sell).join('、')}</td><td>${amt(g.amt)}</td></tr>`)
+          .join('')}</tbody></table></div>`
+      : '<p class="empty">今日無</p>';
+  const chgTable = (list) =>
+    list.length
+      ? `<div class="scroll"><table class="compact"><thead><tr><th>股票</th><th>動作</th><th>張數</th><th>金額（估）</th><th>權重</th></tr></thead><tbody>${list
+          .slice(0, 8)
+          .map((c) => `<tr><td class="nm"><a href="${link(c.code)}" target="_blank">${c.code}</a> ${c.name}</td><td><span class="chip ${tag[c.type]}">${c.type}</span></td><td class="${c.lots >= 0 ? 'up' : 'dn'}">${c.lots >= 0 ? '+' : ''}${c.lots.toLocaleString()}</td><td>${amt(c.amt)}</td><td>${f2(c.weightPrev)}% → ${f2(c.weight)}%</td></tr>`)
+          .join('')}</tbody></table></div>`
+      : '<p class="empty">無</p>';
+  const cards = x.etfs
+    .map((e) => `<h3>${e.code} ${e.name} <span class="count">規模 ${e.scale ? Math.round(e.scale / 1e8).toLocaleString() + ' 億' : '-'}・持股 ${e.n} 檔・${e.prevDate ? md(e.prevDate) + ' → ' + md(e.date) : md(e.date) + '（明天開始比較）'}</span></h3>
+${e.prevDate ? `<div class="cols"><div><div class="aetf-h up">▲ 加碼／新進</div>${chgTable(e.buys)}</div><div><div class="aetf-h dn">▼ 減碼／出清</div>${chgTable(e.sells)}</div></div>` : ''}
+<details class="more"><summary>前十大持股</summary><div class="scroll"><table class="compact"><thead><tr><th>股票</th><th>權重</th><th>張數</th></tr></thead><tbody>${e.top.map((r) => `<tr><td class="nm">${r.code} ${r.name}</td><td>${f2(r.weight)}%</td><td>${Math.round(r.shares / 1000).toLocaleString()}</td></tr>`).join('')}</tbody></table></div></details>`)
+    .join('');
+  return `<h2>主動式 ETF 加碼／減碼 <span class="count">規模最大的 ${x.etfs.length} 檔・各投信每日公告的持股清單</span></h2>
+<p class="hint">比較每檔 ETF 最近兩天公告的持股張數：多了＝加碼（原本沒有＝新進），少了＝減碼（全部賣光＝出清）。金額＝張數變化 × 最近收盤價，為估算值。各投信公告時間不同（約傍晚到隔天早上），所以資料日可能差一天。</p>
+<div class="cols"><div><h3>🔥 同步加碼 <span class="count">2 檔以上 ETF 一起買</span></h3>${groupTable(x.consensusBuy, 'buy')}</div><div><h3>🧊 同步減碼 <span class="count">2 檔以上 ETF 一起賣</span></h3>${groupTable(x.consensusSell, 'sell')}</div></div>
+<div class="cols"><div><h3>合計買超金額 Top 10</h3>${groupTable(x.netBuy, 'buy')}</div><div><h3>合計賣超金額 Top 10</h3>${groupTable(x.netSell, 'sell')}</div></div>
+<h2>各檔 ETF 明細</h2>
+${cards}`;
 }
 
 function renderHolders({ rows }) {
@@ -2045,7 +2097,7 @@ function clientScript() {
 const NAV = [
   ['pick', '選股', [['main', '一K站三線'], ['latent', '潛伏股'], ['three', '三率三升'], ['cup', '杯柄型態'], ['leader', '千金龍頭'], ['track', '一週追蹤']]],
   ['watch', '自選股', [['watch', '自選股']]],
-  ['chips', '籌碼', [['locked', '主力鎖碼'], ['flow', '三大法人'], ['holders', '千張大戶']]],
+  ['chips', '籌碼', [['locked', '主力鎖碼'], ['flow', '三大法人'], ['holders', '千張大戶'], ['aetf', '主動ETF']]],
   ['sector', '產業', [['industry', '產業趨勢'], ['news', '產業新聞'], ['ir50', '0050法說營收']]],
   ['macro', '總經', [['macro', '總經']]],
   ['me', '個人檔案', [['profile', '個人檔案']]],
@@ -2380,6 +2432,7 @@ ${renderLatent(extra.latent)}</div>
 <div class="page" data-p="industry" hidden>${extra.industry ? renderIndustry(extra.industry) : '<p class="empty">產業趨勢計算失敗</p>'}</div>
 <div class="page" data-p="locked" hidden>${extra.locked ? renderLocked(extra.locked) : '<p class="empty">主力鎖碼資料更新失敗</p>'}</div>
 <div class="page" data-p="holders" hidden>${renderHolders(extra.holders)}</div>
+<div class="page" data-p="aetf" hidden>${extra.aetf && extra.aetf.etfs.length ? renderActiveEtf(extra.aetf) : '<p class="empty">主動式 ETF 資料更新失敗</p>'}</div>
 <div class="page" data-p="leader" hidden>${renderLeaders(extra)}</div>
 <div class="page" data-p="flow" hidden>${renderFlow(flow, picks)}</div>
 <div class="page" data-p="track" hidden><div><div class="stabs"><button class="stab on" data-s="tk-cross">一K站三線</button><button class="stab" data-s="tk-cup">杯柄型態</button></div><div class="spage" data-s="tk-cross">${renderTracking(extra.tracking)}</div><div class="spage" data-s="tk-cup" hidden>${extra.cupTracking ? renderTracking(extra.cupTracking, { col: "狀態", cell: (p) => p.status + (p.tight ? "・收斂" : ""), hint: "每天「杯柄型態」頁上榜的股票（柄整理中或近期帶量突破），自 " + TRACK_START.slice(4, 6) + "/" + TRACK_START.slice(6) + " 起；之前的日子是用當時的行情回推（營收用最新一期）。" }) : '<p class="empty">杯柄追蹤計算失敗</p>'}</div></div></div>
