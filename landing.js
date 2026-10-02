@@ -155,7 +155,7 @@ function shareClient(SITE) {
     var tables = [].slice.call(page.querySelectorAll('table')).filter(function (t) { return visible(t) && !t.closest('td') && t.querySelector(':scope > thead') && t.querySelectorAll(':scope > tbody > tr').length; });
     var t = tables[0];
     if (!t) {
-      var links = [].slice.call(page.querySelectorAll('li a, .news a, a.news')).filter(visible).slice(0, 8);
+      var links = [].slice.call(page.querySelectorAll('li a, .news a, a.news')).filter(visible).slice(0, 7);
       return { cols: ['標題'], rows: links.map(function (a) { return { name: a.textContent.replace(/\s+/g, ' ').trim(), vals: [] }; }), total: links.length, head: null };
     }
     var heads = [].slice.call(t.querySelectorAll(':scope > thead > tr > th')).map(function (th) { return th.textContent.replace(/\s+/g, ' ').trim(); });
@@ -164,7 +164,7 @@ function shareClient(SITE) {
     var want = (PREF[key] || []).map(function (h) { return heads.indexOf(h); }).filter(function (i) { return i >= 0 && i !== ni; });
     if (!want.length) want = heads.map(function (h, i) { return i; }).filter(function (i) { return i !== ni && i !== ci && SKIP.indexOf(heads[i]) < 0; }).slice(0, 3);
     var trs = [].slice.call(t.querySelectorAll(':scope > tbody > tr')).filter(function (tr) { return !tr.classList.contains('det') && !tr.classList.contains('watch-gh') && tr.children.length >= heads.length - 1; });
-    var rows = trs.slice(0, 8).map(function (tr) {
+    var rows = trs.slice(0, 7).map(function (tr) {
       var td = tr.children;
       var name = td[ni] ? clean(td[ni]) : '';
       if (ci >= 0 && td[ci]) name = name + ' ' + clean(td[ci]);
@@ -224,17 +224,23 @@ function shareClient(SITE) {
       g.textAlign = 'left';
     });
     if (data.total > data.rows.length) { g.fillStyle = C.mute; g.font = font(24); g.fillText('…還有 ' + (data.total - data.rows.length) + ' 筆，掃 QR Code 看完整名單', 70, top + boxH + 34); }
+    // 最下方：投資警語橫條（每張圖都有）
+    var bandH = 100, by = H - bandH;
+    g.fillStyle = '#ffd166'; g.fillRect(0, by, W, bandH);
+    g.fillStyle = '#1b1300'; g.textAlign = 'center';
+    g.font = font(27, true); g.fillText('⚠️ 投資警語：本內容僅供參考，不構成投資建議或買賣推薦', W / 2, by + 34);
+    g.font = font(21); g.fillText('資料由程式依公開資訊自動整理，可能有延遲或誤差；投資有風險，請獨立判斷、自負盈虧', W / 2, by + 72);
+    g.textAlign = 'left';
     // 頁尾 QR
-    var qs = 210, qx = W - 60 - qs, qy = H - 60 - qs;
+    var qs = 180, qx = W - 60 - qs, qy = by - 30 - qs;
     g.fillStyle = '#fff'; rr(g, qx - 14, qy - 14, qs + 28, qs + 28, 20); g.fill();
     var qr = qrcode(0, 'M'); qr.addData(url); qr.make();
     var m = qr.getModuleCount(), cs = qs / m;
     g.fillStyle = '#0b1530';
     for (var a = 0; a < m; a++) for (var b = 0; b < m; b++) if (qr.isDark(a, b)) g.fillRect(qx + b * cs, qy + a * cs, cs + 0.6, cs + 0.6);
-    g.fillStyle = C.fg; g.font = font(40, true); g.fillText('掃描看完整內容', 60, H - 210);
-    g.fillStyle = C.mute; g.font = font(26); g.fillText('每天收盤後自動更新・免費加入', 60, H - 158);
-    g.fillStyle = C.gold; g.font = font(30, true); g.fillText('🔍 搜尋「飆股情報局」', 60, H - 108);
-    g.fillStyle = 'rgba(255,255,255,0.45)'; g.font = font(19); g.fillText('資料由程式依公開資訊整理，僅供參考，不構成投資建議', 60, H - 58);
+    g.fillStyle = C.fg; g.font = font(38, true); g.fillText('掃描看完整內容', 60, qy + 30);
+    g.fillStyle = C.mute; g.font = font(25); g.fillText('每天收盤後自動更新・免費加入', 60, qy + 84);
+    g.fillStyle = C.gold; g.font = font(29, true); g.fillText('🔍 搜尋「飆股情報局」', 60, qy + 136);
     return cv;
   }
 
@@ -279,7 +285,7 @@ function shareClient(SITE) {
   modal.querySelector('.sh-share').onclick = function () {
     if (!blob) return;
     var f = new File([blob], fileName(), { type: 'image/png' });
-    var text = '飆股情報局｜' + cur.title + ' ' + cur.date + '（掃圖上 QR Code 看完整內容）';
+    var text = '飆股情報局｜' + cur.title + ' ' + cur.date + '（掃圖上 QR Code 看完整內容）｜僅供參考，非投資建議';
     if (navigator.canShare && navigator.canShare({ files: [f] })) navigator.share({ files: [f], text: text }).catch(function () {});
     else download();
   };
