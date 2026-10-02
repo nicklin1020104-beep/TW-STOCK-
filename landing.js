@@ -21,7 +21,8 @@ const TRUST = [
   ['⚖️', '僅供參考', '所有內容僅供研究交流，不構成任何投資建議，投資前請獨立判斷、自負風險'],
 ];
 const FAQ = [
-  ['飆股情報局要錢嗎？', '完全免費。只要用 Google 帳號註冊就能使用全部功能。'],
+  ['飆股情報局要錢嗎？', '完全免費。訪客也能看所有選股與盤後資料；用 Google 帳號登入後，還可以投票、上排行榜、收推播通知、自選股雲端同步。'],
+  ['一定要登入嗎？', '不用。點「以訪客身分進入」就能直接看。只有投票比賽、個人檔案、推播通知需要 Google 登入。'],
   ['資料多久更新一次？', '每個交易日 14:00 收盤後自動整理一次，17:00 再補上三大法人資料，隔天早上 08:35 補上更晚出的資料；頂部的台指期、國際指數盤中每 15 分鐘更新。'],
   ['選股的條件是什麼？', '每個名單頁面上方都有寫清楚條件，例如一K站三線、三率三升、杯柄型態（《超級績效》VCP），並附上回測勝率，透明公開。'],
   ['可以在手機上用嗎？', '可以。用手機瀏覽器打開後，選「加入主畫面」，就會像 App 一樣有圖示可以點。'],
@@ -35,13 +36,14 @@ function renderGate() {
 <nav class="lp-nav"><div class="lp-wrap lp-navin">
   <a class="lp-brand" href="#gate-top"><img src="${logo}" alt="">飆股情報局</a>
   <div class="lp-links"><a href="#gate-feat">功能特色</a><a href="#gate-how">如何使用</a><a href="#gate-faq">常見問題</a></div>
-  <div class="lp-acts"><a class="lp-btn ghost" href="#gate-join">登入</a><a class="lp-btn solid" href="#gate-join">免費註冊</a></div>
+  <div class="lp-acts"><a class="lp-btn ghost lp-guest" href="#">訪客進入</a><a class="lp-btn solid" href="#gate-join">登入／註冊</a></div>
 </div></nav>
 <section class="lp-hero" id="gate-top"><div class="lp-wrap">
   <div class="lp-badge">📈 每個交易日 14:00 自動更新・完全免費</div>
   <h1>台股收盤後的<span>選股情報</span><br>最佳解決方案</h1>
   <p class="lp-lead">每天自動掃描全市場 1,900 多檔股票，整理成選股名單、族群趨勢、主力籌碼與總經數據。<br>3 分鐘看懂今天盤勢，找出明天值得注意的股票。</p>
-  <div class="lp-heroacts"><a class="lp-btn solid big" href="#gate-join">開始使用 →</a><a class="lp-btn ghost big" href="#gate-feat">看看有哪些功能</a></div>
+  <div class="lp-heroacts"><a class="lp-btn solid big" href="#gate-join">用 Google 登入 →</a><a class="lp-btn ghost big lp-guest" href="#">👀 以訪客身分進入</a></div>
+  <p class="lp-guestnote">訪客可以看所有選股與盤後資料；想<b>投票</b>、上排行榜、收推播通知、自選股雲端同步，請用 Google 登入</p>
   <div class="lp-stats"><div><b>1,900+</b><span>每日掃描個股</span></div><div><b>6</b><span>種選股策略</span></div><div><b>30+</b><span>細分族群</span></div><div><b>每天 2 次</b><span>自動更新</span></div></div>
 </div></section>
 <section class="lp-sec" id="gate-feat"><div class="lp-wrap">
@@ -66,10 +68,12 @@ function renderGate() {
   <p>用 Google 帳號免費註冊，10 秒完成。<br>自選股雲端同步、參加預測比賽、上排行榜。</p>
   <div id="gsi-gate"></div>
   <div class="gate-err"></div>
+  <p class="lp-guestnote">還不想登入？<a class="lp-guest" href="#">先以訪客身分逛逛 →</a>（投票需要登入）</p>
   <div class="gate-note">只會取得你的名字、信箱與大頭照，排行榜只顯示暱稱<br>註冊即表示同意 <a href="/TW-STOCK-/privacy.html" target="_blank">隱私權政策與服務條款</a></div>
 </div></section>
 <footer class="lp-foot"><div class="lp-wrap"><div class="lp-brand"><img src="${logo}" alt="">飆股情報局</div><p>每天收盤後的台股選股情報站・本站內容皆由程式依公開資料自動整理，僅供參考，不構成投資建議。</p><p>© 2026 飆股情報局・<a href="/TW-STOCK-/privacy.html" target="_blank">隱私權政策與服務條款</a></p></div></footer>
-</div>`;
+</div>
+<script>document.addEventListener("click",function(e){var g=e.target.closest(".lp-guest");if(!g)return;e.preventDefault();try{localStorage.setItem("shoupan_guest","1")}catch(x){}document.documentElement.classList.remove("gated");scrollTo(0,0);});</script>`;
 }
 
 const GATE_CSS = `#gate{display:none}html.gated #gate{display:block;position:fixed;inset:0;z-index:1000;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;scroll-behavior:smooth}html.gated body{overflow:hidden}
@@ -102,6 +106,10 @@ const GATE_CSS = `#gate{display:none}html.gated #gate{display:block;position:fix
 .sh-tip{font-size:12px;color:var(--mute);margin-top:10px;line-height:1.6}
 .push-box{margin-bottom:6px}.push-tip{font-size:13.5px;color:var(--mute);line-height:1.7}.push-on{font-weight:700;margin:4px 0 8px}.push-opts{display:flex;flex-direction:column;gap:8px;font-size:14px}.push-opts input{margin-right:6px}.push-acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 .push-enable,.push-acts button{font:inherit;font-size:14px;font-weight:700;padding:9px 16px;border-radius:999px;border:1.5px solid var(--accent);background:var(--accent);color:var(--bg);cursor:pointer}.push-acts button{background:var(--card);color:var(--fg);border-color:var(--line);font-weight:600;font-size:13px;padding:7px 14px}.push-small{margin-top:8px;font-size:13px;padding:6px 14px;background:color-mix(in srgb,var(--accent) 10%,transparent);color:var(--accent)}.push-msg{font-size:13px;color:var(--accent);margin-top:8px}
+.lock-card{display:none}html.anon .lock-card{display:block}html.anon .vote-form,html.anon .push-mini{display:none}html.anon .page[data-p="profile"]>:not(.lock-card){display:none}
+.vote-lock{margin-top:4px;padding:12px 14px;border-radius:12px;border:1.5px dashed color-mix(in srgb,var(--accent) 45%,var(--line));background:color-mix(in srgb,var(--accent) 5%,var(--bg))}.lock-row{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;font-size:14.5px}.lock-ic{font-size:22px;line-height:1.2}.lock-sub{font-size:12.5px;color:var(--mute);margin-top:3px;line-height:1.6}.gsi-lock{min-height:44px}
+.pf-lock{text-align:center;max-width:460px;margin:30px auto;padding:30px 22px;border-radius:18px;border:1px solid var(--line);background:var(--card)}.pf-lock h3{font-size:19px;margin:8px 0}.pf-lock p{font-size:14px;color:var(--mute);line-height:1.75;margin:0 0 18px}.pf-lock .gsi-lock{display:flex;justify-content:center}.lock-ic.big{font-size:40px}
+.lp-guest{cursor:pointer}.lp-guestnote{font-size:13px;color:var(--mute);margin-top:14px}
 .vote-prize{border-radius:12px;padding:12px 14px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 10%,var(--bg)),var(--bg));border:1px solid color-mix(in srgb,var(--accent) 30%,var(--line))}.vp-title{font-weight:800;font-size:15px;margin-bottom:6px}.vp-row{font-size:13.5px;line-height:1.7}.vp-me{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);font-size:14px;line-height:1.6}`;
 
 // ---- 瀏覽器端：分享圖卡 ----

@@ -1619,6 +1619,7 @@ function renderVote(dateLabel, extra) {
   <datalist id="vote-themes">${themeNames.map((n) => `<option value="${esc(n)}">`).join('')}</datalist>
   <div class="vote-btns"><button type="button" data-bias="bull">🐂 看多</button><button type="button" data-bias="bear">🐻 看空</button></div>
 </form>
+<div class="lock-card vote-lock"><div class="lock-row"><span class="lock-ic">🔒</span><div><b>登入 Google 才能投票</b><div class="lock-sub">猜明天漲跌和最強族群，猜中得分、上排行榜，開獎還會推播你的得分</div></div></div><div class="gsi-lock"></div></div>
 <div class="vote-result" hidden></div>
 <div class="vote-msg"></div>
 ${recap}
@@ -1693,7 +1694,8 @@ ${recap}
 // 自選股：沒登入存在這台裝置；登入後存在雲端，手機電腦同步
 function renderProfile() {
   const accents = [['red', '紅', '#d0312d'], ['gold', '芥末金', '#c98a1e'], ['blue', '藍', '#2563eb'], ['green', '綠', '#16a34a'], ['purple', '紫', '#7c3aed'], ['black', '黑', '#222']];
-  return `<div class="pf-head"><img class="pf-pic" alt=""><div><div class="pf-name">情報員</div><div class="pf-mail hint"></div></div></div>
+  return `<div class="lock-card pf-lock"><div class="lock-ic big">🔒</div><h3>登入 Google 才能使用個人檔案</h3><p>登入後可以設定暱稱和主題色、查看投票紀錄與排行榜、開啟開盤／收盤推播通知，自選股也會雲端同步。</p><div class="gsi-lock"></div><div class="lock-sub">只會取得你的名字、信箱與大頭照，排行榜只顯示暱稱</div></div>
+<div class="pf-head"><img class="pf-pic" alt=""><div><div class="pf-name">情報員</div><div class="pf-mail hint"></div></div></div>
 <h2>設定</h2>
 <div class="pf-set">
   <label>暱稱（排行榜顯示）<input class="pf-nick" maxlength="12" placeholder="例如 PCB 獵人"></label><div class="pf-nick-hint hint"></div>
@@ -1764,10 +1766,12 @@ function clientScript() {
     var u = $('.auth-user'), out = $('.auth-out'), gb = $('#gsi-btn');
     if (user && token) { u.innerHTML = (user.picture ? '<img src="' + esc(user.picture) + '" alt="">' : '') + esc(user.name || user.email); u.hidden = false; out.hidden = false; gb.style.display = 'none'; }
     else { u.hidden = true; out.hidden = true; gb.style.display = ''; }
-    document.documentElement.classList.toggle('gated', !(user && token));
+    var guest = false; try { guest = !!localStorage.getItem('shoupan_guest'); } catch (e) {}
+    document.documentElement.classList.toggle('anon', !(user && token));
+    document.documentElement.classList.toggle('gated', !(user && token) && !guest);
     var w = $('.watch-where'); if (w) w.textContent = token ? '已登入，雲端同步' : '存在這台裝置（登入可同步）';
   }
-  function logoutLocal() { token = null; user = null; LS.del('shoupan_token'); LS.del('shoupan_user'); showUser(); }
+  function logoutLocal() { token = null; user = null; LS.del('shoupan_token'); LS.del('shoupan_user'); LS.del('shoupan_guest'); showUser(); }
   window.__shoupanLogin = function (resp) {
     api('/api/login', { method: 'POST', body: JSON.stringify({ credential: resp.credential }) }).then(function (j) {
       if (j.error) { $('.auth-note').textContent = j.error; var ge = $('.gate-err'); if (ge) ge.textContent = j.error; return; }
@@ -1786,6 +1790,8 @@ function clientScript() {
         google.accounts.id.initialize({ client_id: c.googleClientId, callback: window.__shoupanLogin });
         google.accounts.id.renderButton($('#gsi-btn'), { theme: 'outline', size: 'medium', text: 'signin', shape: 'pill', locale: 'zh-TW' });
         if ($('#gsi-gate')) google.accounts.id.renderButton($('#gsi-gate'), { theme: 'filled_blue', size: 'large', text: 'signup_with', shape: 'pill', locale: 'zh-TW', width: 280 });
+        // 訪客看到的「登入才能用」鎖定卡片裡的 Google 按鈕
+        document.querySelectorAll('.gsi-lock').forEach(function (el) { google.accounts.id.renderButton(el, { theme: 'filled_blue', size: 'large', text: 'signin_with', shape: 'pill', locale: 'zh-TW', width: 260 }); });
         if (!token) google.accounts.id.prompt();
       })();
     }).catch(function () {});
@@ -2310,7 +2316,7 @@ function renderHtml(date, a, b, flow, picks, extra) {
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://nicklin1020104-beep.github.io/TW-STOCK-/og-image.png?v=2">
 <meta name="apple-mobile-web-app-title" content="飆股情報局"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="theme-color" content="#0b1733">
 <script>try{var pf=JSON.parse(localStorage.getItem('shoupan_prefs')||'{}');if(pf.accent)document.documentElement.setAttribute('data-accent',pf.accent);if(pf.theme)document.documentElement.setAttribute('data-theme',pf.theme)}catch(e){}</script>
-<script>try{if(!localStorage.getItem('shoupan_token'))document.documentElement.classList.add('gated')}catch(e){document.documentElement.classList.add('gated')}</script><style>
+<script>try{if(!localStorage.getItem('shoupan_token')){document.documentElement.classList.add('anon');if(!localStorage.getItem('shoupan_guest'))document.documentElement.classList.add('gated')}}catch(e){document.documentElement.classList.add('gated','anon')}</script><style>
 :root{--bg:#fff;--fg:#1a1a1a;--mute:#666;--line:#e5e5e5;--up:#d0312d;--dn:#1a8a3a;--card:#f7f7f7;--accent:#d0312d}
 @media (prefers-color-scheme:dark){:root{--bg:#161616;--fg:#eee;--mute:#999;--line:#333;--up:#ff6b64;--dn:#4cc36b;--card:#202020;--accent:#ff6b64}}
 html[data-theme=light]{--bg:#fff;--fg:#1a1a1a;--mute:#666;--line:#e5e5e5;--up:#d0312d;--dn:#1a8a3a;--card:#f7f7f7;color-scheme:light}
