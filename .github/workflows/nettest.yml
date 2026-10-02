@@ -10,7 +10,7 @@ jobs:
     steps:
       - name: 測試
         run: |
-          t() { code=$(curl -s -o /tmp/o -w "%{http_code}" -m 30 -A "Mozilla/5.0" "$2"); echo "::notice::$1 => HTTP $code, $(wc -c < /tmp/o) bytes, $(head -c 80 /tmp/o | tr -d '\n')"; }
+          t() { : > /tmp/o; code=$(curl -s -o /tmp/o -w "%{http_code}" -m 30 -A "Mozilla/5.0" "$2" || echo "逾時或失敗"); echo "::notice::$1 => HTTP $code, $(wc -c < /tmp/o) bytes, $(head -c 80 /tmp/o | tr -d '\n')"; }
           t 證交所行情 "https://www.twse.com.tw/rwd/zh/afterTrading/MI_INDEX?date=20261001&type=ALLBUT0999&response=json"
           t 櫃買行情 "https://www.tpex.org.tw/www/zh-tw/afterTrading/dailyQuotes?date=2026%2F10%2F01&id=&response=json"
           t 三大法人 "https://www.twse.com.tw/rwd/zh/fund/T86?date=20261001&selectType=ALLBUT0999&response=json"
