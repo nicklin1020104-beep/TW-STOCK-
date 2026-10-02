@@ -708,6 +708,22 @@ async function main() {
   const todayStr = ymd(now);
   const target = process.argv[2] || todayStr;
 
+  // 14:00 那次：今天有開盤的話，等證交所＋櫃買的收盤行情都出來（最多 40 分鐘）
+  if (process.env.WAIT_TODAY && !process.argv[2]) {
+    try {
+      const j = await getJSON('https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_t00.tw&json=1&delay=0');
+      const open = j.msgArray && j.msgArray[0] && j.msgArray[0].d === todayStr;
+      for (let i = 0; open && i < 20; i++) {
+        const d = await getDay(todayStr, todayStr);
+        if (d && Object.values(d).some((q) => q.mkt === '上櫃')) break;
+        console.log('今日行情還沒出齊，2 分鐘後再試');
+        await sleep(120000);
+      }
+    } catch (e) {
+      console.error('等待今日行情失敗：', e.message);
+    }
+  }
+
   // 往回收集足夠交易日
   const days = []; // 由新到舊
   const cursor = new Date(Date.UTC(+target.slice(0, 4), +target.slice(4, 6) - 1, +target.slice(6)));
@@ -1198,7 +1214,28 @@ async function main() {
     fs.writeFileSync(path.join(ROOT, 'site', 'stocks.json'), JSON.stringify({ date: tradeDate, list }));
     // 開盤推播用的今日焦點
     const uniq = (a) => [...new Set(a)];
-    fs.writeFileSync(path.join(ROOT, 'site', 'brief.json'), JSON.stringify({ date: tradeDate, best: uniq([...bestA, ...bestB].map((r) => r.name)), cup: cups.map((r) => r.name), latent: latentTrust.map((r) => r.name) }));
+    // 盤後推播（14:00 盤後整理、17:00 法人更新）用的摘要
+    const hasInsti = Object.keys(insti).length > 0;
+    const amt = (k) => Object.entries(insti).reduce((a, [c, x]) => a + (today[c] && today[c].close ? (x[k] * today[c].close) / 1e8 : 0), 0);
+    const twii = topbar && topbar.idx.find((x) => x.sym === '^TWII');
+    const tp = twii && twii.pts && twii.pts.length >= 2 ? twii.pts : null;
+    const themeTop = industry ? [...industry.rows].sort((a, b) => b.r1 - a.r1).slice(0, 3).map((r) => ({ name: r.name, r1: +r.r1.toFixed(2) })) : [];
+    fs.writeFileSync(
+      path.join(ROOT, 'site', 'brief.json'),
+      JSON.stringify({
+        date: tradeDate,
+        insti: hasInsti,
+        twii: tp ? { close: tp[tp.length - 1][1], pct: +((tp[tp.length - 1][1] / tp[tp.length - 2][1] - 1) * 100).toFixed(2) } : null,
+        foreign: hasInsti ? +amt('foreign').toFixed(1) : null,
+        trust: hasInsti ? +amt('trust').toFixed(1) : null,
+        themes: themeTop,
+        n: { cross: allCross.length, cup: cups.length, three: threeUp.length, latent: latent.length, kd: (threeUp.groups.kd || []).length },
+        best: uniq([...bestA, ...bestB].map((r) => r.name)),
+        cup: cups.map((r) => r.name),
+        latent: latentTrust.map((r) => r.name),
+        roast: Array.isArray(roast) && roast.length ? String(roast[0]).replace(/<[^>]+>/g, "") : null,
+      })
+    );
   } catch (e) {
     console.error('個股資料輸出失敗：', e.message);
   }
@@ -1601,7 +1638,7 @@ ${recap}
   function closedView(p) {
     form.hidden = true;
     var r = p.result;
-    if (!r) { msg.innerHTML = '⏰ 投票已截止（開盤後不能再投），<b>今天 13:35 收盤後開獎</b>，17:00 開放投下一個交易日'; if (p.total) show(p); return; }
+    if (!r) { msg.innerHTML = '⏰ 投票已截止（開盤後不能再投），<b>今天 13:35 收盤後開獎</b>，14:00 開放投下一個交易日'; if (p.total) show(p); return; }
     var nd = r.next ? (+r.next.slice(4, 6)) + '/' + (+r.next.slice(6)) : '';
     var medal = ['🥇', '🥈', '🥉'];
     var top = r.top3.map(function (t, i) { return medal[i] + ' ' + esc(t) + ' ' + (r.themes[t] != null ? pct(r.themes[t]) : ''); }).join('　');
@@ -1619,10 +1656,10 @@ ${recap}
       me = '<div class="vp-me">你投「' + (p.mine.bias === 'bull' ? '看多' : '看空') + (p.mine.theme ? '／' + esc(p.mine.theme) : '') + '」：方向 ' + (s.dirOk ? '✅ +1' : '❌ 0') +
         (p.mine.theme ? '、族群 ' + (s.themePts === 3 ? '🏆 前三強 +3' : s.themePts === 1 ? '✅ 漲贏大盤 +1' : '❌ 0') + (s.themeR != null ? '（' + pct(s.themeR) + '）' : '') : '') +
         ' → 這次得 <b>' + s.pts + ' 分</b></div>';
-    } else me = '<div class="vp-me">你這次沒有投票，17:00 起可以投下一個交易日</div>';
+    } else me = '<div class="vp-me">你這次沒有投票，14:00 起可以投下一個交易日</div>';
     res.innerHTML = '<div class="vote-prize"><div class="vp-title">🎉 開獎！' + nd + ' 收盤結果</div><div class="vp-row">加權指數 ' + pct(r.tw) + '</div><div class="vp-row">今天最強族群：' + top + '</div>' + crowd + me + '</div>';
     res.hidden = false;
-    msg.textContent = '17:00 開放投下一個交易日・排行榜在「個人檔案」';
+    msg.textContent = '14:00 開放投下一個交易日・排行榜在「個人檔案」';
   }
   function load() { fetch(API + '/api/poll?date=' + date + '&vid=' + encodeURIComponent(vid), authH()).then(function (r) { return r.json(); }).then(function (p) { if (p.closed) closedView(p); else if (p.mine) show(p); }).catch(function () {}); }
   box.querySelectorAll('[data-bias]').forEach(function (btn) {
