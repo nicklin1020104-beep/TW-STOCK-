@@ -1609,8 +1609,8 @@ function renderVote(dateLabel, extra) {
   if (rc) {
     const sign = (v) => (v >= 0 ? '+' : '') + v.toFixed(2) + '%';
     const bullRight = rc.twPct == null ? '' : (rc.bullPct >= 50) === (rc.twPct >= 0) ? '，<b class="up">多數人猜對方向</b>' : '，<b class="dn">多數人猜錯方向</b>';
-    const themeLine = rc.top ? `；最多人看好「${esc(rc.top.name)}」（${rc.top.n} 票）${rc.top.r1 == null ? '' : `，實際 <b class="${rc.top.r1 >= 0 ? 'up' : 'dn'}">${sign(rc.top.r1)}</b>`}` : '';
-    recap = `<div class="vote-recap">📊 上次投票（${+rc.date.slice(4, 6)}/${+rc.date.slice(6)}，${rc.total} 人）：看多 ${rc.bullPct.toFixed(0)}%${rc.twPct == null ? '' : `，加權實際 <b class="${rc.twPct >= 0 ? 'up' : 'dn'}">${sign(rc.twPct)}</b>`}${bullRight}${themeLine}</div>`;
+    const themeLine = rc.top ? `；最多人看好「${esc(rc.top.name)}」${rc.top.r1 == null ? '' : `，實際 <b class="${rc.top.r1 >= 0 ? 'up' : 'dn'}">${sign(rc.top.r1)}</b>`}` : '';
+    recap = `<div class="vote-recap">📊 上次投票（${+rc.date.slice(4, 6)}/${+rc.date.slice(6)}）：看多 ${rc.bullPct.toFixed(0)}%${rc.twPct == null ? '' : `，加權實際 <b class="${rc.twPct >= 0 ? 'up' : 'dn'}">${sign(rc.twPct)}</b>`}${bullRight}${themeLine}</div>`;
   }
   return `<div class="vote" data-date="${date}">
 <div class="vote-title">🗳️ 明天怎麼走？大家來猜 <span class="tag">每人每天一票，可改票・猜中可得分，排行榜在「個人檔案」</span></div>
@@ -1636,9 +1636,9 @@ ${recap}
   function show(p) {
     if (!p || !p.total) return;
     var bull = Math.round(p.bull / p.total * 100), bear = 100 - bull;
-    var themes = (p.themes || []).slice(0, 5).map(function (t, i) { return '<li><b>' + (i + 1) + '.</b> ' + esc(t.theme) + ' <span class="tag">' + t.n + ' 票</span></li>'; }).join('');
+    var themes = (p.themes || []).slice(0, 5).map(function (t, i) { return '<li><b>' + (i + 1) + '.</b> ' + esc(t.theme) + '</li>'; }).join('');
     res.innerHTML = '<div class="vote-bar"><span class="b-bull" style="width:' + bull + '%">🐂 看多 ' + bull + '%</span><span class="b-bear" style="width:' + bear + '%">🐻 看空 ' + bear + '%</span></div>' +
-      '<div class="vote-sub">共 ' + p.total + ' 人投票' + (p.mine ? '・你投了「' + (p.mine.bias === 'bull' ? '看多' : '看空') + (p.mine.theme ? '／' + esc(p.mine.theme) : '') + '」' : '') + '</div>' +
+      '<div class="vote-sub">' + (p.mine ? '你投了「' + (p.mine.bias === 'bull' ? '看多' : '看空') + (p.mine.theme ? '／' + esc(p.mine.theme) : '') + '」' : '') + '</div>' +
       (themes ? '<div class="vote-sub">大家看好的族群：</div><ol class="vote-themes">' + themes + '</ol>' : '');
     res.hidden = false;
     if (p.mine) { form.theme.value = p.mine.theme || ''; box.querySelectorAll('[data-bias]').forEach(function (b) { b.classList.toggle('on', b.dataset.bias === p.mine.bias); }); }
@@ -1656,7 +1656,7 @@ ${recap}
     var crowd = '';
     if (p.total) {
       var bull = Math.round(p.bull / p.total * 100), ok = (bull >= 50) === (r.tw >= 0);
-      crowd = '<div class="vp-row">' + p.total + ' 人投票，看多 ' + bull + '%，多數人<b class="' + (ok ? 'up' : 'dn') + '">' + (ok ? '猜對方向' : '猜錯方向') + '</b>';
+      crowd = '<div class="vp-row">大家看多 ' + bull + '%，多數人<b class="' + (ok ? 'up' : 'dn') + '">' + (ok ? '猜對方向' : '猜錯方向') + '</b>';
       var fav = p.themes && p.themes[0];
       if (fav && r.themes[fav.theme] != null) crowd += '；最多人看好「' + esc(fav.theme) + '」實際 ' + pct(r.themes[fav.theme]);
       crowd += '</div>';
