@@ -5,6 +5,9 @@ on:
     - cron: '0 9 * * 1-5'   # 17:00 台灣
     - cron: '35 0 * * *'    # 08:35 台灣
   workflow_dispatch:
+  push:   # 手動測試：改動這個檔案就會執行
+    branches: [main]
+    paths: ['.github/run-report']
 concurrency:
   group: bot
   cancel-in-progress: false

@@ -5,6 +5,9 @@ on:
     - cron: '35 5 * * 1-5'  # 13:35 台灣
     - cron: '50 5 * * 1-5'  # 13:50 台灣
   workflow_dispatch:
+  push:   # 手動測試：改動這個檔案就會執行
+    branches: [main]
+    paths: ['.github/run-settle']
 concurrency:
   group: bot
   cancel-in-progress: false
