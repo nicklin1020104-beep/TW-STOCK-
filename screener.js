@@ -2022,7 +2022,7 @@ function clientScript() {
         '<h3>每日訪客 <span class="count">今天 ' + (tv ? tv.total : 0) + ' 人（會員 ' + (tv ? tv.members : 0) + '・訪客 ' + (tv ? tv.guests : 0) + '・只看介紹頁 ' + (tv ? tv.landing : 0) + '）</span></h3>' +
         (vis ? '<div class="scroll"><table class="compact"><thead><tr><th>日期</th><th>總人數</th><th>會員</th><th>訪客</th><th>只看介紹頁</th></tr></thead><tbody>' + vis + '</tbody></table></div><p class="hint">以「裝置」計算，同一台裝置一天只算一次；同一天先當訪客、後來登入，算會員。</p>' : '<p class="empty">還沒有訪客資料</p>') +
         '<h3>每日新會員</h3>' + (sign ? '<div class="scroll"><table class="compact"><thead><tr><th>日期</th><th>新會員</th></tr></thead><tbody>' + sign + '</tbody></table></div>' : '<p class="empty">尚無會員</p>') +
-        '<h3>最新加入的會員</h3>' + (mem ? '<details><summary>展開名單（最新 100 人）</summary><div class="scroll"><table class="compact"><thead><tr><th>加入時間</th><th>暱稱</th><th>Google 名字</th><th>信箱</th><th>最近登入</th></tr></thead><tbody>' + mem + '</tbody></table></div></details>' : '') +
+        '<h3>最新加入的會員</h3>' + (mem ? '<details><summary>展開名單（最新 100 人）</summary><div class="scroll"><table class="compact"><thead><tr><th>加入時間</th><th>暱稱</th><th>Google 名字</th><th>信箱</th><th>最近上線</th></tr></thead><tbody>' + mem + '</tbody></table></div></details>' : '') +
         '<h3>每日投票總覽</h3>' +
         (days ? '<div class="scroll"><table class="compact"><thead><tr><th>投票日</th><th>票數</th><th>登入會員</th><th>看多</th></tr></thead><tbody>' + days + '</tbody></table></div>' : '<p class="empty">尚無投票</p>') +
         '<h3>最新投票明細</h3>' + (recent ? '<div class="scroll"><table class="compact"><thead><tr><th>時間</th><th>情報員</th><th>信箱</th><th>多空</th><th>族群</th></tr></thead><tbody>' + recent + '</tbody></table></div>' : '<p class="empty">尚無投票</p>');
