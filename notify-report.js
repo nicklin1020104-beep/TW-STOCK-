@@ -9,8 +9,12 @@ const sign = (v, d = 2) => (v >= 0 ? '+' : '') + Number(v).toFixed(d);
 
 (async () => {
   const b = JSON.parse(fs.readFileSync(path.join(__dirname, 'site', 'brief.json'), 'utf8'));
+  // 測試：--only=<sub> 只推給指定訂閱、--kind=report14|report17 指定種類
+  const arg = (k) => (process.argv.find((a) => a.startsWith(`--${k}=`)) || '').split('=')[1];
+  const only = arg('only') || null;
+  if (arg('kind')) b.insti = arg('kind') === 'report17';
   const today = ymd(new Date(Date.now() + 8 * 3600000));
-  if (b.date !== today) return console.log('報告不是今天的，不推播', b.date);
+  if (b.date !== today && !only) return console.log('報告不是今天的，不推播', b.date);
   const md = `${+b.date.slice(4, 6)}/${+b.date.slice(6)}`;
   const names = (l, n = 3) => (l || []).slice(0, n).join('、');
   let kind, title, lines;
@@ -36,7 +40,7 @@ const sign = (v, d = 2) => (v >= 0 ? '+' : '') + Number(v).toFixed(d);
   const res = await fetch(`${API}/api/push/report`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'X-Results-Key': key },
-    body: JSON.stringify({ kind, date: b.date, title, body: lines.filter(Boolean).join('\n') }),
+    body: JSON.stringify({ kind, date: b.date, title, body: lines.filter(Boolean).join('\n'), only }),
   });
   console.log('推播', kind, res.status, JSON.stringify(await res.json()));
 })().catch((e) => {

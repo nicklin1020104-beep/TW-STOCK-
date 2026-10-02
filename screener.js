@@ -1217,15 +1217,25 @@ async function main() {
     // 盤後推播（14:00 盤後整理、17:00 法人更新）用的摘要
     const hasInsti = Object.keys(insti).length > 0;
     const amt = (k) => Object.entries(insti).reduce((a, [c, x]) => a + (today[c] && today[c].close ? (x[k] * today[c].close) / 1e8 : 0), 0);
-    const twii = topbar && topbar.idx.find((x) => x.sym === '^TWII');
-    const tp = twii && twii.pts && twii.pts.length >= 2 ? twii.pts : null;
+    // 加權收盤：先用證交所即時行情（日期要是交易日），否則用 Yahoo 日線裡同一天的那筆
+    let twiiNow = null;
+    try {
+      const m = (await getJSON('https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_t00.tw&json=1&delay=0')).msgArray[0];
+      if (m.d === tradeDate && +m.z && +m.y) twiiNow = { close: +(+m.z).toFixed(2), pct: +((m.z / m.y - 1) * 100).toFixed(2) };
+    } catch {}
+    if (!twiiNow) {
+      const tw = topbar && topbar.idx.find((x) => x.sym === '^TWII');
+      const key = (ms) => new Date(ms + 8 * 3600000).toISOString().slice(0, 10).replace(/-/g, '');
+      const i = tw && tw.pts ? tw.pts.findIndex((x) => key(x[0]) === tradeDate) : -1;
+      if (i > 0) twiiNow = { close: tw.pts[i][1], pct: +((tw.pts[i][1] / tw.pts[i - 1][1] - 1) * 100).toFixed(2) };
+    }
     const themeTop = industry ? [...industry.rows].sort((a, b) => b.r1 - a.r1).slice(0, 3).map((r) => ({ name: r.name, r1: +r.r1.toFixed(2) })) : [];
     fs.writeFileSync(
       path.join(ROOT, 'site', 'brief.json'),
       JSON.stringify({
         date: tradeDate,
         insti: hasInsti,
-        twii: tp ? { close: tp[tp.length - 1][1], pct: +((tp[tp.length - 1][1] / tp[tp.length - 2][1] - 1) * 100).toFixed(2) } : null,
+        twii: twiiNow,
         foreign: hasInsti ? +amt('foreign').toFixed(1) : null,
         trust: hasInsti ? +amt('trust').toFixed(1) : null,
         themes: themeTop,
