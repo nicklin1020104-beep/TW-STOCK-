@@ -19,7 +19,7 @@ const { buildRoast } = require('./roast.js');
 const { buildLocked } = require('./chips.js');
 const { getEstimates } = require('./estimates.js');
 const { findCups, CUP_PARAMS } = require('./cup.js');
-const { renderGate, GATE_CSS, shareScript } = require('./landing.js');
+const { renderGate, GATE_CSS, shareScript, pushScript } = require('./landing.js');
 const VOTE_API = 'https://shoupan-api.shoupan.workers.dev';
 // 比賽金鑰：雲端（GitHub Actions）從加密設定讀，本機從 worker/.results-key 讀
 const resultsKey = () => {
@@ -1196,6 +1196,9 @@ async function main() {
     }
     fs.mkdirSync(path.join(ROOT, 'site'), { recursive: true });
     fs.writeFileSync(path.join(ROOT, 'site', 'stocks.json'), JSON.stringify({ date: tradeDate, list }));
+    // 開盤推播用的今日焦點
+    const uniq = (a) => [...new Set(a)];
+    fs.writeFileSync(path.join(ROOT, 'site', 'brief.json'), JSON.stringify({ date: tradeDate, best: uniq([...bestA, ...bestB].map((r) => r.name)), cup: cups.map((r) => r.name), latent: latentTrust.map((r) => r.name) }));
   } catch (e) {
     console.error('個股資料輸出失敗：', e.message);
   }
@@ -1952,7 +1955,7 @@ function clientScript() {
       var mem = (j.members || []).map(function (m) { return '<tr><td>' + tf(m.created) + '</td><td class="nm">' + esc(m.nickname || '（未取暱稱）') + '</td><td>' + esc(m.name || '') + '</td><td class="hint">' + esc(m.email || '') + '</td><td>' + tf(m.last_login) + '</td></tr>'; }).join('');
       var todayKey = new Date(Date.now() + 8 * 3600000).toISOString().slice(0, 10).replace(/-/g, '');
       var todayN = ((j.signups || []).filter(function (d) { return d.date === todayKey; })[0] || { n: 0 }).n;
-      box.innerHTML = '<h2>管理員後台 <span class="count">只有你看得到・會員 ' + j.users + ' 人・今天新加入 ' + todayN + ' 人</span></h2>' +
+      box.innerHTML = '<h2>管理員後台 <span class="count">只有你看得到・會員 ' + j.users + ' 人・今天新加入 ' + todayN + ' 人・開啟通知 ' + (j.pushSubs || 0) + ' 台裝置</span></h2>' +
         '<h3>每日新會員</h3>' + (sign ? '<div class="scroll"><table class="compact"><thead><tr><th>日期</th><th>新會員</th></tr></thead><tbody>' + sign + '</tbody></table></div>' : '<p class="empty">尚無會員</p>') +
         '<h3>最新加入的會員</h3>' + (mem ? '<details><summary>展開名單（最新 100 人）</summary><div class="scroll"><table class="compact"><thead><tr><th>加入時間</th><th>暱稱</th><th>Google 名字</th><th>信箱</th><th>最近登入</th></tr></thead><tbody>' + mem + '</tbody></table></div></details>' : '') +
         '<h3>每日投票總覽</h3>' +
@@ -2402,6 +2405,7 @@ ${clientScript()}
 </script>
 <script>document.querySelectorAll('.ptab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.ptab').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('.page').forEach(p=>p.hidden=p.dataset.p!==b.dataset.p);scrollTo(0,0)})</script>
 ${shareScript()}
+${pushScript(VOTE_API)}
 </body></html>`;
 }
 

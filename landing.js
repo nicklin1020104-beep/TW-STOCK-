@@ -100,6 +100,8 @@ const GATE_CSS = `#gate{display:none}html.gated #gate{display:block;position:fix
 .sh-box{background:var(--bg);border-radius:18px;padding:16px;max-width:420px;width:100%;max-height:94vh;overflow:auto;text-align:center}.sh-box img{width:100%;border-radius:10px;display:block;background:var(--card);min-height:200px}
 .sh-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.sh-btns button{font:inherit;font-size:14px;font-weight:700;padding:11px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}.sh-btns .sh-main{grid-column:1/-1;background:var(--accent);border-color:var(--accent);color:var(--bg)}
 .sh-tip{font-size:12px;color:var(--mute);margin-top:10px;line-height:1.6}
+.push-box{margin-bottom:6px}.push-tip{font-size:13.5px;color:var(--mute);line-height:1.7}.push-on{font-weight:700;margin:4px 0 8px}.push-opts{display:flex;flex-direction:column;gap:8px;font-size:14px}.push-opts input{margin-right:6px}.push-acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.push-enable,.push-acts button{font:inherit;font-size:14px;font-weight:700;padding:9px 16px;border-radius:999px;border:1.5px solid var(--accent);background:var(--accent);color:var(--bg);cursor:pointer}.push-acts button{background:var(--card);color:var(--fg);border-color:var(--line);font-weight:600;font-size:13px;padding:7px 14px}.push-small{margin-top:8px;font-size:13px;padding:6px 14px;background:color-mix(in srgb,var(--accent) 10%,transparent);color:var(--accent)}.push-msg{font-size:13px;color:var(--accent);margin-top:8px}
 .vote-prize{border-radius:12px;padding:12px 14px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 10%,var(--bg)),var(--bg));border:1px solid color-mix(in srgb,var(--accent) 30%,var(--line))}.vp-title{font-weight:800;font-size:15px;margin-bottom:6px}.vp-row{font-size:13.5px;line-height:1.7}.vp-me{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);font-size:14px;line-height:1.6}`;
 
 // ---- 瀏覽器端：分享圖卡 ----
@@ -290,8 +292,98 @@ function shareClient(SITE) {
   document.querySelectorAll('.ptab').forEach(function (b) { b.addEventListener('click', function () { try { history.replaceState(null, '', '#' + b.dataset.p); } catch (e) {} }); });
 }
 
+// ---- 瀏覽器端：開盤／收盤推播通知 ----
+function pushClient(API) {
+  var supported = 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+  var ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  var standalone = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
+  var reg = null, sub = null, prefs = { open: true, close: true };
+  function token() { try { return localStorage.getItem('shoupan_token'); } catch (e) { return null; } }
+  function api(path, body) {
+    var h = { 'Content-Type': 'application/json' }; if (token()) h.Authorization = 'Bearer ' + token();
+    return fetch(API + path, { method: body ? 'POST' : 'GET', headers: h, body: body ? JSON.stringify(body) : undefined }).then(function (r) { return r.json(); });
+  }
+  function u8(s) { s = s.replace(/-/g, '+').replace(/_/g, '/'); while (s.length % 4) s += '='; var b = atob(s), a = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) a[i] = b.charCodeAt(i); return a; }
+
+  // 個人檔案頁：完整設定；投票區：一顆小按鈕（已開啟就不顯示）
+  var full = document.createElement('div'); full.className = 'push-box';
+  var pf = document.querySelector('.page[data-p="profile"] h2');
+  if (pf) pf.parentNode.insertBefore(full, pf);
+  var mini = document.createElement('div'); mini.className = 'push-mini';
+  var vm = document.querySelector('.vote .vote-msg');
+  if (vm) vm.parentNode.insertBefore(mini, vm.nextSibling);
+
+  function render(msg) {
+    var h = '<h2>🔔 推播通知</h2>';
+    if (!supported) {
+      h += ios && !standalone
+        ? '<p class="push-tip">iPhone／iPad 要先把網站加到主畫面才能收通知：<br>① 用 Safari 打開本站 → ② 點下方「分享」按鈕 → ③「加入主畫面」→ ④ 從主畫面的「飆股情報局」圖示打開，再回到這裡開啟通知（需要 iOS 16.4 以上）。</p>'
+        : '<p class="push-tip">這個瀏覽器不支援推播通知，請改用 Chrome、Edge 或 Safari 最新版。</p>';
+      full.innerHTML = h; mini.innerHTML = ''; return;
+    }
+    if (Notification.permission === 'denied') {
+      full.innerHTML = h + '<p class="push-tip">通知被封鎖了：請到瀏覽器（或手機設定 → 通知）允許「飆股情報局」的通知，再重新整理。</p>'; mini.innerHTML = ''; return;
+    }
+    if (sub) {
+      h += '<div class="push-on">✅ 這台裝置已開啟通知</div><div class="push-opts">' +
+        '<label><input type="checkbox" data-k="open"' + (prefs.open ? ' checked' : '') + '> 開盤提醒（08:55：台指期夜盤、費半、今日焦點股、投票截止）</label>' +
+        '<label><input type="checkbox" data-k="close"' + (prefs.close ? ' checked' : '') + '> 收盤開獎（13:35：加權收盤、最強族群、你的得分）</label></div>' +
+        '<div class="push-acts"><button type="button" class="push-test" data-kind="open">傳一則開盤測試</button><button type="button" class="push-test" data-kind="close">傳一則收盤測試</button><button type="button" class="push-off">關閉通知</button></div>';
+      mini.innerHTML = '';
+    } else {
+      h += '<p class="push-tip">開盤前提醒你今天的焦點、收盤後馬上告訴你開獎結果，像 App 一樣跳出通知。</p><button type="button" class="push-enable">🔔 開啟開盤／收盤通知</button>';
+      mini.innerHTML = '<button type="button" class="push-enable push-small">🔔 開盤前提醒我、收盤馬上通知開獎</button>';
+    }
+    full.innerHTML = h + (msg ? '<p class="push-msg">' + msg + '</p>' : '');
+  }
+  function save() { return api('/api/push/subscribe', { subscription: sub.toJSON(), prefs: prefs }); }
+  function enable() {
+    render('設定中…');
+    Notification.requestPermission().then(function (p) {
+      if (p !== 'granted') return render(p === 'denied' ? '' : '需要允許通知才能開啟');
+      return api('/api/push/key').then(function (k) {
+        return reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: u8(k.key) });
+      }).then(function (s) { sub = s; return save(); }).then(function (j) {
+        if (j.error) { sub = null; return render(j.error); }
+        render('已開啟！可以按「傳一則測試」試試看');
+      });
+    }).catch(function (e) { render('開啟失敗：' + (e && e.message ? e.message : e)); });
+  }
+  document.addEventListener('click', function (e) {
+    var t = e.target;
+    if (t.closest('.push-enable')) enable();
+    else if (t.closest('.push-off') && sub) {
+      var ep = sub.endpoint;
+      sub.unsubscribe().finally(function () { api('/api/push/unsubscribe', { endpoint: ep }); sub = null; render('已關閉通知'); });
+    } else if (t.closest('.push-test')) {
+      var b = t.closest('.push-test'); b.disabled = true;
+      api('/api/push/test', { kind: b.dataset.kind }).then(function (j) { render(j.error ? j.error : j.sent ? '已送出，幾秒內會收到通知' : '送出失敗，請關閉後重新開啟通知'); });
+    }
+  });
+  document.addEventListener('change', function (e) {
+    var c = e.target.closest('.push-opts input'); if (!c || !sub) return;
+    prefs[c.dataset.k] = c.checked; save().then(function () { render('已儲存'); });
+  });
+  if (!supported) return render();
+  navigator.serviceWorker.register('/TW-STOCK-/sw.js', { scope: '/TW-STOCK-/' }).then(function (r) {
+    reg = r; return navigator.serviceWorker.ready;
+  }).then(function () { return reg.pushManager.getSubscription(); }).then(function (s) {
+    sub = s;
+    if (!s || !token()) return render();
+    return api('/api/push/status?endpoint=' + encodeURIComponent(s.endpoint)).then(function (j) {
+      if (j.subscribed) prefs = j.prefs || prefs;
+      else if (!j.error) return save().then(function () { render(); }); // 伺服器沒有紀錄（例如換帳號），補登記
+      render();
+    });
+  }).catch(function () { render(); });
+}
+
+function pushScript(api) {
+  return `<script>(${pushClient.toString()})(${JSON.stringify(api)});</script>`;
+}
+
 function shareScript() {
   return `<script>(${shareClient.toString()})(${JSON.stringify(SITE)});</script>`;
 }
 
-module.exports = { renderGate, GATE_CSS, shareScript };
+module.exports = { renderGate, GATE_CSS, shareScript, pushScript };
