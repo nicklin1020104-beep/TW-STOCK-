@@ -1,0 +1,26 @@
+# 臨時：測試雲端連得到各資料來源（測完會刪掉）
+name: 連線測試
+on:
+  push:
+    branches: [main]
+    paths: ['.github/run-nettest']
+jobs:
+  net:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 測試
+        run: |
+          t() { code=$(curl -s -o /tmp/o -w "%{http_code}" -m 30 -A "Mozilla/5.0" "$2"); echo "$1 => HTTP $code, $(wc -c < /tmp/o) bytes, $(head -c 80 /tmp/o | tr -d '\n')"; }
+          t 證交所行情 "https://www.twse.com.tw/rwd/zh/afterTrading/MI_INDEX?date=20261001&type=ALLBUT0999&response=json"
+          t 櫃買行情 "https://www.tpex.org.tw/www/zh-tw/afterTrading/dailyQuotes?date=2026%2F10%2F01&id=&response=json"
+          t 三大法人 "https://www.twse.com.tw/rwd/zh/fund/T86?date=20261001&selectType=ALLBUT0999&response=json"
+          t 即時行情MIS "https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_t00.tw|tse_2330.tw&json=1&delay=0"
+          t 期交所MIS "https://mis.taifex.com.tw/futures/api/getQuoteList"
+          t 證交所openapi "https://openapi.twse.com.tw/v1/opendata/t187ap05_L"
+          t 櫃買openapi "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap05_O"
+          t 公開資訊觀測站 "https://mopsov.twse.com.tw/nas/t21/sii/t21sc03_115_8_0.html"
+          t 集保 "https://opendata.tdcc.com.tw/getOD.ashx?id=1-5"
+          t Yahoo "https://query1.finance.yahoo.com/v8/finance/chart/%5ETWII?range=5d&interval=1d"
+          t MoneyDJ "https://www.moneydj.com/"
+          t TradingEconomics "https://tradingeconomics.com/united-states/consumer-price-index-cpi"
+          t Google新聞 "https://news.google.com/rss/search?q=%E5%8F%B0%E7%A9%8D%E9%9B%BB&hl=zh-TW&gl=TW&ceid=zh-Hant"
