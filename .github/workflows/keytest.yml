@@ -4,14 +4,20 @@ on:
   push:
     branches: [main]
     paths: ['.github/run-keytest']
+permissions:
+  contents: write
 jobs:
   key:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: 測試
         env:
           RESULTS_KEY: ${{ secrets.RESULTS_KEY }}
         run: |
-          if [ -z "$RESULTS_KEY" ]; then echo "::notice::RESULTS_KEY 是空的（沒有讀到）"; exit 0; fi
+          if [ -z "$RESULTS_KEY" ]; then msg="RESULTS_KEY 是空的（沒有讀到）"; else
           code=$(curl -s -o /dev/null -w "%{http_code}" -H "X-Results-Key: $(echo -n "$RESULTS_KEY" | tr -d '\r\n ')" https://shoupan-api.shoupan.workers.dev/api/watch-codes)
-          echo "::notice::金鑰長度 ${#RESULTS_KEY}，API 回應 HTTP $code"
+          msg="金鑰長度 ${#RESULTS_KEY}，API 回應 HTTP $code"; fi
+          echo "$msg" > .github/keytest-result.txt
+          git config user.name bot; git config user.email bot@users.noreply.github.com
+          git add .github/keytest-result.txt; git commit -qm "key test result"; git push -q
