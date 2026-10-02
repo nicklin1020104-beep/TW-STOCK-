@@ -1,0 +1,33 @@
+# 置頂報價（加權、台指期、日經、KOSPI、費半）：平日 08:15～隔天 00:45 每 30 分鐘
+name: 置頂報價
+on:
+  schedule:
+    - cron: '15,45 0-16 * * 1-5'
+  workflow_dispatch:
+concurrency:
+  group: bot
+  cancel-in-progress: false
+permissions:
+  contents: write
+jobs:
+  quotes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: bot
+          path: bot
+          sparse-checkout: |
+            /*.js
+          sparse-checkout-cone-mode: false
+      - uses: actions/checkout@v4
+        with: { ref: main, path: bot/site }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: 更新置頂報價
+        working-directory: bot
+        run: |
+          git config --global user.name "飆股情報局 bot"
+          git config --global user.email "bot@users.noreply.github.com"
+          node quotes.js

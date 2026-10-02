@@ -1,0 +1,43 @@
+# 每日完整報告：平日 17:00、每天 08:35（台灣時間）
+name: 每日報告
+on:
+  schedule:
+    - cron: '0 9 * * 1-5'   # 17:00 台灣
+    - cron: '35 0 * * *'    # 08:35 台灣
+  workflow_dispatch:
+concurrency:
+  group: bot
+  cancel-in-progress: false
+permissions:
+  contents: write
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: bot, path: bot }
+      - uses: actions/checkout@v4
+        with: { ref: main, path: bot/site }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: 產生報告
+        working-directory: bot
+        env:
+          RESULTS_KEY: ${{ secrets.RESULTS_KEY }}
+        run: node screener.js
+      - name: 發布網站
+        working-directory: bot/site
+        run: |
+          git config user.name "飆股情報局 bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet || (git commit -qm "update $(TZ=Asia/Taipei date +%F)" && git pull -q --rebase && git push -q)
+      - name: 保存資料
+        if: always()
+        working-directory: bot
+        run: |
+          git config user.name "飆股情報局 bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet || (git commit -qm "data $(TZ=Asia/Taipei date +%F)" && git pull -q --rebase && git push -q)

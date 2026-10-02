@@ -1,0 +1,33 @@
+# 收盤開獎：平日 13:35，13:50 再跑一次補救（已開獎會自動跳過；沒開盤的日子也會跳過）
+name: 收盤開獎
+on:
+  schedule:
+    - cron: '35 5 * * 1-5'  # 13:35 台灣
+    - cron: '50 5 * * 1-5'  # 13:50 台灣
+  workflow_dispatch:
+concurrency:
+  group: bot
+  cancel-in-progress: false
+permissions:
+  contents: write
+jobs:
+  settle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: bot, path: bot }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: 開獎
+        working-directory: bot
+        env:
+          RESULTS_KEY: ${{ secrets.RESULTS_KEY }}
+        run: node settle.js
+      - name: 保存開獎紀錄
+        working-directory: bot
+        run: |
+          git config user.name "飆股情報局 bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet || (git commit -qm "settled $(TZ=Asia/Taipei date +%F)" && git pull -q --rebase && git push -q)
