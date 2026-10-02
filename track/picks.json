@@ -578,6 +578,18 @@
  ],
  "20261002": [
   {
+   "code": "6548",
+   "name": "長科*",
+   "mkt": "上櫃",
+   "industry": "半導體業",
+   "close": 76.7,
+   "yoy": 43.657297439383484,
+   "star": true,
+   "okUp": true,
+   "okVol": true,
+   "above60": true
+  },
+  {
    "code": "6531",
    "name": "愛普*",
    "mkt": "上市",
@@ -586,6 +598,18 @@
    "yoy": 150.82441845471112,
    "star": true,
    "okUp": true,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "1815",
+   "name": "富喬",
+   "mkt": "上櫃",
+   "industry": "電子零組件業",
+   "close": 121,
+   "yoy": 79.20696400933353,
+   "star": false,
+   "okUp": false,
    "okVol": true,
    "above60": true
   },
@@ -662,18 +686,6 @@
    "above60": true
   },
   {
-   "code": "6005",
-   "name": "群益證",
-   "mkt": "上市",
-   "industry": "金融保險業",
-   "close": 32,
-   "yoy": 45.34586757893414,
-   "star": false,
-   "okUp": false,
-   "okVol": false,
-   "above60": false
-  },
-  {
    "code": "6442",
    "name": "光聖",
    "mkt": "上市",
@@ -684,6 +696,18 @@
    "okUp": false,
    "okVol": false,
    "above60": true
+  },
+  {
+   "code": "6005",
+   "name": "群益證",
+   "mkt": "上市",
+   "industry": "金融保險業",
+   "close": 32,
+   "yoy": 45.34586757893414,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": false
   }
  ]
 }
