@@ -2,7 +2,7 @@
 // 資料存在 Cloudflare（每人只看得到自己的），損益在瀏覽器端計算
 
 function renderJournal() {
-  return `<div class="lock-card pf-lock"><div class="lock-ic big">📒</div><h3>登入 Google 才能使用股票日誌</h3><p>記下每天買賣的台股、美股，自動算手續費、交易稅、現金、庫存與損益，還有圖表追蹤自己的績效。資料只有你自己看得到。</p><div class="gsi-lock"></div></div>
+  return `<div class="lock-card pf-lock"><div class="lock-ic big">📒</div><h3>登入 Google 才能使用股票日誌</h3><p>記下每天買賣的台股、美股，自動算手續費、交易稅、現金、庫存與損益，還有圖表追蹤自己的績效。資料只有你自己看得到。</p><div class="gsi-lock"></div><p style="margin-top:16px"><button type="button" class="push-enable push-small" data-goto="fee">🧮 先試試手續費試算（不用登入）</button></p></div>
 <div class="jn"><p class="empty">載入中…</p></div>`;
 }
 
@@ -121,7 +121,7 @@ function journalClient(API) {
       '<div><b>' + pn(uz) + '</b><span>未實現損益</span></div><div><b>' + pn(rz) + '</b><span>已實現損益（含股利）</span></div>' +
       '<div><b>' + (trades.length ? Math.round(wins.length / trades.length * 100) + '%' : '-') + '</b><span>勝率（' + trades.length + ' 筆賣出）</span></div></div>';
     if (r.cash < 0) h += '<p class="jn-hint">⚠️ 現金是負的：可能還沒記「入金」，按「💵 現金」補上起始資金或入金。</p>';
-    h += '<div class="jn-acts"><button type="button" class="main" data-a="trade">＋ 記一筆交易</button><button type="button" data-a="holding">📦 原有持股</button><button type="button" data-a="plans">🔁 定期定額</button><button type="button" data-a="cash">💵 現金／股利</button><button type="button" data-a="settings">⚙️ 手續費設定</button></div>';
+    h += '<div class="jn-acts"><button type="button" class="main" data-a="trade">＋ 記一筆交易</button><button type="button" data-a="holding">📦 原有持股</button><button type="button" data-a="plans">🔁 定期定額</button><button type="button" data-a="cash">💵 現金／股利</button><button type="button" data-a="settings">⚙️ 手續費設定</button><button type="button" data-goto="fee">🧮 手續費試算</button></div>';
     // 庫存
     // 到價提醒
     var hits = r.hold.filter(function (p) { return p.price != null && ((p.tp && p.price >= p.tp) || (p.sl && p.price <= p.sl)); });
@@ -517,6 +517,8 @@ function renderFeeCalc() {
 }
 
 function feeCalcClient() {
+  // 其他地方的「手續費試算」按鈕：切到這一頁
+  document.addEventListener('click', function (e) { var g = e.target.closest('[data-goto]'); if (!g) return; var t = document.querySelector('.ptab[data-p="' + g.dataset.goto + '"]'); if (t) { t.click(); scrollTo(0, 0); } });
   var f = document.querySelector('form.fc'); if (!f) return;
   var out = document.querySelector('.fc-out');
   var st = { m: 'TW', t: 'stock', u: 1000 };
