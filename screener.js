@@ -1763,6 +1763,7 @@ ${recap}
       .then(function (j) {
         if (j.error) { msg.textContent = j.error; dirty(); return; }
         setSaved({ bias: bias, theme: theme });
+        if (window.__reloadProfile) window.__reloadProfile(); // 「我的戰績」馬上多一筆
         return fetch(API + '/api/poll?date=' + date + '&vid=' + encodeURIComponent(vid), authH()).then(function (r) { return r.json(); }).then(show);
       })
       .catch(function () { msg.textContent = '連線失敗，請稍後再試'; dirty(); });
@@ -2045,6 +2046,7 @@ function clientScript() {
     ok.onclick = go;
     $('.nm-input').onkeydown = function (e) { if (e.key === 'Enter') go(); };
   }
+  window.__reloadProfile = function () { loadProfile(); };
   function loadProfile() {
     if (!token) return;
     api('/api/profile').then(function (j) {
@@ -2068,7 +2070,11 @@ function clientScript() {
       var bias = { bull: '🐂 看多', bear: '🐻 看空' };
       var rows = j.votes.map(function (v) {
         var d = v.date.slice(4, 6) + '/' + v.date.slice(6), sc = v.score;
-        var res = !sc ? '<td class="no" colspan="3">等待開獎</td>' :
+        // 還沒開獎：顯示預計開獎時間（投票日的下一個平日 13:35）
+        var nx = new Date(Date.UTC(+v.date.slice(0, 4), +v.date.slice(4, 6) - 1, +v.date.slice(6)));
+        do nx.setUTCDate(nx.getUTCDate() + 1); while (nx.getUTCDay() === 0 || nx.getUTCDay() === 6);
+        var wk = '日一二三四五六'.charAt(nx.getUTCDay());
+        var res = !sc ? '<td class="no" colspan="3">⏳ 等待開獎（' + (nx.getUTCMonth() + 1) + '/' + nx.getUTCDate() + ' 週' + wk + ' 13:35 收盤後）</td>' :
           '<td class="' + (sc.tw >= 0 ? 'up' : 'dn') + '">' + (sc.tw >= 0 ? '+' : '') + sc.tw.toFixed(2) + '% ' + (sc.dirOk ? '✓' : '✗') + '</td>' +
           '<td>' + (sc.themeR == null ? '-' : '<span class="' + (sc.themeR >= 0 ? 'up' : 'dn') + '">' + (sc.themeR >= 0 ? '+' : '') + sc.themeR.toFixed(2) + '%</span>' + (sc.themePts === 3 ? ' 🏆' : sc.themePts ? ' ✓' : '')) + '</td><td><b>+' + sc.pts + '</b></td>';
         return '<tr><td>' + d + '</td><td>' + bias[v.bias] + '</td><td>' + esc(v.theme || '-') + '</td>' + res + '</tr>';
