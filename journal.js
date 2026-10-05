@@ -19,7 +19,7 @@ const JOURNAL_CSS = `.jn-cards{display:grid;grid-template-columns:repeat(3,1fr);
 .jn-calc{font-size:13px;color:var(--mute);margin-top:8px;line-height:1.7}.jn-calc b{color:var(--fg)}.jn-btns{display:flex;gap:8px;margin-top:16px}.jn-btns button{flex:1}.jn-err{color:var(--up);font-size:13px;margin-top:8px}.jn-hint{font-size:12.5px;color:var(--mute);line-height:1.6;margin:4px 0}
 .jn-del{border:0;background:none;color:var(--mute);cursor:pointer;font-size:13px;padding:2px 6px}.jn-edit{border:0;background:none;color:var(--accent);cursor:pointer;font-size:13px;padding:2px 6px}td.jn-note{white-space:normal;min-width:140px;max-width:260px;text-align:left!important;font-size:12.5px;color:var(--mute)}
 html.anon .page[data-p="journal"]>:not(.lock-card){display:none}
-.jn-quick{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px}.jn-quick button{font:inherit;font-size:13px;font-weight:700;padding:5px 12px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}.jn-quick .jn-pct{font-size:13px}.st2 h3 .jn-hint{font-weight:400;font-size:13px}.dd button{min-width:40px}`;
+.jn-quick{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px}.jn-quick button{font:inherit;font-size:13px;font-weight:700;padding:5px 12px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}.jn-quick .jn-pct{font-size:13px}.st2 h3 .jn-hint{font-weight:400;font-size:13px}.dd button{min-width:40px}td.jn-ops{white-space:nowrap}td.nm .jn-edit[data-pos]{padding:2px 4px 2px 0;font-size:14px}`;
 
 // ---- 瀏覽器端 ----
 function journalClient(API) {
@@ -129,7 +129,7 @@ function journalClient(API) {
     h += '<h2>目前庫存 <span class="count">' + r.hold.length + ' 檔' + (r.fxNow ? '・美元匯率 ' + r.fxNow.toFixed(2) : '') + '</span></h2>';
     h += r.hold.length ? '<div class="scroll"><table class="compact"><thead><tr><th>股票</th><th>股數</th><th>均價</th><th>現價</th><th>市值（台幣）</th><th>未實現</th><th>報酬率</th><th>停利／停損</th><th>比重</th></tr></thead><tbody>' +
       r.hold.sort(function (a, b) { return (b.mv || 0) - (a.mv || 0); }).map(function (p) {
-        return '<tr><td class="nm">' + esc(p.code) + ' ' + esc(p.name || '') + (p.market === 'US' ? '<span class="tag">美</span>' : '') + '</td><td>' + fmt(p.qty) + '</td><td>' + fmt(p.avg, 2) + '</td><td>' + (p.price == null ? '-' : fmt(p.price, 2)) + '</td><td>' + (p.mv == null ? '-' : fmt(p.mv)) + '</td><td>' + (p.upnl == null ? '-' : pn(p.upnl)) + '</td><td>' + pct(p.upct) + '</td><td class="jn-note">' + tpsl(p) + '</td><td>' + (p.mv ? (p.mv / Math.max(r.total, r.mv) * 100).toFixed(1) + '%' : '-') + '</td></tr>';
+        return '<tr><td class="nm"><button class="jn-edit" data-pos="' + p.market + ':' + esc(p.code) + '" title="修改">✏️</button>' + esc(p.code) + ' ' + esc(p.name || '') + (p.market === 'US' ? '<span class="tag">美</span>' : '') + '</td><td>' + fmt(p.qty) + '</td><td>' + fmt(p.avg, 2) + '</td><td>' + (p.price == null ? '-' : fmt(p.price, 2)) + '</td><td>' + (p.mv == null ? '-' : fmt(p.mv)) + '</td><td>' + (p.upnl == null ? '-' : pn(p.upnl)) + '</td><td>' + pct(p.upct) + '</td><td class="jn-note">' + tpsl(p) + '</td><td>' + (p.mv ? (p.mv / Math.max(r.total, r.mv) * 100).toFixed(1) + '%' : '-') + '</td></tr>';
       }).join('') + '</tbody></table></div>' : '<p class="empty">還沒有庫存，按「＋ 記一筆交易」開始</p>';
     h += plansSection(r);
     if (planErr) h += '<p class="jn-hint">⚠️ 定期定額自動記帳暫時失敗（' + esc(planErr) + '），稍後重新整理會再補上。</p>';
@@ -150,9 +150,9 @@ function journalClient(API) {
       var what = isT ? esc(e.code) + ' ' + esc(e.name || '') + (e.market === 'US' ? '<span class="tag">美</span>' : '') : e.kind === 'dividend' ? esc((e.code || '') + ' ' + (e.name || '')) : '-';
       var detail = isT ? fmt(e.price, 2) + ' × ' + fmt(e.qty) + (e.market === 'US' ? '（匯率 ' + e.fx + '）' : '') : money(e.amount);
       var cost = isT ? fmt((e.fee || 0) + (e.tax || 0), e.market === 'US' ? 2 : 0) : '';
-      return '<tr><td>' + (e.kind === 'holding' ? '原有' : e.date.slice(5).replace('-', '/')) + '</td><td><span class="chip ' + (e.kind === 'holding' ? 'mid' : e.kind === 'buy' || e.kind === 'deposit' || e.kind === 'dividend' ? 'good' : 'bad') + '">' + kindTxt[e.kind] + (e.daytrade ? '・當沖' : '') + '</span></td><td class="nm">' + what + '</td><td>' + detail + '</td><td>' + cost + '</td><td class="jn-note">' + (e.tags && e.tags.length ? e.tags.map(function (t) { return '<span class="chip mid">' + esc(t) + '</span>'; }).join('') + ' ' : '') + esc(e.note || '') + '</td><td><button class="jn-edit" data-id="' + e.id + '">編輯</button><button class="jn-del" data-id="' + e.id + '">刪除</button></td></tr>';
+      return '<tr><td class="jn-ops"><button class="jn-edit" data-id="' + e.id + '">✏️ 編輯</button><button class="jn-del" data-id="' + e.id + '">刪除</button></td><td>' + (e.kind === 'holding' ? '原有' : e.date.slice(5).replace('-', '/')) + '</td><td><span class="chip ' + (e.kind === 'holding' ? 'mid' : e.kind === 'buy' || e.kind === 'deposit' || e.kind === 'dividend' ? 'good' : 'bad') + '">' + kindTxt[e.kind] + (e.daytrade ? '・當沖' : '') + '</span></td><td class="nm">' + what + '</td><td>' + detail + '</td><td>' + cost + '</td><td class="jn-note">' + (e.tags && e.tags.length ? e.tags.map(function (t) { return '<span class="chip mid">' + esc(t) + '</span>'; }).join('') + ' ' : '') + esc(e.note || '') + '</td></tr>';
     }).join('');
-    h += '<h2>交易紀錄 <span class="count">' + E.length + ' 筆</span></h2>' + (rows ? '<div class="scroll"><table class="compact"><thead><tr><th>日期</th><th>種類</th><th>股票</th><th>價格 × 數量／金額</th><th>手續費＋稅</th><th>理由／心得</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div>' : '<p class="empty">還沒有紀錄</p>');
+    h += '<h2>交易紀錄 <span class="count">' + E.length + ' 筆</span></h2>' + (rows ? '<div class="scroll"><table class="compact"><thead><tr><th></th><th>日期</th><th>種類</th><th>股票</th><th>價格 × 數量／金額</th><th>手續費＋稅</th><th>理由／心得</th></tr></thead><tbody>' + rows + '</tbody></table></div>' : '<p class="empty">還沒有紀錄</p>');
     h += '<p class="jn-hint">損益用「平均成本法」計算，含手續費與交易稅；美股以交易當時匯率換算成台幣成本，市值用目前匯率。現價每分鐘更新，台股盤後以收盤價為準。資料只有你自己看得到。</p>';
     root.innerHTML = h;
     drawCharts(r, ++gen);
@@ -205,7 +205,7 @@ function journalClient(API) {
   modal.addEventListener('click', function (e) { if (e.target === modal) modal.hidden = true; });
   function open(html) { modal.innerHTML = '<form class="jn-form" onsubmit="return false">' + html + '</form>'; modal.hidden = false; return modal.querySelector('form'); }
 
-  function tradeForm(e, holdingMode) {
+  function tradeForm(e, holdingMode, toTpsl) {
     e = e || { kind: holdingMode ? 'holding' : 'buy', market: 'TW', date: today(), tags: [] };
     var H = e.kind === 'holding'; // 原有持股：不用日期、手續費，不扣現金
     var f = open('<h3>' + (H ? (e.id ? '編輯原有持股' : '📦 加入原有持股') : e.id ? '編輯交易' : '記一筆交易') + '</h3>' + (H ? '<p class="jn-hint">本來就持有的股票：填股數和平均成本就好，不用日期和手續費，也不會扣現金。之後賣出會用這個成本算損益。</p>' : '') +
@@ -317,6 +317,29 @@ function journalClient(API) {
       }
     });
     seg();
+    if (toTpsl && st.kind !== 'sell') mainBtn.click();
+  }
+
+  // ---- 修改某一檔持股：列出它的所有紀錄 ----
+  function posModal(key) {
+    var mk = key.split(':')[0], code = key.slice(mk.length + 1);
+    var list = E.filter(function (e) { return e.market === mk && e.code === code && (e.kind === 'buy' || e.kind === 'sell' || e.kind === 'holding'); }).sort(function (a, b) { return a.date > b.date ? -1 : a.date < b.date ? 1 : b.id - a.id; });
+    var name = (list[0] && list[0].name) || code;
+    var last = list.filter(function (e) { return e.kind === 'buy' || e.kind === 'holding'; })[0];
+    var kindTxt = { buy: '買進', sell: '賣出', holding: '原有持股' };
+    var f = open('<h3>✏️ ' + esc(code) + ' ' + esc(name) + '</h3><p class="jn-hint">股數或成本不對，就修改下面的紀錄；庫存會自動重算。</p>' +
+      '<div class="jn-acts">' + (last ? '<button type="button" class="main" data-a="tpsl">🎯 修改停利／停損</button>' : '') + '<button type="button" data-a="add-buy">＋ 再買進</button><button type="button" data-a="add-sell">＋ 賣出</button></div>' +
+      '<div class="scroll"><table class="compact"><tbody>' + list.map(function (e) {
+        return '<tr><td class="jn-ops"><button type="button" class="jn-edit" data-eid="' + e.id + '">✏️ 編輯</button><button type="button" class="jn-del" data-eid-del="' + e.id + '">刪除</button></td><td>' + (e.kind === 'holding' ? '原有' : e.date.slice(5).replace('-', '/')) + '</td><td><span class="chip ' + (e.kind === 'sell' ? 'bad' : e.kind === 'holding' ? 'mid' : 'good') + '">' + kindTxt[e.kind] + '</span></td><td>' + fmt(e.price, 2) + ' × ' + fmt(e.qty) + '</td></tr>';
+      }).join('') + '</tbody></table></div><div class="jn-btns"><button type="button" data-a="close">關閉</button></div><div class="jn-err"></div>');
+    f.addEventListener('click', function (ev) {
+      var a = ev.target.closest('[data-a]');
+      if (a && a.dataset.a === 'close') modal.hidden = true;
+      if (a && a.dataset.a === 'tpsl') tradeForm(last, false, true);
+      if (a && (a.dataset.a === 'add-buy' || a.dataset.a === 'add-sell')) tradeForm({ kind: a.dataset.a === 'add-buy' ? 'buy' : 'sell', market: mk, code: code, name: name, date: today(), tags: [] });
+      var ed = ev.target.closest('[data-eid]'); if (ed) tradeForm(E.filter(function (x) { return x.id == ed.dataset.eid; })[0]);
+      var dl = ev.target.closest('[data-eid-del]'); if (dl && confirm('確定要刪除這筆紀錄嗎？')) api('/api/journal/delete', { id: +dl.dataset.eidDel }).then(function () { modal.hidden = true; reload(); });
+    });
   }
 
   // ---- 定期定額 ----
@@ -426,6 +449,7 @@ function journalClient(API) {
     if (a && a.dataset.a === 'trade') tradeForm();
     if (a && a.dataset.a === 'holding') tradeForm(null, true);
     if (a && a.dataset.a === 'plans') planForm();
+    var po = ev.target.closest('[data-pos]'); if (po) posModal(po.dataset.pos);
     var pe = ev.target.closest('[data-plan]'); if (pe) planForm(P.filter(function (x) { return x.id == pe.dataset.plan; })[0]);
     var pt = ev.target.closest('[data-plan-toggle]'); if (pt) { var pp = P.filter(function (x) { return x.id == pt.dataset.planToggle; })[0]; if (pp) api('/api/journal/plan', { id: pp.id, market: pp.market, code: pp.code, name: pp.name, amount: pp.amount, days: pp.days, start: pp.start, active: !pp.active }).then(reload); }
     var pd = ev.target.closest('[data-plan-del]'); if (pd && confirm('刪除這個定期定額？（按「確定」後會再問要不要一併刪除已產生的扣款紀錄）')) { var also = confirm('要一併刪除這個定期定額已產生的扣款紀錄嗎？確定＝刪除紀錄；取消＝保留紀錄（當成一般買進）'); api('/api/journal/plan/delete', { id: +pd.dataset.planDel, withEntries: also }).then(reload); }
