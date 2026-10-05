@@ -230,5 +230,16 @@
    "tight": false,
    "pivot": 376
   }
+ ],
+ "20261005": [
+  {
+   "code": "2855",
+   "name": "統一證",
+   "mkt": "上市",
+   "close": 58.2,
+   "status": "柄整理中",
+   "tight": true,
+   "pivot": 59.7
+  }
  ]
 }
