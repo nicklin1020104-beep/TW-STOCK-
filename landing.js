@@ -224,6 +224,7 @@ const GATE_CSS = `#gate{display:none}html.gated #gate{display:block;position:fix
 @media (max-width:640px){.btabs{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:40;justify-content:space-around;align-items:center;padding:6px 6px calc(6px + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line)}.btab{flex:1;display:flex;justify-content:center;align-items:center;height:46px;border:0;background:none;color:var(--mute);cursor:pointer;border-radius:12px;-webkit-tap-highlight-color:transparent}.btab.on{color:var(--fg)}.btab.on svg{stroke-width:2.6}.btab:active{background:var(--card)}.ptabs .gtabs{display:none}.ptabs.nosub{display:none}.ptabs{padding-top:6px}body{padding-bottom:calc(72px + env(safe-area-inset-bottom))}#share-fab{bottom:calc(80px + env(safe-area-inset-bottom))}html.gated .btabs{display:none}}
 .aetf-h{font-weight:800;font-size:13.5px;margin:6px 0 4px}
 .vote-form[hidden]{display:none}
+#push-ask{position:fixed;inset:0;z-index:1100;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:24px;animation:lpUp .35s both}#push-ask .pa-ic{font-size:56px}#push-ask .gate-sub{line-height:1.9}#push-ask .pa-no{font:inherit;font-size:15px;margin-top:10px;width:100%;padding:10px;border:0;background:none;color:var(--mute);cursor:pointer}
 .vote-prize{border-radius:12px;padding:12px 14px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 10%,var(--bg)),var(--bg));border:1px solid color-mix(in srgb,var(--accent) 30%,var(--line))}.vp-title{font-weight:800;font-size:15px;margin-bottom:6px}.vp-row{font-size:13.5px;line-height:1.7}.vp-me{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);font-size:14px;line-height:1.6}`;
 
 // ---- 瀏覽器端：分享圖卡 ----
@@ -493,8 +494,36 @@ function pushClient(API) {
     var c = e.target.closest('.push-opts input'); if (!c || !sub) return;
     prefs[c.dataset.k] = c.checked; save().then(function () { render('已儲存'); });
   });
+  // ---- 會員登入後主動詢問要不要開通知（拒絕的話 14 天後再問）----
+  var ASKED = 'shoupan_push_asked', asking = false;
+  function askedRecently() { try { return Date.now() - (+localStorage.getItem(ASKED) || 0) < 14 * 86400000; } catch (e) { return true; } }
+  function markAsked() { try { localStorage.setItem(ASKED, String(Date.now())); } catch (e) {} }
+  function askBox(html, onYes) {
+    var m = document.createElement('div'); m.id = 'push-ask';
+    m.innerHTML = '<div class="nm-box">' + html + '</div>';
+    document.body.appendChild(m);
+    m.addEventListener('click', function (e) {
+      if (e.target.closest('.pa-yes')) { markAsked(); m.remove(); asking = false; if (onYes) onYes(); }
+      else if (e.target.closest('.pa-no') || e.target === m) { markAsked(); m.remove(); asking = false; }
+    });
+  }
+  function maybeAsk() {
+    if (asking || !token() || sub || askedRecently()) return;
+    if (supported && (!reg || Notification.permission !== 'default')) return;
+    if (!supported && !(ios && !standalone)) return; // 不支援、也不是 iPhone 未加入主畫面：不打擾
+    var nick = document.getElementById('nick-modal');
+    if (nick && !nick.hidden) return setTimeout(maybeAsk, 1500); // 先讓新會員取完暱稱
+    asking = true;
+    if (supported) {
+      askBox('<div class="pa-ic">🔔</div><div class="gate-name">要開啟通知嗎？</div><div class="gate-sub">08:55 開盤提醒今天的焦點股<br>13:35 收盤開獎，告訴你得了幾分<br>14:00 盤後報告出爐</div><button type="button" class="nm-ok pa-yes">開啟通知</button><button type="button" class="pa-no">之後再說</button><div class="gate-note">隨時可以在「個人檔案」關閉或調整</div>', enable);
+    } else {
+      askBox('<div class="pa-ic">📲</div><div class="gate-name">把飆股情報局加到主畫面</div><div class="gate-sub">iPhone 要先加到主畫面，才能收開盤／收盤通知：<br>① 點 Safari 下方的「分享」按鈕<br>② 選「加入主畫面」<br>③ 從主畫面的圖示打開，再開啟通知</div><button type="button" class="nm-ok pa-yes">知道了</button><button type="button" class="pa-no">之後再說</button>');
+    }
+  }
+  window.__pushCheck = function () { setTimeout(maybeAsk, 1200); };
+
   if (token()) api('/api/profile').then(function (j) { if (j.profile && j.profile.admin) { admin = true; if (sub) render(); } }).catch(function () {});
-  if (!supported) return render();
+  if (!supported) { render(); setTimeout(maybeAsk, 2500); return; }
   navigator.serviceWorker.register('/TW-STOCK-/sw.js', { scope: '/TW-STOCK-/' }).then(function (r) {
     reg = r; return navigator.serviceWorker.ready;
   }).then(function () { return reg.pushManager.getSubscription(); }).then(function (s) {
@@ -505,7 +534,7 @@ function pushClient(API) {
       else if (!j.error) return save().then(function () { render(); }); // 伺服器沒有紀錄（例如換帳號），補登記
       render();
     });
-  }).catch(function () { render(); });
+  }).then(function () { setTimeout(maybeAsk, 2500); }).catch(function () { render(); });
 }
 
 function pushScript(api) {

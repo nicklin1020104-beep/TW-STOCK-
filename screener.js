@@ -1942,7 +1942,8 @@ function clientScript() {
       if (j.error) { $('.auth-note').textContent = j.error; var ge = $('.gate-err'); if (ge) ge.textContent = j.error; return; }
       window.__track('member');
       token = j.token; user = j.user; LS.set('shoupan_token', token);
-      if (window.__journalStart) setTimeout(window.__journalStart, 0); LS.set('shoupan_user', JSON.stringify(user)); showUser(); loadAdmin(); loadProfile(); loadBoard('week');
+      if (window.__journalStart) setTimeout(window.__journalStart, 0);
+      if (window.__pushCheck) window.__pushCheck(); // 登入後詢問要不要開通知 LS.set('shoupan_user', JSON.stringify(user)); showUser(); loadAdmin(); loadProfile(); loadBoard('week');
       // 把這台裝置的自選股合併到雲端
       api('/api/watchlist').then(function (w) { var merged = (w.codes || []).concat(codes.filter(function (c) { return (w.codes || []).indexOf(c) < 0; })); codes = merged; saveCodes(); renderWatch(); });
     });
