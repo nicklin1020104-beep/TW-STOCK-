@@ -623,24 +623,41 @@ function journalClient(API) {
     var base = r.total - pnl - depToday, my = base > 0 ? pnl / base * 100 : null, mk = (ix.price / ix.prev - 1) * 100;
     var d = new Date((ix.time || 0) * 1000 + 8 * 3600000).toISOString().slice(5, 10).replace('-', '/');
     var held = list.filter(function (x) { return x.held; }).sort(function (a, b) { return b.chg - a.chg; });
-    var lines = [];
-    lines.push('今天損益 ' + pn(pnl) + ' 元' + (my == null ? '' : '（' + pct(my) + '）') + '，大盤 ' + pct(mk));
+    // 靠北版：同一天抽到的句子固定，不會一重整就換
+    var seed = 0; (d + r.hold.length).split('').forEach(function (c) { seed = (seed * 31 + c.charCodeAt(0)) % 9973; });
+    function pick(a) { seed = (seed * 7 + 13) % 9973; return a[seed % a.length]; }
+    function P(s, v) { return s.split('{x}').join(v); }
+    var bowls = Math.round(Math.abs(pnl) / 180), lines = [];
+    var amt = (pnl >= 0 ? pn(pnl) : '<span class="dn">' + fmt(-pnl) + '</span>') + ' 元' + (my == null ? '' : '（' + pct(my) + '）');
+    if (pnl >= 0) lines.push(pick((bowls >= 1 ? ['今天賺 {x}，換算大概 ' + bowls + ' 碗牛肉麵 🍜，不要一次吃完'] : []).concat(['今天進帳 {x}，先別急著辭職，這只是一天', '今天賺了 {x}，可以理直氣壯點大杯珍奶了 🧋'])).split('{x}').join(amt) + '，大盤 ' + pct(mk));
+    else lines.push(pick((bowls >= 1 ? ['今天賠 {x}，等於 ' + bowls + ' 碗牛肉麵直接倒進水溝 🍜'] : []).concat(['今天噴掉 {x}，錢沒有不見，只是變成別人的', '今天虧 {x}，晚餐建議改吃泡麵回本 🍜'])).split('{x}').join(amt) + '，大盤 ' + pct(mk));
     if (my != null) {
-      var diff = my - mk;
-      lines.push(diff >= 1 ? '贏大盤 ' + diff.toFixed(2) + ' 個百分點，今天選股有一套 😎' : diff >= 0 ? '小贏大盤 ' + diff.toFixed(2) + ' 個百分點，穩穩的 👍' : diff > -1 ? '跟大盤差不多（' + diff.toFixed(2) + ' 個百分點），今天算平手' : '輸大盤 ' + Math.abs(diff).toFixed(2) + ' 個百分點，明天再來 💪');
+      var diff = my - mk, x = Math.abs(diff).toFixed(2);
+      if (mk > 0.3 && my < 0) lines.push(pick(['大盤漲成這樣你還能賠，這也是一種天賦 🫠', '全市場都在吃肉，你在旁邊啃骨頭 🦴']));
+      else if (mk < -0.3 && my > 0) lines.push(pick(['大盤在跌你在漲，逆天而行，今天你最大 🫡', '別人在哭你在笑，記得低調，不然會被揍']));
+      lines.push(P(diff >= 3 ? pick(['贏大盤 {x} 個百分點，你是不是偷看明天的報紙 📰', '贏大盤 {x} 個百分點，巴菲特看了都想跟單', '贏大盤 {x} 個百分點，今天的你是股神，明天的你還不知道']) :
+        diff >= 1 ? pick(['贏大盤 {x} 個百分點，今天可以多加一顆滷蛋 🥚', '贏大盤 {x} 個百分點，選股功力是有在練的', '贏大盤 {x} 個百分點，去跟同事炫耀吧（記得低調）']) :
+        diff >= 0 ? pick(['小贏大盤 {x} 個百分點，贏是贏了，但贏得很像沒贏', '比大盤多 {x} 個百分點，大概多一杯珍奶的程度 🧋']) :
+        diff > -1 ? pick(['輸大盤 {x} 個百分點，差一點點跟差很多，一樣都叫輸', '跟大盤差不多，恭喜你成為人肉 0050']) :
+        diff > -3 ? pick(['輸大盤 {x} 個百分點，買 0050 躺著都比你強 🛌', '輸大盤 {x} 個百分點，你的選股能力跟擲骰子有得拚 🎲']) :
+        pick(['輸大盤 {x} 個百分點，建議今晚把看盤軟體刪掉冷靜一下', '輸大盤 {x} 個百分點，猴子射飛鏢選的都看不下去 🐒']), x));
     }
-    if (held.length > 1) lines.push('最強：' + esc(held[0].name) + ' ' + pct(held[0].chg) + '　最弱：' + esc(held[held.length - 1].name) + ' ' + pct(held[held.length - 1].chg));
-    else if (held.length === 1) lines.push(esc(held[0].name) + ' 今天 ' + pct(held[0].chg));
+    if (held.length > 1) {
+      var b = held[0], w = held[held.length - 1];
+      if (w.chg >= 0) lines.push('最弱的 ' + esc(w.name) + ' 都還有 ' + pct(w.chg) + '，今天全員及格，可以發獎狀了 🏅');
+      else if (b.chg < 0) lines.push('最強的 ' + esc(b.name) + ' 也是 ' + pct(b.chg) + '，今天全軍覆沒 🪦');
+      else lines.push('今日 MVP：' + esc(b.name) + ' ' + pct(b.chg) + '　今日戰犯：' + esc(w.name) + ' ' + pct(w.chg) + '（拖出去）');
+    } else if (held.length === 1) lines.push('全部身家押 ' + esc(held[0].name) + '，今天 ' + pct(held[0].chg) + (held[0].chg >= 0 ? '，梭哈的人運氣都特別好？' : '，雞蛋放同一個籃子的下場 🥚'));
     held.forEach(function (x) {
-      if (x.tp && x.price >= x.tp) lines.push('🎯 ' + esc(x.name) + ' 已達停利價 ' + fmt(x.tp, 2) + '，記得照計畫走');
-      else if (x.sl && x.price <= x.sl) lines.push('🛑 ' + esc(x.name) + ' 跌破停損價 ' + fmt(x.sl, 2) + '，要不要出場？');
+      if (x.tp && x.price >= x.tp) lines.push('🎯 ' + esc(x.name) + ' 到停利價 ' + fmt(x.tp, 2) + ' 了，該跑就跑，貪心會被懲罰');
+      else if (x.sl && x.price <= x.sl) lines.push('🛑 ' + esc(x.name) + ' 跌破停損價 ' + fmt(x.sl, 2) + '，說好的紀律呢？還在等奇蹟？');
     });
     var traded = list.filter(function (x) { return !x.held; });
-    if (traded.length) lines.push('今天出清：' + traded.map(function (x) { return esc(x.name); }).join('、'));
+    if (traded.length) lines.push('今天出清 ' + traded.map(function (x) { return esc(x.name); }).join('、') + '，希望不是賣在起漲點 🙏');
     if (miss) lines.push('<span class="jn-hint">有 ' + miss + ' 檔暫時抓不到報價，沒算進去</span>');
     var el = document.createElement('div');
     el.className = 'roast jn-today'; el.id = 'jn-today';
-    el.innerHTML = '<div class="roast-title">📒 你的今日總結 <span class="tag">' + d + '・只有你看得到</span></div><ul>' + lines.map(function (l) { return '<li>' + l + '</li>'; }).join('') + '</ul>';
+    el.innerHTML = '<div class="roast-title">🎤 你的收盤總結 <span class="tag">' + d + '・只有你看得到</span></div><ul>' + lines.map(function (l) { return '<li>' + l + '</li>'; }).join('') + '</ul>';
     var at = document.querySelector('.roast:not(.jn-today)');
     if (at) at.after(el); else root.prepend(el);
   }
