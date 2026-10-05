@@ -1,11 +1,11 @@
 # 每日報告（台灣時間；六日不跑）
-#   13:31 收盤快報：由 Cloudflare 準時叫醒（workflow_dispatch mode=close），用即時行情，約 13:37 上線
-#   14:00 排程：備援（Cloudflare 沒叫醒時）
+#   13:35、13:55 收盤快報：用即時行情（正式資料還沒出來時），約 14:00 前上線；推播同一天只發一次
 #   17:00 補上三大法人；08:35 補晚出的資料
 name: 每日報告
 on:
   schedule:
-    - cron: '0 6 * * 1-5'   # 14:00 台灣（等今日行情出齊）
+    - cron: '35 5 * * 1-5'  # 13:35 台灣（GitHub 常晚 10～20 分鐘，實際約 13:45～14:00）
+    - cron: '55 5 * * 1-5'  # 13:55 台灣（備援）
     - cron: '0 9 * * 1-5'   # 17:00 台灣（三大法人）
     - cron: '35 0 * * 1-5'  # 08:35 台灣（平日；六日不更新）
   workflow_dispatch:
@@ -37,7 +37,7 @@ jobs:
         working-directory: bot
         env:
           RESULTS_KEY: ${{ secrets.RESULTS_KEY }}
-          WAIT_TODAY: ${{ github.event.schedule == '0 6 * * 1-5' && '1' || '' }}
+          WAIT_TODAY: ${{ (github.event.schedule == '35 5 * * 1-5' || github.event.schedule == '55 5 * * 1-5') && '1' || '' }}
           FAST_CLOSE: ${{ inputs.mode == 'close' && '1' || '' }}
         run: node screener.js
       - name: 發布網站
