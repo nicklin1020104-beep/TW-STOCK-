@@ -144,6 +144,31 @@ async function getDay(date, today) {
   return data;
 }
 
+// 用證交所即時行情組出「今天」的全市場資料（收盤後即可用；代號與上市櫃別取自最近一天的快取）
+async function misDay(date) {
+  const prevFile = fs.readdirSync(CACHE).filter((f) => /^\d{8}\.json$/.test(f) && f.slice(0, 8) < date && fs.statSync(path.join(CACHE, f)).size > 10).sort().pop();
+  if (!prevFile) return null;
+  const prev = JSON.parse(fs.readFileSync(path.join(CACHE, prevFile), 'utf8'));
+  const codes = Object.keys(prev), out = {};
+  for (let i = 0; i < codes.length; i += 80) {
+    const chs = codes.slice(i, i + 80).map((c) => `${prev[c].mkt === '上櫃' ? 'otc' : 'tse'}_${c}.tw`).join('|');
+    let rows = [];
+    for (let k = 0; k < 3 && !rows.length; k++) {
+      try {
+        rows = (await getJSON(`https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=${chs}&json=1&delay=0&_=${Date.now()}`, 1)).msgArray || [];
+      } catch {
+        await sleep(2000);
+      }
+    }
+    for (const m of rows) {
+      if (m.d !== date) continue;
+      out[m.c] = { name: (prev[m.c] && prev[m.c].name) || m.n, open: num(m.o), high: num(m.h), low: num(m.l), close: num(m.z), vol: (num(m.v) || 0) * 1000, mkt: prev[m.c] ? prev[m.c].mkt : '上市' };
+    }
+    await sleep(400);
+  }
+  return Object.keys(out).length >= codes.length * 0.9 ? out : null;
+}
+
 // 三大法人買賣超（股數）：{ code: { foreign, trust, dealer, total } }
 async function getInsti(date) {
   const dir = path.join(CACHE, 'insti');
@@ -710,19 +735,24 @@ async function main() {
   const todayStr = ymd(now);
   const target = process.argv[2] || todayStr;
 
-  // 14:00 那次：今天有開盤的話，等證交所＋櫃買的收盤行情都出來（最多 40 分鐘）
-  if (process.env.WAIT_TODAY && !process.argv[2]) {
+  // 收盤快報（13:31 由 Cloudflare 叫醒；14:00 排程是備援）：
+  // 證交所正式日資料約 13:50 後才有，還沒出來就先用即時行情（13:30 收盤價）組出今天的資料（不寫入快取，17:00 再用正式資料）
+  let misToday = null;
+  const hasOtc = (d) => d && Object.values(d).some((q) => q.mkt === '上櫃');
+  if ((process.env.FAST_CLOSE || process.env.WAIT_TODAY) && !process.argv[2]) {
     try {
-      const j = await getJSON('https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_t00.tw&json=1&delay=0');
-      const open = j.msgArray && j.msgArray[0] && j.msgArray[0].d === todayStr;
-      for (let i = 0; open && i < 20; i++) {
-        const d = await getDay(todayStr, todayStr);
-        if (d && Object.values(d).some((q) => q.mkt === '上櫃')) break;
-        console.log('今日行情還沒出齊，2 分鐘後再試');
-        await sleep(120000);
+      let open = false;
+      for (let i = 0; i < 10; i++) {
+        const m = (await getJSON('https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_t00.tw&json=1&delay=0')).msgArray[0];
+        if (!m || m.d !== todayStr) break; // 今天沒開盤
+        if ((m.t || '') >= '13:30:00') { open = true; break; }
+        console.log('還沒收盤，30 秒後再看', m.t);
+        await sleep(30000);
       }
+      if (open && !hasOtc(await getDay(todayStr, todayStr))) misToday = await misDay(todayStr);
+      if (misToday) console.log(`收盤快報：用即時行情 ${Object.keys(misToday).length} 檔`);
     } catch (e) {
-      console.error('等待今日行情失敗：', e.message);
+      console.error('收盤快報準備失敗：', e.message);
     }
   }
 
@@ -734,7 +764,8 @@ async function main() {
     const ds = ymd(cursor);
     const dow = cursor.getUTCDay();
     if (dow !== 0 && dow !== 6) {
-      const data = await getDay(ds, todayStr);
+      let data = await getDay(ds, todayStr);
+      if (ds === todayStr && misToday && !hasOtc(data)) data = misToday;
       if (data) {
         days.push({ date: ds, data });
         process.stdout.write(`\r已取得 ${days.length}/${DAYS_NEEDED} 個交易日 (${ds})   `);
@@ -1248,7 +1279,12 @@ async function main() {
       for (const c of liq) { const ind = rev[c] && rev[c].industry; if (ind) (official[ind] = official[ind] || []).push(c); }
       for (const k of Object.keys(official)) if (official[k].length < 5) delete official[k];
       const otc = [...liq].filter((c) => today[c].mkt === '上櫃');
-      fs.writeFileSync(path.join(ROOT, 'site', 'settle-map.json'), JSON.stringify({ date: tradeDate, groups, official, otc }));
+      // 同時保留前一個交易日的對照表：13:35 開獎要用「前一天」的，但 13:3x 的快報可能已經先寫入今天的
+      const mapFile = path.join(ROOT, 'site', 'settle-map.json');
+      let old = null;
+      try { old = JSON.parse(fs.readFileSync(mapFile, 'utf8')); } catch {}
+      const prevMap = old && old.date < tradeDate ? { date: old.date, groups: old.groups, official: old.official, otc: old.otc } : old && old.prev ? old.prev : null;
+      fs.writeFileSync(mapFile, JSON.stringify({ date: tradeDate, groups, official, otc, prev: prevMap }));
     } catch (e) {
       console.error('開獎對照表失敗：', e.message);
     }
@@ -1264,7 +1300,7 @@ async function main() {
     }
     // 開盤推播用的今日焦點
     const uniq = (a) => [...new Set(a)];
-    // 盤後推播（14:00 盤後整理、17:00 法人更新）用的摘要
+    // 盤後推播（13:40 收盤快報、17:00 法人更新）用的摘要
     const hasInsti = Object.keys(insti).length > 0;
     const amt = (k) => Object.entries(insti).reduce((a, [c, x]) => a + (today[c] && today[c].close ? (x[k] * today[c].close) / 1e8 : 0), 0);
     // 加權收盤：先用證交所即時行情（日期要是交易日），否則用 Yahoo 日線裡同一天的那筆
@@ -1735,7 +1771,7 @@ ${recap}
   function closedView(p) {
     form.hidden = true;
     var r = p.result;
-    if (!r) { msg.innerHTML = '⏰ 投票已截止（開盤後不能再投），<b>今天 13:35 收盤後開獎</b>，14:00 開放投下一個交易日'; if (p.total) show(p); return; }
+    if (!r) { msg.innerHTML = '⏰ 投票已截止（開盤後不能再投），<b>今天 13:35 收盤後開獎</b>，13:40 開放投下一個交易日'; if (p.total) show(p); return; }
     var nd = r.next ? (+r.next.slice(4, 6)) + '/' + (+r.next.slice(6)) : '';
     var medal = ['🥇', '🥈', '🥉'];
     var top = r.top3.map(function (t, i) { return medal[i] + ' ' + esc(t) + ' ' + (r.themes[t] != null ? pct(r.themes[t]) : ''); }).join('　');
@@ -1753,10 +1789,10 @@ ${recap}
       me = '<div class="vp-me">你投「' + (p.mine.bias === 'bull' ? '看多' : '看空') + (p.mine.theme ? '／' + esc(p.mine.theme) : '') + '」：方向 ' + (s.dirOk ? '✅ +1' : '❌ 0') +
         (p.mine.theme ? '、族群 ' + (s.themePts === 3 ? '🏆 前三強 +3' : s.themePts === 1 ? '✅ 漲贏大盤 +1' : '❌ 0') + (s.themeR != null ? '（' + pct(s.themeR) + '）' : '') : '') +
         ' → 這次得 <b>' + s.pts + ' 分</b></div>';
-    } else me = '<div class="vp-me">你這次沒有投票，14:00 起可以投下一個交易日</div>';
+    } else me = '<div class="vp-me">你這次沒有投票，13:40 起可以投下一個交易日</div>';
     res.innerHTML = '<div class="vote-prize"><div class="vp-title">🎉 開獎！' + nd + ' 收盤結果</div><div class="vp-row">加權指數 ' + pct(r.tw) + '</div><div class="vp-row">今天最強族群：' + top + '</div>' + crowd + me + '</div>';
     res.hidden = false;
-    msg.textContent = '14:00 開放投下一個交易日・排行榜在「個人檔案」';
+    msg.textContent = '13:40 開放投下一個交易日・排行榜在「個人檔案」';
   }
   function load() { fetch(API + '/api/poll?date=' + date + '&vid=' + encodeURIComponent(vid), authH()).then(function (r) { return r.json(); }).then(function (p) { if (p.closed) closedView(p); else if (p.mine) show(p); }).catch(function () {}); }
   // 先選看多／看空和族群，按「鎖定投票」才送出；09:00 開盤前都可以改
@@ -2637,4 +2673,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { resultsKey, getRevenue, getShares, renderTopBar, fetchTwse, fetchTpex, getRevenueMonth, prevYM, getDay, getInsti, getJSON, ma, num, sleep, ymd, CACHE };
+module.exports = { misDay, resultsKey, getRevenue, getShares, renderTopBar, fetchTwse, fetchTpex, getRevenueMonth, prevYM, getDay, getInsti, getJSON, ma, num, sleep, ymd, CACHE };
