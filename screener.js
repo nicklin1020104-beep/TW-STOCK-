@@ -1936,6 +1936,25 @@ function clientScript() {
     try { fetch(API + '/api/visit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ vid: vid, kind: kind }), keepalive: true }); } catch (e) {}
   };
   window.__track(token ? 'member' : LS.get('shoupan_guest') ? 'guest' : 'landing');
+  // 停留時間：畫面在前景、而且 5 分鐘內有操作才計時；每分鐘回報，離開時補最後一段
+  (function () {
+    var acc = 0, last = Date.now(), act = Date.now();
+    ['scroll', 'click', 'keydown', 'touchstart', 'mousemove'].forEach(function (ev) { window.addEventListener(ev, function () { act = Date.now(); }, { passive: true, capture: true }); });
+    function tick() { var now = Date.now(); if (document.visibilityState === 'visible' && now - act < 300000) acc += (now - last) / 1000; last = now; }
+    function flush(beacon) {
+      tick();
+      var secs = Math.round(acc); if (secs < 5) return; acc -= secs;
+      var vid = LS.get('shoupan_vid'); if (!vid) return;
+      var body = JSON.stringify({ vid: vid, secs: Math.min(secs, 600), token: token || undefined });
+      try {
+        if (beacon && navigator.sendBeacon) navigator.sendBeacon(API + '/api/visit/time', new Blob([body], { type: 'text/plain' }));
+        else fetch(API + '/api/visit/time', { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: body, keepalive: true }).catch(function () {});
+      } catch (e) {}
+    }
+    setInterval(function () { flush(false); }, 60000);
+    document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') flush(true); else { last = Date.now(); act = Date.now(); } });
+    window.addEventListener('pagehide', function () { flush(true); });
+  })();
   function logoutLocal() { token = null; user = null; LS.del('shoupan_token'); LS.del('shoupan_user'); LS.del('shoupan_guest'); showUser(); }
   window.__shoupanLogin = function (resp) {
     api('/api/login', { method: 'POST', body: JSON.stringify({ credential: resp.credential }) }).then(function (j) {
@@ -2192,22 +2211,23 @@ function clientScript() {
       var days = j.days.map(function (d) { return '<tr><td>' + d.date.slice(4, 6) + '/' + d.date.slice(6) + '</td><td>' + d.n + '</td><td>' + d.members + '</td><td>' + Math.round(d.bull / d.n * 100) + '%</td></tr>'; }).join('');
       var recent = j.recent.map(function (v) { return '<tr><td>' + new Date(v.ts).toLocaleString('zh-TW', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false }) + '</td><td class="nm">' + esc(v.nickname || v.name || '未登入') + '</td><td class="hint">' + esc(v.email || '') + '</td><td>' + bias[v.bias] + '</td><td>' + esc(v.theme || '-') + '</td></tr>'; }).join('');
       var box = $('.pf-admin');
+      var dur = function (sec) { sec = +sec || 0; if (sec < 60) return sec ? '不到 1 分' : '-'; var m = Math.round(sec / 60); return m < 60 ? m + ' 分' : Math.floor(m / 60) + ' 小時 ' + (m % 60) + ' 分'; };
       var tf = function (ms) { return ms ? new Date(ms).toLocaleString('zh-TW', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false }) : '-'; };
       var sMap = {}; (j.signups || []).forEach(function (d) { sMap[d.date] = d.n; });
       var sign = ''; for (var di = 0; di < 14; di++) { var dk = new Date(Date.now() + 8 * 3600000 - di * 86400000).toISOString().slice(0, 10).replace(/-/g, ''); var dn = sMap[dk] || 0; sign += '<tr><td>' + dk.slice(4, 6) + '/' + dk.slice(6) + (di === 0 ? '（今天）' : '') + '</td><td>' + (dn ? '<b class="up">+' + dn + '</b>' : '<span class="hint">0</span>') + '</td></tr>'; }
-      var mem = (j.members || []).map(function (m) { return '<tr><td>' + tf(m.created) + '</td><td class="nm">' + esc(m.nickname || '（未取暱稱）') + '</td><td>' + esc(m.name || '') + '</td><td class="hint">' + esc(m.email || '') + '</td><td>' + tf(m.last_login) + '</td></tr>'; }).join('');
+      var mem = (j.members || []).map(function (m) { return '<tr><td>' + tf(m.created) + '</td><td class="nm">' + esc(m.nickname || '（未取暱稱）') + '</td><td>' + esc(m.name || '') + '</td><td class="hint">' + esc(m.email || '') + '</td><td>' + tf(m.last_login) + '</td><td>' + dur(m.total_secs) + '</td></tr>'; }).join('');
       var todayKey = new Date(Date.now() + 8 * 3600000).toISOString().slice(0, 10).replace(/-/g, '');
       // 今天（台灣時間 00:00 之後）上線過的會員，最近的在最上面
       var dayStart = Date.UTC(+todayKey.slice(0, 4), +todayKey.slice(4, 6) - 1, +todayKey.slice(6)) - 8 * 3600000;
       var onlineToday = (j.members || []).filter(function (m) { return m.last_login >= dayStart; }).sort(function (a, b) { return b.last_login - a.last_login; });
       var todayN = ((j.signups || []).filter(function (d) { return d.date === todayKey; })[0] || { n: 0 }).n;
-      var vis = (j.visits || []).map(function (d) { return '<tr><td>' + d.date.slice(4, 6) + '/' + d.date.slice(6) + '</td><td><b>' + d.total + '</b></td><td>' + d.members + '</td><td>' + d.guests + '</td><td>' + d.landing + '</td></tr>'; }).join('');
+      var vis = (j.visits || []).map(function (d) { return '<tr><td>' + d.date.slice(4, 6) + '/' + d.date.slice(6) + '</td><td><b>' + d.total + '</b></td><td>' + d.members + '</td><td>' + d.guests + '</td><td>' + d.landing + '</td><td>' + (d.timed ? dur(d.secs / d.timed) : '-') + '</td><td>' + dur(d.secs) + '</td></tr>'; }).join('');
       var tv = (j.visits || []).filter(function (d) { return d.date === todayKey; })[0];
       box.innerHTML = '<h2>管理員後台 <span class="count">只有你看得到・會員 ' + j.users + ' 人・今天新加入 ' + todayN + ' 人・開啟通知 ' + (j.pushSubs || 0) + ' 台裝置</span></h2>' +
         '<h3>每日訪客 <span class="count">今天 ' + (tv ? tv.total : 0) + ' 人（會員 ' + (tv ? tv.members : 0) + '・訪客 ' + (tv ? tv.guests : 0) + '・只看介紹頁 ' + (tv ? tv.landing : 0) + '）</span></h3>' +
-        (vis ? '<div class="scroll"><table class="compact"><thead><tr><th>日期</th><th>總人數</th><th>會員</th><th>訪客</th><th>只看介紹頁</th></tr></thead><tbody>' + vis + '</tbody></table></div><p class="hint">以「裝置」計算，同一台裝置一天只算一次；同一天先當訪客、後來登入，算會員。</p>' : '<p class="empty">還沒有訪客資料</p>') +
-        '<h3>今天上線的會員 <span class="count">' + onlineToday.length + ' 人</span></h3>' + (onlineToday.length ? '<div class="scroll"><table class="compact"><thead><tr><th>最近上線</th><th>暱稱</th><th>Google 名字</th><th>信箱</th></tr></thead><tbody>' + onlineToday.map(function (m) { return '<tr><td>' + new Date(m.last_login).toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit', hour12: false }) + '</td><td class="nm">' + esc(m.nickname || '（未取暱稱）') + '</td><td>' + esc(m.name || '') + '</td><td class="hint">' + esc(m.email || '') + '</td></tr>'; }).join('') + '</tbody></table></div><p class="hint">「最近上線」＝最後一次使用網站的時間（最多 5 分鐘更新一次）。上面的會員數是「裝置數」，同一人用手機和電腦會算 2。</p>' : '<p class="empty">今天還沒有會員上線</p>') + '<h3>每日新會員</h3>' + (sign ? '<div class="scroll"><table class="compact"><thead><tr><th>日期</th><th>新會員</th></tr></thead><tbody>' + sign + '</tbody></table></div>' : '<p class="empty">尚無會員</p>') +
-        '<h3>最新加入的會員</h3>' + (mem ? '<details open><summary>會員名單（最新加入在最上面，最多 100 人）</summary><div class="scroll"><table class="compact"><thead><tr><th>加入時間</th><th>暱稱</th><th>Google 名字</th><th>信箱</th><th>最近上線</th></tr></thead><tbody>' + mem + '</tbody></table></div></details>' : '') +
+        (vis ? '<div class="scroll"><table class="compact"><thead><tr><th>日期</th><th>總人數</th><th>會員</th><th>訪客</th><th>只看介紹頁</th><th>平均停留</th><th>總停留</th></tr></thead><tbody>' + vis + '</tbody></table></div><p class="hint">以「裝置」計算，同一台裝置一天只算一次；同一天先當訪客、後來登入，算會員。</p>' : '<p class="empty">還沒有訪客資料</p>') +
+        '<h3>今天上線的會員 <span class="count">' + onlineToday.length + ' 人</span></h3>' + (onlineToday.length ? '<div class="scroll"><table class="compact"><thead><tr><th>最近上線</th><th>暱稱</th><th>今天停留</th><th>Google 名字</th><th>信箱</th></tr></thead><tbody>' + onlineToday.map(function (m) { return '<tr><td>' + new Date(m.last_login).toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit', hour12: false }) + '</td><td class="nm">' + esc(m.nickname || '（未取暱稱）') + '</td><td><b>' + dur(m.today_secs) + '</b></td><td>' + esc(m.name || '') + '</td><td class="hint">' + esc(m.email || '') + '</td></tr>'; }).join('') + '</tbody></table></div><p class="hint">「最近上線」＝最後一次使用網站的時間（最多 5 分鐘更新一次）。上面的會員數是「裝置數」，同一人用手機和電腦會算 2。</p>' : '<p class="empty">今天還沒有會員上線</p>') + '<h3>每日新會員</h3>' + (sign ? '<div class="scroll"><table class="compact"><thead><tr><th>日期</th><th>新會員</th></tr></thead><tbody>' + sign + '</tbody></table></div>' : '<p class="empty">尚無會員</p>') +
+        '<h3>最新加入的會員</h3>' + (mem ? '<details open><summary>會員名單（最新加入在最上面，最多 100 人）</summary><div class="scroll"><table class="compact"><thead><tr><th>加入時間</th><th>暱稱</th><th>Google 名字</th><th>信箱</th><th>最近上線</th><th>累計停留</th></tr></thead><tbody>' + mem + '</tbody></table></div></details>' : '') +
         '<h3>每日投票總覽</h3>' +
         (days ? '<div class="scroll"><table class="compact"><thead><tr><th>投票日</th><th>票數</th><th>登入會員</th><th>看多</th></tr></thead><tbody>' + days + '</tbody></table></div>' : '<p class="empty">尚無投票</p>') +
         '<h3>最新投票明細</h3>' + (recent ? '<div class="scroll"><table class="compact"><thead><tr><th>時間</th><th>情報員</th><th>信箱</th><th>多空</th><th>族群</th></tr></thead><tbody>' + recent + '</tbody></table></div>' : '<p class="empty">尚無投票</p>');
