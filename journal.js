@@ -170,12 +170,16 @@ function journalClient(API) {
       if (!rows.length || rows.every(function (x) { return !x.v; })) { msg.textContent = '還沒有資產可以畫，記一筆交易或加入原有持股後就會出現'; return; }
       msg.textContent = '';
       var lab = rows.map(function (x) { return +x.d.slice(5, 7) + '/' + +x.d.slice(8); });
-      var my = twr.map(function (x) { return +((x - 1) * 100).toFixed(2); });
+      // 總損益 %：（當天總資產 − 投入本金）÷ 投入本金；本金＝期間第一天的總資產＋之後的入金（扣出金）
+      var base = [], bsum = rows[0].v;
+      rows.forEach(function (x, i) { if (i > 0) bsum += x.flow; base.push(bsum); });
+      var my = rows.map(function (x, i) { return base[i] > 0 ? +(((x.v - base[i]) / base[i]) * 100).toFixed(2) : null; });
+      var plAmt = rows[rows.length - 1].v - base[base.length - 1];
       var i0 = rows[0].idx, mk = rows.map(function (x) { return x.idx && i0 ? +((x.idx / i0 - 1) * 100).toFixed(2) : null; });
       var cs = getComputedStyle(document.documentElement), fg = cs.getPropertyValue('--fg').trim() || '#222', up = cs.getPropertyValue('--up').trim() || '#d0312d';
       var ds = EQ.mode === 'value'
         ? [{ label: '總資產', data: rows.map(function (x) { return Math.round(x.v); }), borderColor: '#2563eb', backgroundColor: 'rgba(37,99,235,0.08)', fill: true, tension: 0.25, pointRadius: 0, borderWidth: 2.5 }]
-        : [{ label: '我的報酬率', data: my, borderColor: up, tension: 0.25, pointRadius: 0, borderWidth: 2.5 }, { label: '加權指數', data: mk, borderColor: '#94a3b8', borderDash: [6, 5], tension: 0.25, pointRadius: 0, borderWidth: 2 }];
+        : [{ label: '我的總損益 %', data: my, borderColor: up, tension: 0.25, pointRadius: 0, borderWidth: 2.5 }, { label: '加權指數', data: mk, borderColor: '#94a3b8', borderDash: [6, 5], tension: 0.25, pointRadius: 0, borderWidth: 2 }];
       loadChart().then(function () {
         if (g0 !== gen) return;
         if (eqChart) eqChart.destroy();
@@ -183,7 +187,7 @@ function journalClient(API) {
       });
       var lastMy = my[my.length - 1], lastMk = mk[mk.length - 1];
       root.querySelector('.jn-eqstats').innerHTML =
-        '<div><b>' + pct(lastMy) + '</b><span>期間報酬（扣除入出金）</span></div>' +
+        '<div><b>' + pct(lastMy) + '</b><span>期間總損益</span><small>' + (plAmt >= 0 ? '+' : '-') + '$' + fmt(Math.abs(plAmt)) + '</small></div>' +
         '<div><b>' + (lastMk == null ? '-' : pct(lastMk)) + '</b><span>同期加權指數</span>' + (lastMk == null ? '' : '<small>' + (lastMy >= lastMk ? '贏大盤 ' : '輸大盤 ') + Math.abs(lastMy - lastMk).toFixed(2) + ' 個百分點</small>') + '</div>' +
         '<div><b>' + pct(mdd * 100) + '</b><span>最大回撤</span><small>從高點最多跌多少</small></div>' +
         '<div><b>' + (best ? pct(best.r * 100) : '-') + '</b><span>單日最大漲幅</span>' + (best ? '<small>' + +best.d.slice(5, 7) + '/' + +best.d.slice(8) + '</small>' : '') + '</div>' +
@@ -584,13 +588,69 @@ function journalClient(API) {
       fetch('/TW-STOCK-/etfs.json').then(function (r) { return r.json(); }).then(function (j) { Object.keys(j).forEach(function (c) { names[c] = { n: j[c][0], m: j[c][1], c: j[c][2] }; }); }).catch(function () {}),
     ]);
   }
+  // ---- 你的今日總結（放在首頁「收盤總結」下面）----
+  function tradeSyms() {
+    var t = today(), out = [];
+    E.forEach(function (e) { if ((e.kind === 'buy' || e.kind === 'sell') && e.date === t) out.push(sym(e)); });
+    return out;
+  }
+  function daySum() {
+    var old = document.getElementById('jn-today'); if (old) old.remove();
+    var ix = Q['^TWII']; if (!ix || !ix.price || !ix.prev) return;
+    var t = today(), r = calc(), fxNow = r.fxNow || 0, pos = {};
+    r.hold.forEach(function (p) { pos[p.market + ':' + p.code] = { market: p.market, code: p.code, name: p.name, qty: p.qty, tp: p.tp, sl: p.sl, flow: 0, dq: 0 }; });
+    var depToday = 0;
+    E.forEach(function (e) {
+      if (e.date !== t) return;
+      if (e.kind === 'deposit') depToday += e.amount;
+      if (e.kind === 'withdraw') depToday -= e.amount;
+      if (e.kind !== 'buy' && e.kind !== 'sell') return;
+      var k = e.market + ':' + e.code, p = pos[k] || (pos[k] = { market: e.market, code: e.code, name: e.name, qty: 0, flow: 0, dq: 0 });
+      var amt = e.price * e.qty;
+      if (e.kind === 'buy') { p.flow -= amt + (e.fee || 0); p.dq += e.qty; } else { p.flow += amt - (e.fee || 0) - (e.tax || 0); p.dq -= e.qty; }
+    });
+    var list = [], pnl = 0, miss = 0;
+    Object.keys(pos).forEach(function (k) {
+      var p = pos[k], q = Q[sym(p)];
+      if (!q || q.price == null || q.prev == null) { miss++; return; }
+      var fx = p.market === 'US' ? fxNow : 1; if (!fx) { miss++; return; }
+      var q0 = p.qty - p.dq; // 昨天收盤時的股數
+      var v = (q.price * p.qty - q.prev * q0 + p.flow) * fx;
+      pnl += v;
+      list.push({ code: p.code, name: p.name || (names[p.code] && names[p.code].n) || p.code, pnl: v, chg: (q.price / q.prev - 1) * 100, held: p.qty > 0, price: q.price, tp: p.tp, sl: p.sl });
+    });
+    if (!list.length) return;
+    var base = r.total - pnl - depToday, my = base > 0 ? pnl / base * 100 : null, mk = (ix.price / ix.prev - 1) * 100;
+    var d = new Date((ix.time || 0) * 1000 + 8 * 3600000).toISOString().slice(5, 10).replace('-', '/');
+    var held = list.filter(function (x) { return x.held; }).sort(function (a, b) { return b.chg - a.chg; });
+    var lines = [];
+    lines.push('今天損益 ' + pn(pnl) + ' 元' + (my == null ? '' : '（' + pct(my) + '）') + '，大盤 ' + pct(mk));
+    if (my != null) {
+      var diff = my - mk;
+      lines.push(diff >= 1 ? '贏大盤 ' + diff.toFixed(2) + ' 個百分點，今天選股有一套 😎' : diff >= 0 ? '小贏大盤 ' + diff.toFixed(2) + ' 個百分點，穩穩的 👍' : diff > -1 ? '跟大盤差不多（' + diff.toFixed(2) + ' 個百分點），今天算平手' : '輸大盤 ' + Math.abs(diff).toFixed(2) + ' 個百分點，明天再來 💪');
+    }
+    if (held.length > 1) lines.push('最強：' + esc(held[0].name) + ' ' + pct(held[0].chg) + '　最弱：' + esc(held[held.length - 1].name) + ' ' + pct(held[held.length - 1].chg));
+    else if (held.length === 1) lines.push(esc(held[0].name) + ' 今天 ' + pct(held[0].chg));
+    held.forEach(function (x) {
+      if (x.tp && x.price >= x.tp) lines.push('🎯 ' + esc(x.name) + ' 已達停利價 ' + fmt(x.tp, 2) + '，記得照計畫走');
+      else if (x.sl && x.price <= x.sl) lines.push('🛑 ' + esc(x.name) + ' 跌破停損價 ' + fmt(x.sl, 2) + '，要不要出場？');
+    });
+    var traded = list.filter(function (x) { return !x.held; });
+    if (traded.length) lines.push('今天出清：' + traded.map(function (x) { return esc(x.name); }).join('、'));
+    if (miss) lines.push('<span class="jn-hint">有 ' + miss + ' 檔暫時抓不到報價，沒算進去</span>');
+    var el = document.createElement('div');
+    el.className = 'roast jn-today'; el.id = 'jn-today';
+    el.innerHTML = '<div class="roast-title">📒 你的今日總結 <span class="tag">' + d + '・只有你看得到</span></div><ul>' + lines.map(function (l) { return '<li>' + l + '</li>'; }).join('') + '</ul>';
+    var at = document.querySelector('.roast:not(.jn-today)');
+    if (at) at.after(el); else root.prepend(el);
+  }
   function reload() {
     return api('/api/journal').then(function (j) {
       if (j.error) { root.innerHTML = '<p class="empty">' + esc(j.error) + '</p>'; return; }
       S = j.settings; if (window.__feeCalcPrefill) window.__feeCalcPrefill(S); P = j.plans || []; planErr = j.planErr || null; E = (j.entries || []).map(function (e) { if (e.kind === 'buy' && e.date === '2000-01-01') e.kind = 'holding'; return e; }); // 原有持股
-      var r = calc(), syms = r.hold.map(sym); if (r.hold.some(function (p) { return p.market === 'US'; })) syms.push('USDTWD=X');
+      var r = calc(), syms = r.hold.map(sym).concat(tradeSyms(), ['^TWII']); if (E.some(function (p) { return p.market === 'US'; })) syms.push('USDTWD=X');
       Q = {}; render();
-      return quotes(syms).then(render);
+      return quotes(syms).then(function () { render(); daySum(); });
     });
   }
   function start() {
@@ -598,9 +658,11 @@ function journalClient(API) {
     loaded = true; loadNames().then(reload);
   }
   // 打開這一頁時才載入
-  document.addEventListener('click', function (e) { var t = e.target.closest('.ptab[data-p="journal"],.gtab[data-g="journal"],.btab[data-g="journal"]'); if (t) setTimeout(start, 0); });
+  document.addEventListener('click', function (e) { var t = e.target.closest('.ptab[data-p="journal"],.gtab[data-g="journal"],.btab[data-g="journal"]'); if (t) setTimeout(loaded ? render : start, 0); });
   if (location.hash === '#journal') setTimeout(start, 300);
   window.__journalStart = function () { loaded = false; start(); };
+  // 會員一進網站就先載入，首頁才能顯示「你的今日總結」
+  if (token()) setTimeout(start, 600);
 }
 
 // ---- 手續費試算（不用登入）----
