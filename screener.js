@@ -2145,8 +2145,18 @@ const NAV = [
   ['macro', '總經', [['macro', '總經']]],
   ['me', '個人檔案', [['profile', '個人檔案']]],
 ];
+// 手機版底部分頁列的圖示（線條圖示，顏色跟著文字）
+const NAV_ICONS = {
+  pick: '<polyline points="3 17 9 11 13 15 21 7"/><polyline points="15 7 21 7 21 13"/>',
+  watch: '<polygon points="12 3 14.8 8.9 21 9.6 16.4 13.9 17.7 20 12 17 6.3 20 7.6 13.9 3 9.6 9.2 8.9"/>',
+  chips: '<rect x="4" y="12" width="4" height="8" rx="1"/><rect x="10" y="6" width="4" height="14" rx="1"/><rect x="16" y="9" width="4" height="11" rx="1"/>',
+  sector: '<rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/>',
+  macro: '<circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><line x1="3" y1="12" x2="21" y2="12"/>',
+  me: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/>',
+};
 function renderNav() {
-  return `<div class="ptabs">
+  const btabs = `<nav class="btabs">${NAV.map(([g, t], i) => `<button class="btab${i ? '' : ' on'}" data-g="${g}" aria-label="${t}"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${NAV_ICONS[g] || ''}</svg></button>`).join('')}</nav>`;
+  return btabs + `<div class="ptabs">
 <div class="gtabs">${NAV.map(([g, t], i) => `<button class="gtab${i ? '' : ' on'}" data-g="${g}">${t}</button>`).join('')}</div>
 ${NAV.map(([g, , pages], i) => `<div class="subtabs${pages.length === 1 ? ' single' : ''}" data-g="${g}"${i ? ' hidden' : ''}>${pages.map(([k, t], j) => `<button class="ptab${i === 0 && j === 0 ? ' on' : ''}" data-p="${k}">${t}</button>`).join('')}</div>`).join('')}
 </div>`;
@@ -2413,7 +2423,7 @@ function renderTracking({ signals, stats }, opt = {}) {
 
 function renderHtml(date, a, b, flow, picks, extra) {
   const d = `${date.slice(0, 4)}/${date.slice(4, 6)}/${date.slice(6)}`;
-  return `<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  return `<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>飆股情報局</title>
 <link rel="icon" type="image/png" sizes="32x32" href="/TW-STOCK-/favicon-32.png?v=2"><link rel="apple-touch-icon" href="/TW-STOCK-/apple-touch-icon.png?v=2"><link rel="manifest" href="/TW-STOCK-/manifest.webmanifest?v=2">
 <meta name="description" content="每天收盤後的台股整理：選股、族群趨勢、主力籌碼、三大法人、總經數據，還能猜明天漲跌拚排行榜。">
@@ -2561,6 +2571,17 @@ ${clientScript()}
       target.click();
     };
   });
+  // 手機版底部分頁列
+  function syncBottom(g) {
+    document.querySelectorAll('.btab').forEach(function (b) { b.classList.toggle('on', b.dataset.g === g); });
+    var row = document.querySelector('.subtabs[data-g="' + g + '"]');
+    var p = document.querySelector('.ptabs'); if (p) p.classList.toggle('nosub', !row || row.classList.contains('single'));
+  }
+  document.querySelectorAll('.btab').forEach(function (b) {
+    b.onclick = function () { var gb = document.querySelector('.gtab[data-g="' + b.dataset.g + '"]'); if (gb) gb.click(); scrollTo(0, 0); };
+  });
+  document.addEventListener('click', function (e) { var gb = e.target.closest && e.target.closest('.gtab'); if (gb) syncBottom(gb.dataset.g); });
+  var on = document.querySelector('.gtab.on'); if (on) syncBottom(on.dataset.g);
 })();
 </script>
 <script>document.querySelectorAll('.ptab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.ptab').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('.page').forEach(p=>p.hidden=p.dataset.p!==b.dataset.p);scrollTo(0,0)})</script>
