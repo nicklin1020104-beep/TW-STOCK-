@@ -154,10 +154,11 @@ function renderGate() {
 const GATE_CSS = `#gate{display:none}html.gated #gate{display:block;position:fixed;inset:0;z-index:1000;background:var(--bg);overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;scroll-behavior:smooth}html.gated body{overflow:hidden}
 #gate h1,#gate h2,#gate h3{border:0;padding:0}.lp-wrap{max-width:1100px;margin:0 auto;padding:0 20px}.lp-wrap.narrow{max-width:760px}
 .lp-nav{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}.lp-navin{display:flex;align-items:center;gap:20px;height:60px}
-.lp-brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:17px;color:var(--fg);text-decoration:none}.lp-brand img{width:30px;height:30px;border-radius:8px}
+.lp-brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:17px;color:var(--fg);text-decoration:none;white-space:nowrap}.lp-brand img{width:30px;height:30px;border-radius:8px}
 .lp-links{display:flex;gap:22px;flex:1;justify-content:center}.lp-links a{color:var(--mute);text-decoration:none;font-size:14px;font-weight:600}.lp-links a:hover{color:var(--fg)}.lp-acts{display:flex;gap:8px}
 .lp-btn{display:inline-block;font-size:14px;font-weight:700;padding:8px 16px;border-radius:10px;text-decoration:none;border:1.5px solid var(--line);color:var(--fg);background:var(--bg);white-space:nowrap;transition:transform .15s,box-shadow .15s}.lp-btn:hover{transform:translateY(-2px)}.lp-btn.solid{background:var(--accent);border-color:var(--accent);color:var(--bg)}.lp-btn.big{font-size:16px;padding:13px 24px;border-radius:12px}.lp-btn.solid.big{box-shadow:0 8px 20px color-mix(in srgb,var(--accent) 28%,transparent)}
 @media (max-width:820px){.lp-links{display:none}.lp-navin{justify-content:space-between}}
+@media (max-width:430px){.lp-navin{gap:8px}.lp-brand{font-size:15px}.lp-brand img{width:26px;height:26px}.lp-acts{gap:6px}.lp-acts .lp-btn{padding:7px 10px;font-size:13px}}
 .lp-hero{padding:56px 0 30px}.lp-herogrid{display:grid;grid-template-columns:1.15fr 1fr;gap:40px;align-items:center}
 .lp-badge{display:inline-block;font-size:13px;font-weight:700;padding:6px 14px;border-radius:999px;background:color-mix(in srgb,var(--accent) 10%,var(--bg));color:var(--accent);border:1px solid color-mix(in srgb,var(--accent) 25%,transparent);margin-bottom:18px;text-decoration:none;animation:lpUp .6s both}
 .lp-hero h1{font-size:50px;line-height:1.22;font-weight:900;margin:0 0 16px;animation:lpUp .6s .08s both}
