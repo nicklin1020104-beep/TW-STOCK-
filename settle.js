@@ -89,6 +89,11 @@ async function mis(chs) {
   for (const r of [...official.rows, ...groups.rows]) themes[r.name] = +r.r1.toFixed(2);
   const top3 = [...groups.rows].sort((a, b) => b.r1 - a.r1).slice(0, 3).map((r) => r.name);
 
+  // Cloudflare 13:35 已經開過獎就不覆蓋（這裡只是備援）
+  try {
+    const p = await (await fetch(`${VOTE_API}/api/poll?date=${voteDate}`)).json();
+    if (p.result) { fs.mkdirSync(SETTLED_DIR, { recursive: true }); fs.writeFileSync(marker, JSON.stringify({ by: 'cloudflare', at: new Date().toISOString() })); return console.log('Cloudflare 已開獎，跳過'); }
+  } catch {}
   const key = resultsKey();
   if (!key) throw new Error('沒有比賽金鑰（RESULTS_KEY）');
   const body = { date: voteDate, next: today, tw: +twPct.toFixed(2), themes, top3 };

@@ -1141,7 +1141,9 @@ async function main() {
       const i = p.findIndex((x) => key(x[0]) === tradeDate);
       if (i > 0) twPct = (p[i][1] / p[i - 1][1] - 1) * 100;
     }
-    const settled = fs.existsSync(path.join(ROOT, 'track', `settled-${tradeDate}.json`)); // 13:35 已收盤開獎就不再覆蓋
+    // 13:35 已收盤開獎（Cloudflare 或 GitHub）就不再覆蓋，避免分數變動
+    let settled = fs.existsSync(path.join(ROOT, 'track', `settled-${tradeDate}.json`));
+    if (!settled) { try { settled = !!(await (await fetch(`${VOTE_API}/api/poll?date=${days[T - 1].date}`)).json()).result; } catch {} }
     if (resultsKey() && twPct != null && industry && !settled) {
       const themes = {};
       for (const r of [...(industry.official ? industry.official.rows : []), ...industry.rows]) themes[r.name] = +r.r1.toFixed(2);
