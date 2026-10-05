@@ -19,7 +19,7 @@ const JOURNAL_CSS = `.jn-cards{display:grid;grid-template-columns:repeat(3,1fr);
 .jn-calc{font-size:13px;color:var(--mute);margin-top:8px;line-height:1.7}.jn-calc b{color:var(--fg)}.jn-btns{display:flex;gap:8px;margin-top:16px}.jn-btns button{flex:1}.jn-err{color:var(--up);font-size:13px;margin-top:8px}.jn-hint{font-size:12.5px;color:var(--mute);line-height:1.6;margin:4px 0}
 .jn-del{border:0;background:none;color:var(--mute);cursor:pointer;font-size:13px;padding:2px 6px}.jn-edit{border:0;background:none;color:var(--accent);cursor:pointer;font-size:13px;padding:2px 6px}td.jn-note{white-space:normal;min-width:140px;max-width:260px;text-align:left!important;font-size:12.5px;color:var(--mute)}
 html.anon .page[data-p="journal"]>:not(.lock-card){display:none}
-.jn-quick{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px}.jn-quick button{font:inherit;font-size:13px;font-weight:700;padding:5px 12px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}.jn-quick .jn-pct{font-size:13px}.st2 h3 .jn-hint{font-weight:400;font-size:13px}.dd button{min-width:40px}td.jn-ops{white-space:nowrap}td.nm .jn-edit[data-pos]{padding:2px 4px 2px 0;font-size:14px}`;
+.jn-quick{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px}.jn-quick button{font:inherit;font-size:13px;font-weight:700;padding:5px 12px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}.jn-quick .jn-pct{font-size:13px}.st2 h3 .jn-hint{font-weight:400;font-size:13px}.dd button{min-width:40px}td.jn-ops{white-space:nowrap}.fc [hidden]{display:none!important}.fc .jn-seg button{font-size:14px}.fc-out{margin-top:6px}td.nm .jn-edit[data-pos]{padding:2px 4px 2px 0;font-size:14px}`;
 
 // ---- 瀏覽器端 ----
 function journalClient(API) {
@@ -484,7 +484,7 @@ function journalClient(API) {
   function reload() {
     return api('/api/journal').then(function (j) {
       if (j.error) { root.innerHTML = '<p class="empty">' + esc(j.error) + '</p>'; return; }
-      S = j.settings; P = j.plans || []; planErr = j.planErr || null; E = (j.entries || []).map(function (e) { if (e.kind === 'buy' && e.date === '2000-01-01') e.kind = 'holding'; return e; }); // 原有持股
+      S = j.settings; if (window.__feeCalcPrefill) window.__feeCalcPrefill(S); P = j.plans || []; planErr = j.planErr || null; E = (j.entries || []).map(function (e) { if (e.kind === 'buy' && e.date === '2000-01-01') e.kind = 'holding'; return e; }); // 原有持股
       var r = calc(), syms = r.hold.map(sym); if (r.hold.some(function (p) { return p.market === 'US'; })) syms.push('USDTWD=X');
       Q = {}; render();
       return quotes(syms).then(render);
@@ -500,8 +500,95 @@ function journalClient(API) {
   window.__journalStart = function () { loaded = false; start(); };
 }
 
-function journalScript(api) {
-  return `<script>(${journalClient.toString()})(${JSON.stringify(api)});</script>`;
+// ---- 手續費試算（不用登入）----
+function renderFeeCalc() {
+  return `<h2>🧮 手續費試算 <span class="count">台股・美股，算出成本、損益和「損益兩平價」</span></h2>
+<form class="fc jn-form" onsubmit="return false" style="max-width:640px;padding:0;background:none">
+  <div class="jn-seg fc-mk"><button type="button" data-m="TW" class="on">🇹🇼 台股</button><button type="button" data-m="US">🇺🇸 美股</button></div>
+  <div class="fc-tw"><label>類型</label><div class="jn-seg fc-ty"><button type="button" data-t="stock" class="on">一般股票（稅 0.3%）</button><button type="button" data-t="etf">ETF（稅 0.1%）</button><button type="button" data-t="day">當沖（稅 0.15%）</button></div></div>
+  <div class="jn-row"><div><label>買進價</label><input name="buy" inputmode="decimal" placeholder="例如 100"></div><div><label>賣出價（可不填）</label><input name="sell" inputmode="decimal" placeholder="例如 110"></div></div>
+  <div class="jn-row"><div><label class="fc-qlab">數量</label><input name="qty" inputmode="decimal" value="1"></div><div class="fc-tw"><label>單位</label><div class="jn-seg fc-unit"><button type="button" data-u="1000" class="on">張</button><button type="button" data-u="1">股（零股）</button></div></div></div>
+  <div class="fc-tw jn-row"><div><label>手續費折扣（折）</label><input name="disc" inputmode="decimal" placeholder="不打折請留空，例如 2.8"></div><div><label>最低手續費（整股／零股）</label><div class="jn-row" style="gap:6px"><input name="min" inputmode="decimal" value="20"><input name="oddMin" inputmode="decimal" value="1"></div></div></div>
+  <div class="fc-us jn-row" hidden><div><label>手續費率（%）</label><input name="usRate" inputmode="decimal" value="0.1"></div><div><label>最低手續費（美元）</label><input name="usMin" inputmode="decimal" value="0"></div></div>
+  <div class="jn-row"><div><label>目標報酬（%，可不填）</label><input name="target" inputmode="decimal" placeholder="例如 10"></div><div></div></div>
+</form>
+<div class="fc-out"></div>
+<p class="jn-hint">台股手續費＝成交金額 × 0.1425% × 折扣（不足最低手續費以最低計，無條件捨去）；證交稅只有賣出時收。損益兩平價已依台股升降單位（跳動點）無條件進位。實際金額以券商為準。</p>`;
 }
 
-module.exports = { renderJournal, JOURNAL_CSS, journalScript };
+function feeCalcClient() {
+  var f = document.querySelector('form.fc'); if (!f) return;
+  var out = document.querySelector('.fc-out');
+  var st = { m: 'TW', t: 'stock', u: 1000 };
+  var LSK = 'shoupan_feecalc';
+  try { var sv = JSON.parse(localStorage.getItem(LSK) || '{}'); ['disc', 'min', 'oddMin', 'usRate', 'usMin'].forEach(function (k) { if (sv[k] != null && sv[k] !== '') f[k].value = sv[k]; }); } catch (e) {}
+  // 登入且有填股票日誌設定：帶入
+  window.__feeCalcPrefill = function (s) {
+    if (!s) return;
+    try { if (localStorage.getItem(LSK)) return; } catch (e) {}
+    if (s.feeDiscount && s.feeDiscount !== 10) f.disc.value = s.feeDiscount;
+    f.min.value = s.minFee; f.oddMin.value = s.oddMinFee; f.usRate.value = s.usFeeRate; f.usMin.value = s.usMinFee; calc();
+  };
+  function num(k) { var v = parseFloat(f[k].value); return isFinite(v) ? v : null; }
+  function fmt(v, d) { return v == null || !isFinite(v) ? '-' : Number(v).toLocaleString('zh-TW', { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 }); }
+  function pn(v, d) { return '<span class="' + (v >= 0 ? 'up' : 'dn') + '">' + (v >= 0 ? '+' : '') + fmt(v, d) + '</span>'; }
+  // 台股升降單位
+  function tick(p, etf) {
+    if (etf) return p < 50 ? 0.01 : 0.05;
+    return p < 10 ? 0.01 : p < 50 ? 0.05 : p < 100 ? 0.1 : p < 500 ? 0.5 : p < 1000 ? 1 : 5;
+  }
+  function feeTW(amt, odd) { var d = num('disc') || 10; return amt > 0 ? Math.max(odd ? num('oddMin') || 0 : num('min') || 0, Math.floor(amt * 0.001425 * d / 10)) : 0; }
+  function feeUS(amt) { return amt > 0 ? Math.max(num('usMin') || 0, Math.round(amt * (num('usRate') || 0)) / 100) : 0; }
+  function taxRate() { return st.t === 'etf' ? 0.001 : st.t === 'day' ? 0.0015 : 0.003; }
+  function sellNet(s, q) {
+    if (st.m === 'US') return s * q - feeUS(s * q);
+    var amt = s * q; return amt - feeTW(amt, q % 1000 !== 0) - Math.floor(amt * taxRate());
+  }
+  // 找到賣出淨額 >= 目標的最低價（依跳動點）
+  function solve(goal, q) {
+    var r = st.m === 'US' ? 1 - (num('usRate') || 0) / 100 : 1 - 0.001425 * (num('disc') || 10) / 10 - taxRate();
+    var s = goal / (q * r);
+    if (st.m === 'US') { s = Math.ceil(s * 100) / 100; while (sellNet(s, q) < goal) s = Math.round((s + 0.01) * 100) / 100; return s; }
+    var t = tick(s, st.t === 'etf'); s = Math.ceil(s / t - 1e-9) * t;
+    for (var i = 0; i < 2000 && sellNet(s, q) < goal; i++) { t = tick(s, st.t === 'etf'); s = Math.round((s + t) * 100) / 100; }
+    return Math.round(s * 100) / 100;
+  }
+  function calc() {
+    try { var o = {}; ['disc', 'min', 'oddMin', 'usRate', 'usMin'].forEach(function (k) { o[k] = f[k].value; }); localStorage.setItem(LSK, JSON.stringify(o)); } catch (e) {}
+    var b = num('buy'), s = num('sell'), q = (num('qty') || 0) * (st.m === 'US' ? 1 : st.u), tg = num('target');
+    if (!b || !q) { out.innerHTML = '<p class="empty">輸入買進價和數量就會自動計算</p>'; return; }
+    var cur = st.m === 'US' ? 'US$' : '$', d = st.m === 'US' ? 2 : 0;
+    var bAmt = b * q, bFee = st.m === 'US' ? feeUS(bAmt) : feeTW(bAmt, q % 1000 !== 0), cost = bAmt + bFee;
+    var be = solve(cost, q);
+    var h = '<div class="jn-cards"><div><b>' + cur + fmt(cost, d) + '</b><span>買進總成本（含手續費 ' + cur + fmt(bFee, d) + '）</span></div>' +
+      '<div><b>' + cur + fmt(be, 2) + '</b><span>損益兩平賣價</span><small>漲 ' + ((be / b - 1) * 100).toFixed(2) + '% 才回本</small></div>';
+    if (tg != null) { var tp = solve(cost * (1 + tg / 100), q); h += '<div><b>' + cur + fmt(tp, 2) + '</b><span>要賺 ' + tg + '% 要賣到</span><small>股價漲 ' + ((tp / b - 1) * 100).toFixed(2) + '%</small></div>'; }
+    if (s) {
+      var sAmt = s * q, sFee = st.m === 'US' ? feeUS(sAmt) : feeTW(sAmt, q % 1000 !== 0), tax = st.m === 'US' ? 0 : Math.floor(sAmt * taxRate());
+      var net = sAmt - sFee - tax, pnl = net - cost;
+      h += '<div><b>' + cur + fmt(net, d) + '</b><span>賣出實收（手續費 ' + cur + fmt(sFee, d) + (st.m === 'US' ? '' : '、證交稅 $' + fmt(tax)) + '）</span></div>' +
+        '<div><b>' + pn(pnl, d) + '</b><span>淨損益</span><small>報酬率 ' + pn(pnl / cost * 100, 2) + '%</small></div>' +
+        '<div><b>' + cur + fmt(bFee + sFee + tax, d) + '</b><span>總交易成本（買賣手續費＋稅）</span></div>';
+    }
+    out.innerHTML = h + '</div>';
+  }
+  function seg(sel, key, attr) {
+    f.querySelectorAll(sel + ' button').forEach(function (bt) {
+      bt.onclick = function () {
+        st[key] = attr === 'u' ? +bt.dataset[attr] : bt.dataset[attr];
+        f.querySelectorAll(sel + ' button').forEach(function (x) { x.classList.toggle('on', x === bt); });
+        if (key === 'm') { f.querySelectorAll('.fc-tw').forEach(function (x) { x.hidden = st.m !== 'TW'; }); f.querySelector('.fc-us').hidden = st.m !== 'US'; f.querySelector('.fc-qlab').textContent = st.m === 'US' ? '股數' : '數量'; }
+        calc();
+      };
+    });
+  }
+  seg('.fc-mk', 'm', 'm'); seg('.fc-ty', 't', 't'); seg('.fc-unit', 'u', 'u');
+  f.addEventListener('input', calc);
+  calc();
+}
+
+function journalScript(api) {
+  return `<script>(${journalClient.toString()})(${JSON.stringify(api)});(${feeCalcClient.toString()})();</script>`;
+}
+
+module.exports = { renderJournal, renderFeeCalc, JOURNAL_CSS, journalScript };
