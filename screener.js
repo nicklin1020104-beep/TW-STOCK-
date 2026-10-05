@@ -2009,8 +2009,19 @@ function clientScript() {
     $('.watch-input').value = ''; $('.watch-msg').textContent = '已加入 ' + code + ' ' + stocks.list[code].n;
     saveCodes(); renderWatch(); return false;
   };
+  // 已採納的分類調整：馬上套用到自選股分組（不用等報告更新）
+  function applyOverrides() {
+    if (!stocks) return Promise.resolve();
+    return fetch(API + '/api/overrides').then(function (r) { return r.json(); }).then(function (o) {
+      Object.keys(stocks.list).forEach(function (c) { var x = stocks.list[c]; if (x.i0 === undefined) x.i0 = x.i || ''; x.i = x.i0; });
+      (o.overrides || []).forEach(function (v) { if (stocks.list[v.code]) stocks.list[v.code].i = v.theme; });
+      renderWatch();
+    }).catch(function () {});
+  }
+  window.__applyOverrides = applyOverrides;
   fetch('/TW-STOCK-/stocks.json').then(function (r) { return r.json(); }).then(function (j) {
     stocks = j;
+    setTimeout(applyOverrides, 0);
     var dl = $('#watch-stocks');
     if (dl) dl.innerHTML = Object.keys(j.list).map(function (c) { return '<option value="' + c + ' ' + esc(j.list[c].n) + '">'; }).join('');
     renderWatch();
@@ -2079,10 +2090,10 @@ function clientScript() {
           (r.status === 'pending' ? '<button data-id="' + r.id + '" data-s="approved">採納</button> <button data-id="' + r.id + '" data-s="rejected">忽略</button>' : st[r.status] + ' <button data-id="' + r.id + '" data-s="pending">復原</button>') + '</td></tr>';
       }).join('');
       var pend = j.reports.filter(function (r) { return r.status === 'pending'; }).length;
-      box.innerHTML = '<h2>回報審核 <span class="count">待審核 ' + pend + ' 筆・只有管理員看得到・採納後下一次報告更新時生效</span></h2>' +
+      box.innerHTML = '<h2>回報審核 <span class="count">待審核 ' + pend + ' 筆・只有管理員看得到・採納後自選股分組馬上生效，族群趨勢等頁面下一次報告更新時生效</span></h2>' +
         (rows ? '<div class="scroll"><table class="compact"><thead><tr><th>日期</th><th>股票</th><th>分類調整</th><th>說明</th><th>回報者</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div>' : '<p class="empty">目前沒有回報</p>');
       box.hidden = false;
-      box.querySelectorAll('button[data-id]').forEach(function (b) { b.onclick = function () { api('/api/reports/' + b.dataset.id, { method: 'POST', body: JSON.stringify({ status: b.dataset.s }) }).then(loadAdmin); }; });
+      box.querySelectorAll('button[data-id]').forEach(function (b) { b.onclick = function () { api('/api/reports/' + b.dataset.id, { method: 'POST', body: JSON.stringify({ status: b.dataset.s }) }).then(function () { loadAdmin(); if (window.__applyOverrides) window.__applyOverrides(); }); }; });
     });
   }
   loadAdmin();
