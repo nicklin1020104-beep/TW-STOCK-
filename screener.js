@@ -2074,12 +2074,15 @@ function clientScript() {
         var nx = new Date(Date.UTC(+v.date.slice(0, 4), +v.date.slice(4, 6) - 1, +v.date.slice(6)));
         do nx.setUTCDate(nx.getUTCDate() + 1); while (nx.getUTCDay() === 0 || nx.getUTCDay() === 6);
         var wk = '日一二三四五六'.charAt(nx.getUTCDay());
+        // 顯示「猜的是哪一天」：已開獎用實際開獎日，還沒開獎用下一個平日
+        if (v.next) { nx = new Date(Date.UTC(+v.next.slice(0, 4), +v.next.slice(4, 6) - 1, +v.next.slice(6))); wk = '日一二三四五六'.charAt(nx.getUTCDay()); }
+        d = (nx.getUTCMonth() + 1) + '/' + nx.getUTCDate() + '（' + wk + '）';
         var res = !sc ? '<td class="no" colspan="3">⏳ 等待開獎（' + (nx.getUTCMonth() + 1) + '/' + nx.getUTCDate() + ' 週' + wk + ' 13:35 收盤後）</td>' :
           '<td class="' + (sc.tw >= 0 ? 'up' : 'dn') + '">' + (sc.tw >= 0 ? '+' : '') + sc.tw.toFixed(2) + '% ' + (sc.dirOk ? '✓' : '✗') + '</td>' +
           '<td>' + (sc.themeR == null ? '-' : '<span class="' + (sc.themeR >= 0 ? 'up' : 'dn') + '">' + (sc.themeR >= 0 ? '+' : '') + sc.themeR.toFixed(2) + '%</span>' + (sc.themePts === 3 ? ' 🏆' : sc.themePts ? ' ✓' : '')) + '</td><td><b>+' + sc.pts + '</b></td>';
         return '<tr><td>' + d + '</td><td>' + bias[v.bias] + '</td><td>' + esc(v.theme || '-') + '</td>' + res + '</tr>';
       }).join('');
-      $('.pf-votes').innerHTML = rows ? '<div class="scroll"><table class="compact"><thead><tr><th>日期</th><th>多空</th><th>押的族群</th><th>隔天大盤</th><th>族群表現</th><th>得分</th></tr></thead><tbody>' + rows + '</tbody></table></div>' : '<p class="empty">還沒有投票紀錄，到上方「明天怎麼走？」投第一票吧</p>';
+      $('.pf-votes').innerHTML = rows ? '<div class="scroll"><table class="compact"><thead><tr><th>猜哪一天</th><th>多空</th><th>押的族群</th><th>當天大盤</th><th>族群表現</th><th>得分</th></tr></thead><tbody>' + rows + '</tbody></table></div>' : '<p class="empty">還沒有投票紀錄，到上方「明天怎麼走？」投第一票吧</p>';
     });
   }
   function loadBoard(period) {
