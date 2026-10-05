@@ -1,4 +1,7 @@
-# 每日報告：平日 14:00 盤後整理（法人以外）、17:00 補上法人、08:35 補晚出的資料（台灣時間；六日不跑）
+# 每日報告（台灣時間；六日不跑）
+#   13:31 收盤快報：由 Cloudflare 準時叫醒（workflow_dispatch mode=close），用即時行情，約 13:37 上線
+#   14:00 排程：備援（Cloudflare 沒叫醒時）
+#   17:00 補上三大法人；08:35 補晚出的資料
 name: 每日報告
 on:
   schedule:
@@ -6,6 +9,11 @@ on:
     - cron: '0 9 * * 1-5'   # 17:00 台灣（三大法人）
     - cron: '35 0 * * 1-5'  # 08:35 台灣（平日；六日不更新）
   workflow_dispatch:
+    inputs:
+      mode:
+        description: 'close＝收盤快報'
+        required: false
+        default: ''
   push:   # 手動測試：改動這個檔案就會執行
     branches: [main]
     paths: ['.github/run-report']
@@ -30,6 +38,7 @@ jobs:
         env:
           RESULTS_KEY: ${{ secrets.RESULTS_KEY }}
           WAIT_TODAY: ${{ github.event.schedule == '0 6 * * 1-5' && '1' || '' }}
+          FAST_CLOSE: ${{ inputs.mode == 'close' && '1' || '' }}
         run: node screener.js
       - name: 發布網站
         working-directory: bot/site
@@ -39,7 +48,7 @@ jobs:
           git add -A
           git diff --cached --quiet || (git commit -qm "update $(TZ=Asia/Taipei date +%F)" && git pull -q --rebase && git push -q)
       - name: 推播通知（只有正式排程會推）
-        if: github.event_name == 'schedule'
+        if: github.event_name == 'schedule' || inputs.mode == 'close'
         working-directory: bot
         env:
           RESULTS_KEY: ${{ secrets.RESULTS_KEY }}
