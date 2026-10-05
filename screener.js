@@ -1771,7 +1771,7 @@ ${recap}
   function closedView(p) {
     form.hidden = true;
     var r = p.result;
-    if (!r) { msg.innerHTML = '⏰ 投票已截止（開盤後不能再投），<b>今天 13:35 收盤後開獎</b>，13:40 開放投下一個交易日'; if (p.total) show(p); return; }
+    if (!r) { msg.innerHTML = '⏰ 投票已截止（開盤後不能再投），<b>今天 13:35 收盤後開獎</b>，14:00 開放投下一個交易日'; if (p.total) show(p); return; }
     var nd = r.next ? (+r.next.slice(4, 6)) + '/' + (+r.next.slice(6)) : '';
     var medal = ['🥇', '🥈', '🥉'];
     var top = r.top3.map(function (t, i) { return medal[i] + ' ' + esc(t) + ' ' + (r.themes[t] != null ? pct(r.themes[t]) : ''); }).join('　');
@@ -1789,10 +1789,10 @@ ${recap}
       me = '<div class="vp-me">你投「' + (p.mine.bias === 'bull' ? '看多' : '看空') + (p.mine.theme ? '／' + esc(p.mine.theme) : '') + '」：方向 ' + (s.dirOk ? '✅ +1' : '❌ 0') +
         (p.mine.theme ? '、族群 ' + (s.themePts === 3 ? '🏆 前三強 +3' : s.themePts === 1 ? '✅ 漲贏大盤 +1' : '❌ 0') + (s.themeR != null ? '（' + pct(s.themeR) + '）' : '') : '') +
         ' → 這次得 <b>' + s.pts + ' 分</b></div>';
-    } else me = '<div class="vp-me">你這次沒有投票，13:40 起可以投下一個交易日</div>';
+    } else me = '<div class="vp-me">你這次沒有投票，14:00 起可以投下一個交易日</div>';
     res.innerHTML = '<div class="vote-prize"><div class="vp-title">🎉 開獎！' + nd + ' 收盤結果</div><div class="vp-row">加權指數 ' + pct(r.tw) + '</div><div class="vp-row">今天最強族群：' + top + '</div>' + crowd + me + '</div>';
     res.hidden = false;
-    msg.textContent = '13:40 開放投下一個交易日・排行榜在「個人檔案」';
+    msg.textContent = '14:00 開放投下一個交易日・排行榜在「個人檔案」';
   }
   function load() { fetch(API + '/api/poll?date=' + date + '&vid=' + encodeURIComponent(vid), authH()).then(function (r) { return r.json(); }).then(function (p) { if (p.closed) closedView(p); else if (p.mine) show(p); }).catch(function () {}); }
   // 先選看多／看空和族群，按「鎖定投票」才送出；09:00 開盤前都可以改

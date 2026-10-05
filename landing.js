@@ -12,7 +12,7 @@ const FEATURES = [
 ];
 const STEPS = [
   ['用 Google 免費註冊', '一鍵註冊、取一個暱稱，10 秒完成，不用填任何資料'],
-  ['每天收盤後打開看', '13:40 整理好當天盤勢，17:00 再補上法人籌碼，開盤和收盤都會推播通知你'],
+  ['每天收盤後打開看', '14:00 前整理好當天盤勢，17:00 再補上法人籌碼，開盤和收盤都會推播通知你'],
   ['加自選股、參加比賽', '把看好的股票加入自選股，猜明天漲跌，和大家比準度'],
 ];
 const TRUST = [
@@ -23,7 +23,7 @@ const TRUST = [
 const FAQ = [
   ['飆股情報局要錢嗎？', '完全免費。訪客也能看所有選股與盤後資料；用 Google 帳號登入後，還可以投票、上排行榜、收推播通知、自選股雲端同步。'],
   ['一定要登入嗎？', '不用。點「以訪客身分進入」就能直接看。只有投票比賽、個人檔案、推播通知需要 Google 登入。'],
-  ['資料多久更新一次？', '每個交易日 13:30 收盤後馬上整理，約 13:40 更新，17:00 再補上三大法人資料，隔天早上 08:35 補上更晚出的資料；頂部的台指期、國際指數盤中每 15 分鐘更新。'],
+  ['資料多久更新一次？', '每個交易日收盤後自動整理，約 14:00 前更新，17:00 再補上三大法人資料，隔天早上 08:35 補上更晚出的資料；頂部的台指期、國際指數盤中每 15 分鐘更新。'],
   ['選股的條件是什麼？', '每個名單頁面上方都有寫清楚條件，例如一K站三線、三率三升、杯柄型態（《超級績效》VCP），並附上回測勝率，透明公開。'],
   ['可以在手機上用嗎？', '可以。用手機瀏覽器打開後，選「加入主畫面」，就會像 App 一樣有圖示可以點。'],
   ['可以分享給朋友嗎？', '每一頁都有「分享」按鈕，會產生附 QR Code 的圖卡，可以直接分享到 Threads、IG、LINE。'],
@@ -39,7 +39,7 @@ function renderGate() {
   <div class="lp-acts"><a class="lp-btn ghost lp-guest" href="#">訪客進入</a><a class="lp-btn solid" href="#gate-join">登入／註冊</a></div>
 </div></nav>
 <section class="lp-hero" id="gate-top"><div class="lp-wrap">
-  <div class="lp-badge">📈 每個交易日 13:40 自動更新・完全免費</div>
+  <div class="lp-badge">📈 每個交易日 14:00 自動更新・完全免費</div>
   <h1>台股收盤後的<span>選股情報</span><br>最佳解決方案</h1>
   <p class="lp-lead">每天自動掃描全市場 1,900 多檔股票，整理成選股名單、族群趨勢、主力籌碼與總經數據。<br>3 分鐘看懂今天盤勢，找出明天值得注意的股票。</p>
   <div class="lp-heroacts"><a class="lp-btn solid big" href="#gate-join">用 Google 登入 →</a><a class="lp-btn ghost big lp-guest" href="#">👀 以訪客身分進入</a></div>
@@ -349,7 +349,7 @@ function pushClient(API) {
       h += '<div class="push-on">✅ 這台裝置已開啟通知</div><div class="push-opts">' +
         '<label><input type="checkbox" data-k="open"' + (prefs.open ? ' checked' : '') + '> 開盤提醒（08:55：台指期夜盤、費半、今日焦點股、投票截止）</label>' +
         '<label><input type="checkbox" data-k="close"' + (prefs.close ? ' checked' : '') + '> 收盤開獎（13:35：加權收盤、最強族群、你的得分）</label>' +
-        '<label><input type="checkbox" data-k="report"' + (prefs.report !== false ? ' checked' : '') + '> 盤後報告（13:40 收盤快報整理出爐、17:00 法人籌碼更新）</label></div>' +
+        '<label><input type="checkbox" data-k="report"' + (prefs.report !== false ? ' checked' : '') + '> 盤後報告（14:00 收盤快報整理出爐、17:00 法人籌碼更新）</label></div>' +
         '<div class="push-acts">' + (admin ? '<button type="button" class="push-test" data-kind="open">傳一則開盤測試（管理員）</button><button type="button" class="push-test" data-kind="close">傳一則收盤測試（管理員）</button>' : '') + '<button type="button" class="push-off">關閉通知</button></div>';
       mini.innerHTML = '';
     } else {
