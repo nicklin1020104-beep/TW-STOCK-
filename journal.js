@@ -19,7 +19,7 @@ const JOURNAL_CSS = `.jn-cards{display:grid;grid-template-columns:repeat(3,1fr);
 .jn-calc{font-size:13px;color:var(--mute);margin-top:8px;line-height:1.7}.jn-calc b{color:var(--fg)}.jn-btns{display:flex;gap:8px;margin-top:16px}.jn-btns button{flex:1}.jn-err{color:var(--up);font-size:13px;margin-top:8px}.jn-hint{font-size:12.5px;color:var(--mute);line-height:1.6;margin:4px 0}
 .jn-del{border:0;background:none;color:var(--mute);cursor:pointer;font-size:13px;padding:2px 6px}.jn-edit{border:0;background:none;color:var(--accent);cursor:pointer;font-size:13px;padding:2px 6px}td.jn-note{white-space:normal;min-width:140px;max-width:260px;text-align:left!important;font-size:12.5px;color:var(--mute)}
 html.anon .page[data-p="journal"]>:not(.lock-card){display:none}
-.jn-quick{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px}.jn-quick button{font:inherit;font-size:13px;font-weight:700;padding:5px 12px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}.jn-quick .jn-pct{font-size:13px}.jn-form .jn-quick input.jn-pctin{width:84px;padding:5px 10px;font-size:15px;border-radius:999px}.st2 h3 .jn-hint{font-weight:400;font-size:13px}.dd button{min-width:40px}td.jn-ops{white-space:nowrap}.fc [hidden]{display:none!important}.fc .jn-seg button{font-size:14px}.fc-out{margin-top:6px}td.nm .jn-edit[data-pos]{padding:2px 4px 2px 0;font-size:14px}`;
+.jn-quick{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px}.jn-quick button{font:inherit;font-size:13px;font-weight:700;padding:5px 12px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}.jn-quick .jn-pct{font-size:13px}.jn-form .jn-quick input.jn-pctin{width:84px;padding:5px 10px;font-size:15px;border-radius:999px}.st2 h3 .jn-hint{font-weight:400;font-size:13px}.dd button{min-width:40px}td.jn-ops{white-space:nowrap}.jn-eqbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}.jn-eqbar .jn-seg button{flex:0 0 auto;font-size:13px;padding:6px 12px}.jn-eq{min-height:260px}.jn-eq canvas{max-height:300px}.fc [hidden]{display:none!important}.fc .jn-seg button{font-size:14px}.fc-out{margin-top:6px}td.nm .jn-edit[data-pos]{padding:2px 4px 2px 0;font-size:14px}`;
 
 // ---- 瀏覽器端 ----
 function journalClient(API) {
@@ -109,6 +109,98 @@ function journalClient(API) {
     return t + (p.tp ? '<br><span class="jn-hint">距停利 ' + ((p.tp / p.price - 1) * 100).toFixed(1) + '%</span>' : '');
   }
 
+  // ---- 我的資產走勢（用交易紀錄＋每天收盤價重算每一天的總資產）----
+  var EQ = { range: 90, mode: 'value', hist: {} }, eqChart = null;
+  function eqHtml() {
+    return '<h2>📈 我的資產走勢</h2><div class="jn-eqbar"><div class="jn-seg jn-rng">' + [[30, '1個月'], [90, '3個月'], [180, '6個月'], [365, '1年'], ['all', '全部']].map(function (x) { return '<button type="button" data-r="' + x[0] + '"' + (String(EQ.range) === String(x[0]) ? ' class="on"' : '') + '>' + x[1] + '</button>'; }).join('') + '</div>' +
+      '<div class="jn-seg jn-mode"><button type="button" data-m="value"' + (EQ.mode === 'value' ? ' class="on"' : '') + '>總資產</button><button type="button" data-m="ret"' + (EQ.mode === 'ret' ? ' class="on"' : '') + '>報酬率 vs 大盤</button></div></div>' +
+      '<div class="jn-chart jn-eq"><canvas id="jn-c3"></canvas><p class="jn-hint jn-eqmsg">計算中…</p></div><div class="jn-cards jn-eqstats"></div>';
+  }
+  function histOf(sym, from) {
+    var k = sym + '|' + from;
+    if (EQ.hist[k]) return Promise.resolve(EQ.hist[k]);
+    return fetch(API + '/api/history?s=' + encodeURIComponent(sym) + '&from=' + from).then(function (r) { return r.json(); }).then(function (j) { return (EQ.hist[k] = j.data || []); }).catch(function () { return []; });
+  }
+  function shift(d, n) { return new Date(new Date(d + 'T00:00:00Z').getTime() + n * 86400000).toISOString().slice(0, 10); }
+  function drawEquity(g0) {
+    var box = root.querySelector('.jn-eq'); if (!box) return;
+    var msg = box.querySelector('.jn-eqmsg');
+    var trades = E.filter(function (e) { return e.kind !== 'holding'; }).map(function (e) { return e.date; }).sort();
+    var t = today(), start;
+    if (EQ.range === 'all') start = trades[0] || shift(t, -90); else start = shift(t, -EQ.range);
+    if (start < shift(t, -1095)) start = shift(t, -1095);
+    var keys = {}; E.forEach(function (e) { if (e.kind === 'buy' || e.kind === 'sell' || e.kind === 'holding') keys[e.market + ':' + e.code] = e; });
+    var syms = Object.keys(keys).map(function (k) { return sym(keys[k]); });
+    var hasUS = Object.keys(keys).some(function (k) { return keys[k].market === 'US'; });
+    var from = shift(start, -10);
+    var need = syms.concat(['^TWII']).concat(hasUS ? ['USDTWD=X'] : []);
+    Promise.all(need.map(function (s) { return histOf(s, from); })).then(function (arr) {
+      if (g0 !== gen) return;
+      var H = {}; need.forEach(function (s, i) { H[s] = arr[i]; });
+      var dates = (H['^TWII'] || []).map(function (x) { return x.date; }).filter(function (d) { return d >= start; });
+      if (!dates.length || dates[dates.length - 1] < t) dates.push(t);
+      // 每檔的「某天以前最近收盤」
+      var ptr = {}, last = {};
+      function px(s, d) { var h = H[s] || [], i = ptr[s] || 0; while (i < h.length && h[i].date <= d) { last[s] = h[i].close; i++; } ptr[s] = i; if (d === t && Q[s] && Q[s].price) return Q[s].price; return last[s]; }
+      var ent = E.slice().sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : a.id - b.id; });
+      var qty = {}, cash = 0, inv = 0, k = 0, rows = [];
+      dates.forEach(function (d) {
+        var flow = 0;
+        while (k < ent.length && (ent[k].kind === 'holding' || ent[k].date <= d)) {
+          var e = ent[k++], fx = e.market === 'US' ? e.fx : 1, key = e.market + ':' + e.code;
+          if (e.kind === 'deposit') { cash += e.amount; inv += e.amount; if (rows.length) flow += e.amount; }
+          else if (e.kind === 'withdraw') { cash -= e.amount; inv -= e.amount; if (rows.length) flow -= e.amount; }
+          else if (e.kind === 'dividend') cash += e.amount;
+          else if (e.kind === 'holding') { qty[key] = (qty[key] || 0) + e.qty; inv += e.price * e.qty * fx; if (rows.length) flow += e.price * e.qty * fx; }
+          else if (e.kind === 'buy') { qty[key] = (qty[key] || 0) + e.qty; cash -= (e.price * e.qty + (e.fee || 0)) * fx; }
+          else if (e.kind === 'sell') { qty[key] = (qty[key] || 0) - e.qty; cash += (e.price * e.qty - (e.fee || 0) - (e.tax || 0)) * fx; }
+        }
+        var fxd = hasUS ? px('USDTWD=X', d) || 0 : 1, mv = 0;
+        Object.keys(qty).forEach(function (key) { var q = qty[key]; if (q <= 1e-9) return; var e = keys[key], p = px(sym(e), d); if (p != null) mv += p * q * (e.market === 'US' ? fxd : 1); });
+        rows.push({ d: d, v: cash + mv, inv: inv, flow: flow, idx: px('^TWII', d) });
+      });
+      // 時間加權報酬（扣掉入金出金的影響），算最大回撤和單日漲跌
+      var twr = [1], peak = 1, mdd = 0, best = null, worst = null;
+      for (var i = 1; i < rows.length; i++) {
+        var p = rows[i - 1].v, r = p > 0 ? (rows[i].v - rows[i].flow - p) / p : 0;
+        twr.push(twr[i - 1] * (1 + r));
+        if (p > 0) { if (!best || r > best.r) best = { r: r, d: rows[i].d }; if (!worst || r < worst.r) worst = { r: r, d: rows[i].d }; }
+        peak = Math.max(peak, twr[i]); mdd = Math.min(mdd, twr[i] / peak - 1);
+      }
+      if (!rows.length || rows.every(function (x) { return !x.v; })) { msg.textContent = '還沒有資產可以畫，記一筆交易或加入原有持股後就會出現'; return; }
+      msg.textContent = '';
+      var lab = rows.map(function (x) { return +x.d.slice(5, 7) + '/' + +x.d.slice(8); });
+      var my = twr.map(function (x) { return +((x - 1) * 100).toFixed(2); });
+      var i0 = rows[0].idx, mk = rows.map(function (x) { return x.idx && i0 ? +((x.idx / i0 - 1) * 100).toFixed(2) : null; });
+      var cs = getComputedStyle(document.documentElement), fg = cs.getPropertyValue('--fg').trim() || '#222', up = cs.getPropertyValue('--up').trim() || '#d0312d';
+      var ds = EQ.mode === 'value'
+        ? [{ label: '總資產', data: rows.map(function (x) { return Math.round(x.v); }), borderColor: '#2563eb', backgroundColor: 'rgba(37,99,235,0.08)', fill: true, tension: 0.25, pointRadius: 0, borderWidth: 2.5 }]
+        : [{ label: '我的報酬率', data: my, borderColor: up, tension: 0.25, pointRadius: 0, borderWidth: 2.5 }, { label: '加權指數', data: mk, borderColor: '#94a3b8', borderDash: [6, 5], tension: 0.25, pointRadius: 0, borderWidth: 2 }];
+      loadChart().then(function () {
+        if (g0 !== gen) return;
+        if (eqChart) eqChart.destroy();
+        eqChart = new Chart(document.getElementById('jn-c3'), { type: 'line', data: { labels: lab, datasets: ds }, options: { interaction: { mode: 'index', intersect: false }, plugins: { legend: { display: EQ.mode === 'ret', labels: { color: fg } }, tooltip: { callbacks: { label: function (c) { return c.dataset.label + '：' + (EQ.mode === 'value' ? '$' + c.raw.toLocaleString() : (c.raw >= 0 ? '+' : '') + c.raw + '%'); } } } }, scales: { x: { ticks: { color: fg, maxTicksLimit: 7 }, grid: { display: false } }, y: { ticks: { color: fg, callback: function (v) { return EQ.mode === 'value' ? (Math.abs(v) >= 1e4 ? (v / 1e4).toFixed(0) + '萬' : v) : v + '%'; } } } } } });
+      });
+      var lastMy = my[my.length - 1], lastMk = mk[mk.length - 1];
+      root.querySelector('.jn-eqstats').innerHTML =
+        '<div><b>' + pct(lastMy) + '</b><span>期間報酬（扣除入出金）</span></div>' +
+        '<div><b>' + (lastMk == null ? '-' : pct(lastMk)) + '</b><span>同期加權指數</span>' + (lastMk == null ? '' : '<small>' + (lastMy >= lastMk ? '贏大盤 ' : '輸大盤 ') + Math.abs(lastMy - lastMk).toFixed(2) + ' 個百分點</small>') + '</div>' +
+        '<div><b>' + pct(mdd * 100) + '</b><span>最大回撤</span><small>從高點最多跌多少</small></div>' +
+        '<div><b>' + (best ? pct(best.r * 100) : '-') + '</b><span>單日最大漲幅</span>' + (best ? '<small>' + +best.d.slice(5, 7) + '/' + +best.d.slice(8) + '</small>' : '') + '</div>' +
+        '<div><b>' + (worst ? pct(worst.r * 100) : '-') + '</b><span>單日最大跌幅</span>' + (worst ? '<small>' + +worst.d.slice(5, 7) + '/' + +worst.d.slice(8) + '</small>' : '') + '</div>' +
+        '<div><b>$' + fmt(rows[rows.length - 1].v) + '</b><span>目前總資產</span></div>';
+    });
+  }
+  root.addEventListener('click', function (ev) {
+    var r = ev.target.closest('.jn-rng [data-r]'), m = ev.target.closest('.jn-mode [data-m]');
+    if (!r && !m) return;
+    if (r) EQ.range = r.dataset.r === 'all' ? 'all' : +r.dataset.r;
+    if (m) EQ.mode = m.dataset.m;
+    root.querySelectorAll('.jn-rng [data-r]').forEach(function (b) { b.classList.toggle('on', String(EQ.range) === b.dataset.r); });
+    root.querySelectorAll('.jn-mode [data-m]').forEach(function (b) { b.classList.toggle('on', EQ.mode === b.dataset.m); });
+    drawEquity(gen);
+  });
+
   // ---- 畫面 ----
   function render() {
     if (!S) return renderSetup();
@@ -131,6 +223,7 @@ function journalClient(API) {
       r.hold.sort(function (a, b) { return (b.mv || 0) - (a.mv || 0); }).map(function (p) {
         return '<tr><td class="nm"><button class="jn-edit" data-pos="' + p.market + ':' + esc(p.code) + '" title="修改">✏️</button>' + esc(p.code) + ' ' + esc(p.name || '') + (p.market === 'US' ? '<span class="tag">美</span>' : '') + '</td><td>' + fmt(p.qty) + '</td><td>' + fmt(p.avg, 2) + '</td><td>' + (p.price == null ? '-' : fmt(p.price, 2)) + '</td><td>' + (p.mv == null ? '-' : fmt(p.mv)) + '</td><td>' + (p.upnl == null ? '-' : pn(p.upnl)) + '</td><td>' + pct(p.upct) + '</td><td class="jn-note">' + tpsl(p) + '</td><td>' + (p.mv ? (p.mv / Math.max(r.total, r.mv) * 100).toFixed(1) + '%' : '-') + '</td></tr>';
       }).join('') + '</tbody></table></div>' : '<p class="empty">還沒有庫存，按「＋ 記一筆交易」開始</p>';
+    h += eqHtml();
     h += plansSection(r);
     if (planErr) h += '<p class="jn-hint">⚠️ 定期定額自動記帳暫時失敗（' + esc(planErr) + '），稍後重新整理會再補上。</p>';
     // 圖表
@@ -156,6 +249,7 @@ function journalClient(API) {
     h += '<p class="jn-hint">損益用「平均成本法」計算，含手續費與交易稅；美股以交易當時匯率換算成台幣成本，市值用目前匯率。現價每分鐘更新，台股盤後以收盤價為準。資料只有你自己看得到。</p>';
     root.innerHTML = h;
     drawCharts(r, ++gen);
+    drawEquity(gen);
   }
 
   function renderSetup() {
