@@ -37,7 +37,7 @@ jobs:
         working-directory: bot
         env:
           RESULTS_KEY: ${{ secrets.RESULTS_KEY }}
-          WAIT_TODAY: ${{ (github.event.schedule == '35 5 * * 1-5' || github.event.schedule == '55 5 * * 1-5') && '1' || '' }}
+          WAIT_TODAY: ${{ (github.event.schedule == '35 5 * * 1-5' || github.event.schedule == '55 5 * * 1-5' || github.event_name == 'push') && '1' || '' }}
           FAST_CLOSE: ${{ inputs.mode == 'close' && '1' || '' }}
         run: node screener.js
       - name: 發布網站
