@@ -109,6 +109,34 @@ function journalClient(API) {
     return t + (p.tp ? '<br><span class="jn-hint">距停利 ' + ((p.tp / p.price - 1) * 100).toFixed(1) + '%</span>' : '');
   }
 
+  // ---- 我付了多少手續費、交易稅（全部換算成台幣）----
+  function feeStats(realizedTotal) {
+    var t = E.filter(function (e) { return e.kind === 'buy' || e.kind === 'sell'; });
+    if (!t.length) return '';
+    var tot = { fee: 0, tax: 0, amt: 0, n: 0 }, byM = {}, byS = {};
+    t.forEach(function (e) {
+      var fx = e.market === 'US' ? e.fx || 0 : 1, fee = (e.fee || 0) * fx, tax = (e.tax || 0) * fx, amt = e.price * e.qty * fx;
+      tot.fee += fee; tot.tax += tax; tot.amt += amt; tot.n++;
+      var m = e.date.slice(0, 7), mm = byM[m] || (byM[m] = { fee: 0, tax: 0, amt: 0, n: 0 });
+      mm.fee += fee; mm.tax += tax; mm.amt += amt; mm.n++;
+      var k = e.market + ':' + e.code, ss = byS[k] || (byS[k] = { name: e.name || e.code, code: e.code, fee: 0, tax: 0, n: 0 });
+      ss.fee += fee; ss.tax += tax; ss.n++;
+    });
+    var all = tot.fee + tot.tax;
+    var h = '<h2>💸 手續費統計 <span class="count">' + tot.n + ' 筆買賣・全部換算成台幣</span></h2><div class="jn-cards">' +
+      '<div><b>$' + fmt(all) + '</b><span>手續費＋交易稅合計</span><small>佔成交金額 ' + (tot.amt ? (all / tot.amt * 100).toFixed(3) : '-') + '%</small></div>' +
+      '<div><b>$' + fmt(tot.fee) + '</b><span>累計手續費</span></div><div><b>$' + fmt(tot.tax) + '</b><span>累計交易稅</span></div>' +
+      '<div><b>$' + fmt(tot.amt) + '</b><span>累計成交金額</span></div><div><b>' + (tot.n ? '$' + fmt(all / tot.n) : '-') + '</b><span>平均每筆成本</span></div>' +
+      '<div><b>' + (realizedTotal + all > 0 ? (all / (realizedTotal + all) * 100).toFixed(1) + '%' : '-') + '</b><span>吃掉的獲利比例</span><small>手續費＋稅 ÷（已實現損益＋手續費＋稅）</small></div></div>';
+    var ms = Object.keys(byM).sort().reverse().slice(0, 12);
+    h += '<div class="jn-charts"><div><h4>每月</h4><div class="scroll"><table class="compact"><thead><tr><th>月份</th><th>筆數</th><th>手續費</th><th>交易稅</th><th>合計</th></tr></thead><tbody>' +
+      ms.map(function (m) { var x = byM[m]; return '<tr><td>' + m.slice(0, 4) + '/' + m.slice(5) + '</td><td>' + x.n + '</td><td>' + fmt(x.fee) + '</td><td>' + fmt(x.tax) + '</td><td><b>' + fmt(x.fee + x.tax) + '</b></td></tr>'; }).join('') + '</tbody></table></div></div>';
+    var top = Object.keys(byS).map(function (k) { return byS[k]; }).sort(function (a, b) { return b.fee + b.tax - (a.fee + a.tax); }).slice(0, 8);
+    h += '<div><h4>哪幾檔付最多</h4><div class="scroll"><table class="compact"><thead><tr><th>股票</th><th>筆數</th><th>手續費＋稅</th></tr></thead><tbody>' +
+      top.map(function (x) { return '<tr><td class="nm">' + esc(x.code) + ' ' + esc(x.name) + '</td><td>' + x.n + '</td><td><b>' + fmt(x.fee + x.tax) + '</b></td></tr>'; }).join('') + '</tbody></table></div></div></div>';
+    return h;
+  }
+
   // ---- 畫面 ----
   function render() {
     if (!S) return renderSetup();
@@ -143,6 +171,7 @@ function journalClient(API) {
       var best = trades.reduce(function (a, x) { return !a || x.pnl > a.pnl ? x : a; }, null), worst = trades.reduce(function (a, x) { return !a || x.pnl < a.pnl ? x : a; }, null);
       h += '<h2>交易統計</h2><div class="jn-cards"><div><b>' + pct(avgW) + '</b><span>平均獲利（賺的那幾筆）</span></div><div><b>' + pct(avgL) + '</b><span>平均虧損（賠的那幾筆）</span></div><div><b>' + (best.pnl > 0 ? pn(best.pnl) : '-') + '</b><span>最大獲利' + (best.pnl > 0 ? '：' + esc(best.name || best.code) : '') + '</span></div><div><b>' + (worst.pnl < 0 ? pn(worst.pnl) : '-') + '</b><span>最大虧損' + (worst.pnl < 0 ? '：' + esc(worst.name || worst.code) : '') + '</span></div><div><b>' + (function () { var d = trades.filter(function (x) { return x.days != null; }); return d.length ? fmt(d.reduce(function (a, x) { return a + x.days; }, 0) / d.length, 1) + ' 天' : '-'; })() + '</b><span>平均持有</span></div><div><b>' + pn(r.dividends) + '</b><span>股利收入</span></div></div>';
     }
+    h += feeStats(rz);
     // 紀錄
     var kindTxt = { buy: '買進', sell: '賣出', deposit: '入金', withdraw: '出金', dividend: '股利', holding: '原有持股' };
     var rows = E.slice().sort(function (a, b) { return a.date > b.date ? -1 : a.date < b.date ? 1 : b.id - a.id; }).map(function (e) {
