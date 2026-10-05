@@ -2119,7 +2119,8 @@ function clientScript() {
       var recent = j.recent.map(function (v) { return '<tr><td>' + new Date(v.ts).toLocaleString('zh-TW', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false }) + '</td><td class="nm">' + esc(v.nickname || v.name || '未登入') + '</td><td class="hint">' + esc(v.email || '') + '</td><td>' + bias[v.bias] + '</td><td>' + esc(v.theme || '-') + '</td></tr>'; }).join('');
       var box = $('.pf-admin');
       var tf = function (ms) { return ms ? new Date(ms).toLocaleString('zh-TW', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false }) : '-'; };
-      var sign = (j.signups || []).map(function (d) { return '<tr><td>' + d.date.slice(4, 6) + '/' + d.date.slice(6) + '</td><td><b>+' + d.n + '</b></td></tr>'; }).join('');
+      var sMap = {}; (j.signups || []).forEach(function (d) { sMap[d.date] = d.n; });
+      var sign = ''; for (var di = 0; di < 14; di++) { var dk = new Date(Date.now() + 8 * 3600000 - di * 86400000).toISOString().slice(0, 10).replace(/-/g, ''); var dn = sMap[dk] || 0; sign += '<tr><td>' + dk.slice(4, 6) + '/' + dk.slice(6) + (di === 0 ? '（今天）' : '') + '</td><td>' + (dn ? '<b class="up">+' + dn + '</b>' : '<span class="hint">0</span>') + '</td></tr>'; }
       var mem = (j.members || []).map(function (m) { return '<tr><td>' + tf(m.created) + '</td><td class="nm">' + esc(m.nickname || '（未取暱稱）') + '</td><td>' + esc(m.name || '') + '</td><td class="hint">' + esc(m.email || '') + '</td><td>' + tf(m.last_login) + '</td></tr>'; }).join('');
       var todayKey = new Date(Date.now() + 8 * 3600000).toISOString().slice(0, 10).replace(/-/g, '');
       var todayN = ((j.signups || []).filter(function (d) { return d.date === todayKey; })[0] || { n: 0 }).n;
@@ -2129,7 +2130,7 @@ function clientScript() {
         '<h3>每日訪客 <span class="count">今天 ' + (tv ? tv.total : 0) + ' 人（會員 ' + (tv ? tv.members : 0) + '・訪客 ' + (tv ? tv.guests : 0) + '・只看介紹頁 ' + (tv ? tv.landing : 0) + '）</span></h3>' +
         (vis ? '<div class="scroll"><table class="compact"><thead><tr><th>日期</th><th>總人數</th><th>會員</th><th>訪客</th><th>只看介紹頁</th></tr></thead><tbody>' + vis + '</tbody></table></div><p class="hint">以「裝置」計算，同一台裝置一天只算一次；同一天先當訪客、後來登入，算會員。</p>' : '<p class="empty">還沒有訪客資料</p>') +
         '<h3>每日新會員</h3>' + (sign ? '<div class="scroll"><table class="compact"><thead><tr><th>日期</th><th>新會員</th></tr></thead><tbody>' + sign + '</tbody></table></div>' : '<p class="empty">尚無會員</p>') +
-        '<h3>最新加入的會員</h3>' + (mem ? '<details><summary>展開名單（最新 100 人）</summary><div class="scroll"><table class="compact"><thead><tr><th>加入時間</th><th>暱稱</th><th>Google 名字</th><th>信箱</th><th>最近上線</th></tr></thead><tbody>' + mem + '</tbody></table></div></details>' : '') +
+        '<h3>最新加入的會員</h3>' + (mem ? '<details open><summary>會員名單（最新加入在最上面，最多 100 人）</summary><div class="scroll"><table class="compact"><thead><tr><th>加入時間</th><th>暱稱</th><th>Google 名字</th><th>信箱</th><th>最近上線</th></tr></thead><tbody>' + mem + '</tbody></table></div></details>' : '') +
         '<h3>每日投票總覽</h3>' +
         (days ? '<div class="scroll"><table class="compact"><thead><tr><th>投票日</th><th>票數</th><th>登入會員</th><th>看多</th></tr></thead><tbody>' + days + '</tbody></table></div>' : '<p class="empty">尚無投票</p>') +
         '<h3>最新投票明細</h3>' + (recent ? '<div class="scroll"><table class="compact"><thead><tr><th>時間</th><th>情報員</th><th>信箱</th><th>多空</th><th>族群</th></tr></thead><tbody>' + recent + '</tbody></table></div>' : '<p class="empty">尚無投票</p>');

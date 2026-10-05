@@ -19,7 +19,7 @@ const JOURNAL_CSS = `.jn-cards{display:grid;grid-template-columns:repeat(3,1fr);
 .jn-calc{font-size:13px;color:var(--mute);margin-top:8px;line-height:1.7}.jn-calc b{color:var(--fg)}.jn-btns{display:flex;gap:8px;margin-top:16px}.jn-btns button{flex:1}.jn-err{color:var(--up);font-size:13px;margin-top:8px}.jn-hint{font-size:12.5px;color:var(--mute);line-height:1.6;margin:4px 0}
 .jn-del{border:0;background:none;color:var(--mute);cursor:pointer;font-size:13px;padding:2px 6px}.jn-edit{border:0;background:none;color:var(--accent);cursor:pointer;font-size:13px;padding:2px 6px}td.jn-note{white-space:normal;min-width:140px;max-width:260px;text-align:left!important;font-size:12.5px;color:var(--mute)}
 html.anon .page[data-p="journal"]>:not(.lock-card){display:none}
-.jn-quick{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px}.jn-quick button{font:inherit;font-size:13px;font-weight:700;padding:5px 12px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}.jn-quick .jn-pct{font-size:13px}.st2 h3 .jn-hint{font-weight:400;font-size:13px}.dd button{min-width:40px}td.jn-ops{white-space:nowrap}.fc [hidden]{display:none!important}.fc .jn-seg button{font-size:14px}.fc-out{margin-top:6px}td.nm .jn-edit[data-pos]{padding:2px 4px 2px 0;font-size:14px}`;
+.jn-quick{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px}.jn-quick button{font:inherit;font-size:13px;font-weight:700;padding:5px 12px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}.jn-quick .jn-pct{font-size:13px}.jn-form .jn-quick input.jn-pctin{width:84px;padding:5px 10px;font-size:15px;border-radius:999px}.st2 h3 .jn-hint{font-weight:400;font-size:13px}.dd button{min-width:40px}td.jn-ops{white-space:nowrap}.fc [hidden]{display:none!important}.fc .jn-seg button{font-size:14px}.fc-out{margin-top:6px}td.nm .jn-edit[data-pos]{padding:2px 4px 2px 0;font-size:14px}`;
 
 // ---- 瀏覽器端 ----
 function journalClient(API) {
@@ -109,34 +109,6 @@ function journalClient(API) {
     return t + (p.tp ? '<br><span class="jn-hint">距停利 ' + ((p.tp / p.price - 1) * 100).toFixed(1) + '%</span>' : '');
   }
 
-  // ---- 我付了多少手續費、交易稅（全部換算成台幣）----
-  function feeStats(realizedTotal) {
-    var t = E.filter(function (e) { return e.kind === 'buy' || e.kind === 'sell'; });
-    if (!t.length) return '';
-    var tot = { fee: 0, tax: 0, amt: 0, n: 0 }, byM = {}, byS = {};
-    t.forEach(function (e) {
-      var fx = e.market === 'US' ? e.fx || 0 : 1, fee = (e.fee || 0) * fx, tax = (e.tax || 0) * fx, amt = e.price * e.qty * fx;
-      tot.fee += fee; tot.tax += tax; tot.amt += amt; tot.n++;
-      var m = e.date.slice(0, 7), mm = byM[m] || (byM[m] = { fee: 0, tax: 0, amt: 0, n: 0 });
-      mm.fee += fee; mm.tax += tax; mm.amt += amt; mm.n++;
-      var k = e.market + ':' + e.code, ss = byS[k] || (byS[k] = { name: e.name || e.code, code: e.code, fee: 0, tax: 0, n: 0 });
-      ss.fee += fee; ss.tax += tax; ss.n++;
-    });
-    var all = tot.fee + tot.tax;
-    var h = '<h2>💸 手續費統計 <span class="count">' + tot.n + ' 筆買賣・全部換算成台幣</span></h2><div class="jn-cards">' +
-      '<div><b>$' + fmt(all) + '</b><span>手續費＋交易稅合計</span><small>佔成交金額 ' + (tot.amt ? (all / tot.amt * 100).toFixed(3) : '-') + '%</small></div>' +
-      '<div><b>$' + fmt(tot.fee) + '</b><span>累計手續費</span></div><div><b>$' + fmt(tot.tax) + '</b><span>累計交易稅</span></div>' +
-      '<div><b>$' + fmt(tot.amt) + '</b><span>累計成交金額</span></div><div><b>' + (tot.n ? '$' + fmt(all / tot.n) : '-') + '</b><span>平均每筆成本</span></div>' +
-      '<div><b>' + (realizedTotal + all > 0 ? (all / (realizedTotal + all) * 100).toFixed(1) + '%' : '-') + '</b><span>吃掉的獲利比例</span><small>手續費＋稅 ÷（已實現損益＋手續費＋稅）</small></div></div>';
-    var ms = Object.keys(byM).sort().reverse().slice(0, 12);
-    h += '<div class="jn-charts"><div><h4>每月</h4><div class="scroll"><table class="compact"><thead><tr><th>月份</th><th>筆數</th><th>手續費</th><th>交易稅</th><th>合計</th></tr></thead><tbody>' +
-      ms.map(function (m) { var x = byM[m]; return '<tr><td>' + m.slice(0, 4) + '/' + m.slice(5) + '</td><td>' + x.n + '</td><td>' + fmt(x.fee) + '</td><td>' + fmt(x.tax) + '</td><td><b>' + fmt(x.fee + x.tax) + '</b></td></tr>'; }).join('') + '</tbody></table></div></div>';
-    var top = Object.keys(byS).map(function (k) { return byS[k]; }).sort(function (a, b) { return b.fee + b.tax - (a.fee + a.tax); }).slice(0, 8);
-    h += '<div><h4>哪幾檔付最多</h4><div class="scroll"><table class="compact"><thead><tr><th>股票</th><th>筆數</th><th>手續費＋稅</th></tr></thead><tbody>' +
-      top.map(function (x) { return '<tr><td class="nm">' + esc(x.code) + ' ' + esc(x.name) + '</td><td>' + x.n + '</td><td><b>' + fmt(x.fee + x.tax) + '</b></td></tr>'; }).join('') + '</tbody></table></div></div></div>';
-    return h;
-  }
-
   // ---- 畫面 ----
   function render() {
     if (!S) return renderSetup();
@@ -171,7 +143,6 @@ function journalClient(API) {
       var best = trades.reduce(function (a, x) { return !a || x.pnl > a.pnl ? x : a; }, null), worst = trades.reduce(function (a, x) { return !a || x.pnl < a.pnl ? x : a; }, null);
       h += '<h2>交易統計</h2><div class="jn-cards"><div><b>' + pct(avgW) + '</b><span>平均獲利（賺的那幾筆）</span></div><div><b>' + pct(avgL) + '</b><span>平均虧損（賠的那幾筆）</span></div><div><b>' + (best.pnl > 0 ? pn(best.pnl) : '-') + '</b><span>最大獲利' + (best.pnl > 0 ? '：' + esc(best.name || best.code) : '') + '</span></div><div><b>' + (worst.pnl < 0 ? pn(worst.pnl) : '-') + '</b><span>最大虧損' + (worst.pnl < 0 ? '：' + esc(worst.name || worst.code) : '') + '</span></div><div><b>' + (function () { var d = trades.filter(function (x) { return x.days != null; }); return d.length ? fmt(d.reduce(function (a, x) { return a + x.days; }, 0) / d.length, 1) + ' 天' : '-'; })() + '</b><span>平均持有</span></div><div><b>' + pn(r.dividends) + '</b><span>股利收入</span></div></div>';
     }
-    h += feeStats(rz);
     // 紀錄
     var kindTxt = { buy: '買進', sell: '賣出', deposit: '入金', withdraw: '出金', dividend: '股利', holding: '原有持股' };
     var rows = E.slice().sort(function (a, b) { return a.date > b.date ? -1 : a.date < b.date ? 1 : b.id - a.id; }).map(function (e) {
@@ -266,8 +237,8 @@ function journalClient(API) {
     f.insertBefore(s1, errEl);
     var s2 = document.createElement('div'); s2.className = 'st2'; s2.hidden = true;
     s2.innerHTML = '<h3>🎯 預計停利／停損 <span class="jn-hint">（可跳過）</span></h3><p class="jn-hint">先想好出場點，照計畫賣。現價到了，庫存會提醒你。</p>' +
-      '<label>預計停利價</label><input name="tp" inputmode="decimal" value="' + (e.tp || '') + '"><div class="jn-quick" data-for="tp"><button type="button" data-p="10">+10%</button><button type="button" data-p="20">+20%</button><button type="button" data-p="30">+30%</button><span class="jn-pct"></span></div>' +
-      '<label>預計停損價</label><input name="sl" inputmode="decimal" value="' + (e.sl || '') + '"><div class="jn-quick" data-for="sl"><button type="button" data-p="-5">-5%</button><button type="button" data-p="-8">-8%</button><button type="button" data-p="-10">-10%</button><span class="jn-pct"></span></div>' +
+      '<label>預計停利價</label><input name="tp" inputmode="decimal" value="' + (e.tp || '') + '"><div class="jn-quick" data-for="tp"><button type="button" data-p="10">+10%</button><button type="button" data-p="20">+20%</button><button type="button" data-p="30">+30%</button><input class="jn-pctin" inputmode="decimal" placeholder="自訂 %"><span class="jn-pct"></span></div>' +
+      '<label>預計停損價</label><input name="sl" inputmode="decimal" value="' + (e.sl || '') + '"><div class="jn-quick" data-for="sl"><button type="button" data-p="-5">-5%</button><button type="button" data-p="-8">-8%</button><button type="button" data-p="-10">-10%</button><input class="jn-pctin" inputmode="decimal" placeholder="自訂 %"><span class="jn-pct"></span></div>' +
       '<div class="jn-btns"><button type="button" data-a="back">← 上一步</button><button type="button" data-a="skip">跳過</button><button type="button" class="main" data-a="save-final">儲存</button></div>';
     f.insertBefore(s2, errEl);
     var mainBtn = s1.querySelector('[data-a="save-trade"]');
@@ -283,6 +254,15 @@ function journalClient(API) {
       b.onclick = function () { var base = parseFloat(f.price.value) || 0; if (!base) return; f[b.parentNode.dataset.for].value = Math.round(base * (1 + b.dataset.p / 100) * 100) / 100; pctShow(); };
     });
     f.tp.addEventListener('input', pctShow); f.sl.addEventListener('input', pctShow);
+    // 自訂 %：停利填 15 就是 +15%；停損填 7 或 -7 都當成 -7%
+    s2.querySelectorAll('.jn-pctin').forEach(function (inp) {
+      inp.addEventListener('input', function () {
+        var base = parseFloat(f.price.value) || 0, v = parseFloat(inp.value);
+        if (!base || !isFinite(v)) return;
+        var forSl = inp.parentNode.dataset.for === 'sl', p = forSl ? -Math.abs(v) : v;
+        f[inp.parentNode.dataset.for].value = Math.round(base * (1 + p / 100) * 100) / 100; pctShow();
+      });
+    });
     function seg() {
       stepBtn();
       f.querySelectorAll('.mk button').forEach(function (b) { b.classList.toggle('on', b.dataset.m === st.market); });
