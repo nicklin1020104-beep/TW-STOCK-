@@ -138,7 +138,7 @@ function shareClient(SITE) {
 
   function activePage() { return document.querySelector('.page:not([hidden])'); }
   function pageKey() { var p = activePage(); return p ? p.dataset.p : 'main'; }
-  function syncFab() { fab.hidden = pageKey() === 'profile'; }
+  function syncFab() { fab.hidden = pageKey() === 'profile' || pageKey() === 'journal'; } // 個人資料不分享
   document.addEventListener('click', function (e) { if (e.target.closest('.ptab,.gtab')) setTimeout(syncFab, 0); });
   syncFab();
 
@@ -275,7 +275,7 @@ function shareClient(SITE) {
   fab.onclick = open;
   // 每一頁最上方也放一顆分享按鈕
   document.querySelectorAll('.page').forEach(function (p) {
-    if (p.dataset.p === 'profile') return;
+    if (p.dataset.p === 'profile' || p.dataset.p === 'journal') return;
     var bar = document.createElement('div'); bar.className = 'sh-bar';
     bar.innerHTML = '<button type="button" class="sh-inline">📤 分享這頁</button>';
     bar.firstChild.onclick = open;
