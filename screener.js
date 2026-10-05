@@ -749,7 +749,14 @@ async function main() {
         console.log('還沒收盤，30 秒後再看', m.t);
         await sleep(30000);
       }
-      if (open && !hasOtc(await getDay(todayStr, todayStr))) misToday = await misDay(todayStr);
+      if (open) {
+        const official = await getDay(todayStr, todayStr); // 證交所通常先出，櫃買晚一點
+        if (!hasOtc(official)) {
+          const live = await misDay(todayStr);
+          // 上市用證交所正式資料（有的話），上櫃先用即時行情；成交很少的上櫃股即時行情沒有收盤價，等 15:10 那次補上
+          if (live) misToday = { ...live, ...(official || {}) };
+        }
+      }
       if (misToday) console.log(`收盤快報：用即時行情 ${Object.keys(misToday).length} 檔`);
     } catch (e) {
       console.error('收盤快報準備失敗：', e.message);
@@ -1966,7 +1973,7 @@ function clientScript() {
     if (!codes.length) { box.innerHTML = '<p class="empty">還沒有自選股，從上面輸入代號或名稱加入</p>'; return; }
     function row(c) {
       var s = stocks.list[c];
-      if (!s) return '<tr><td class="nm">' + esc(c) + '</td><td colspan="7" class="no">今日無資料</td><td><button class="watch-del" data-c="' + esc(c) + '">✕</button></td></tr>';
+      if (!s) return '<tr><td class="nm">' + esc(c) + '</td><td colspan="7" class="no">今日收盤價稍後更新（成交量少的上櫃股約 15:10 補上）</td><td><button class="watch-del" data-c="' + esc(c) + '">✕</button></td></tr>';
       var link = 'https://tw.stock.yahoo.com/quote/' + c + (s.m ? '.TWO' : '.TW') + '/technical-analysis';
       // 一K站三線、★選股是「當天」的訊號：資料不是今天的（例如隔天早上還沒更新）就不顯示
       var fresh = stocks.date === new Date(Date.now() + 8 * 3600000).toISOString().slice(0, 10).replace(/-/g, '');
