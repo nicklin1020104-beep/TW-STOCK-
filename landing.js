@@ -113,6 +113,7 @@ const GATE_CSS = `#gate{display:none}html.gated #gate{display:block;position:fix
 .btabs{display:none}
 @media (max-width:640px){.btabs{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:40;justify-content:space-around;align-items:center;padding:6px 6px calc(6px + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line)}.btab{flex:1;display:flex;justify-content:center;align-items:center;height:46px;border:0;background:none;color:var(--mute);cursor:pointer;border-radius:12px;-webkit-tap-highlight-color:transparent}.btab.on{color:var(--fg)}.btab.on svg{stroke-width:2.6}.btab:active{background:var(--card)}.ptabs .gtabs{display:none}.ptabs.nosub{display:none}.ptabs{padding-top:6px}body{padding-bottom:calc(72px + env(safe-area-inset-bottom))}#share-fab{bottom:calc(80px + env(safe-area-inset-bottom))}html.gated .btabs{display:none}}
 .aetf-h{font-weight:800;font-size:13.5px;margin:6px 0 4px}
+.vote-form[hidden]{display:none}
 .vote-prize{border-radius:12px;padding:12px 14px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 10%,var(--bg)),var(--bg));border:1px solid color-mix(in srgb,var(--accent) 30%,var(--line))}.vp-title{font-weight:800;font-size:15px;margin-bottom:6px}.vp-row{font-size:13.5px;line-height:1.7}.vp-me{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);font-size:14px;line-height:1.6}`;
 
 // ---- 瀏覽器端：分享圖卡 ----

@@ -26,7 +26,7 @@ function journalClient(API) {
   if (!root) return;
   var DEF = { feeDiscount: 10, minFee: 20, oddMinFee: 1, usFeeRate: 0.1, usMinFee: 0 };
   var TAGS = ['一K站三線', '杯柄型態', '潛伏股', '三率三升', '投信買超', '主力鎖碼', '主動ETF加碼', '族群輪動', '技術面', '消息面', '長期投資', '停損', '停利', '其他'];
-  var S = null, E = [], names = {}, Q = {}, loaded = false, busy = false, charts = [];
+  var S = null, E = [], names = {}, Q = {}, loaded = false, busy = false, charts = [], gen = 0;
   function token() { try { return localStorage.getItem('shoupan_token'); } catch (e) { return null; } }
   function api(path, body) {
     var h = { 'Content-Type': 'application/json' }; if (token()) h.Authorization = 'Bearer ' + token();
@@ -117,7 +117,7 @@ function journalClient(API) {
       var loss = trades.filter(function (x) { return x.pnl <= 0; });
       var avgL = loss.length ? loss.reduce(function (a, x) { return a + x.pct; }, 0) / loss.length : null;
       var best = trades.reduce(function (a, x) { return !a || x.pnl > a.pnl ? x : a; }, null), worst = trades.reduce(function (a, x) { return !a || x.pnl < a.pnl ? x : a; }, null);
-      h += '<h2>交易統計</h2><div class="jn-cards"><div><b>' + pct(avgW) + '</b><span>平均獲利（賺的那幾筆）</span></div><div><b>' + pct(avgL) + '</b><span>平均虧損（賠的那幾筆）</span></div><div><b>' + pn(best.pnl) + '</b><span>最大獲利：' + esc(best.name || best.code) + '</span></div><div><b>' + pn(worst.pnl) + '</b><span>最大虧損：' + esc(worst.name || worst.code) + '</span></div><div><b>' + fmt(trades.reduce(function (a, x) { return a + x.days; }, 0) / trades.length, 1) + ' 天</b><span>平均持有</span></div><div><b>' + pn(r.dividends) + '</b><span>股利收入</span></div></div>';
+      h += '<h2>交易統計</h2><div class="jn-cards"><div><b>' + pct(avgW) + '</b><span>平均獲利（賺的那幾筆）</span></div><div><b>' + pct(avgL) + '</b><span>平均虧損（賠的那幾筆）</span></div><div><b>' + (best.pnl > 0 ? pn(best.pnl) : '-') + '</b><span>最大獲利' + (best.pnl > 0 ? '：' + esc(best.name || best.code) : '') + '</span></div><div><b>' + (worst.pnl < 0 ? pn(worst.pnl) : '-') + '</b><span>最大虧損' + (worst.pnl < 0 ? '：' + esc(worst.name || worst.code) : '') + '</span></div><div><b>' + fmt(trades.reduce(function (a, x) { return a + x.days; }, 0) / trades.length, 1) + ' 天</b><span>平均持有</span></div><div><b>' + pn(r.dividends) + '</b><span>股利收入</span></div></div>';
     }
     // 紀錄
     var kindTxt = { buy: '買進', sell: '賣出', deposit: '入金', withdraw: '出金', dividend: '股利' };
@@ -131,7 +131,7 @@ function journalClient(API) {
     h += '<h2>交易紀錄 <span class="count">' + E.length + ' 筆</span></h2>' + (rows ? '<div class="scroll"><table class="compact"><thead><tr><th>日期</th><th>種類</th><th>股票</th><th>價格 × 數量／金額</th><th>手續費＋稅</th><th>理由／心得</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div>' : '<p class="empty">還沒有紀錄</p>');
     h += '<p class="jn-hint">損益用「平均成本法」計算，含手續費與交易稅；美股以交易當時匯率換算成台幣成本，市值用目前匯率。現價每分鐘更新，台股盤後以收盤價為準。資料只有你自己看得到。</p>';
     root.innerHTML = h;
-    drawCharts(r);
+    drawCharts(r, ++gen);
   }
 
   function renderSetup() {
@@ -154,8 +154,9 @@ function journalClient(API) {
     if (window.Chart) return Promise.resolve();
     return new Promise(function (ok, bad) { var s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'; s.onload = ok; s.onerror = bad; document.head.appendChild(s); });
   }
-  function drawCharts(r) {
+  function drawCharts(r, g) {
     loadChart().then(function () {
+      if (g !== gen) return; // 畫面已重畫，交給最新一次
       charts.forEach(function (c) { c.destroy(); }); charts = [];
       var cs = getComputedStyle(document.documentElement), fg = cs.getPropertyValue('--fg').trim() || '#222', up = cs.getPropertyValue('--up').trim() || '#d0312d', dn = cs.getPropertyValue('--dn').trim() || '#16a34a';
       var pal = ['#2563eb', '#f59e0b', '#10b981', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#84cc16', '#64748b'];
