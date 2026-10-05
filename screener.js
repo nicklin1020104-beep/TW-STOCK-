@@ -1190,6 +1190,8 @@ async function main() {
     if (locked) tag([...locked.all, ...locked.near].map((r) => r.code), '主力鎖碼');
     tag((holders.rows || []).map((r) => r.code), '千張大戶增');
     tag(bigLeaders.map((r) => r.code), '千金龍頭');
+    tag(cups.filter((r) => /突破/.test(r.status)).map((r) => r.code), '杯柄突破');
+    tag(cups.filter((r) => !/突破/.test(r.status)).map((r) => r.code), '杯柄整理中');
     tag(Object.entries(insti || {}).filter(([, x]) => x.trust > 0).map(([c]) => c), '投信買超');
     const themeOf = {};
     for (const [t, list] of Object.entries(THEMES)) list.forEach((c) => (themeOf[c] = themeOf[c] || []).push(t));
@@ -1899,7 +1901,9 @@ function clientScript() {
       var s = stocks.list[c];
       if (!s) return '<tr><td class="nm">' + esc(c) + '</td><td colspan="7" class="no">今日無資料</td><td><button class="watch-del" data-c="' + esc(c) + '">✕</button></td></tr>';
       var link = 'https://tw.stock.yahoo.com/quote/' + c + (s.m ? '.TWO' : '.TW') + '/technical-analysis';
-      var tags = s.t.map(function (t) { return '<span class="chip good">' + esc(t) + '</span>'; }).join('');
+      // 一K站三線、★選股是「當天」的訊號：資料不是今天的（例如隔天早上還沒更新）就不顯示
+      var fresh = stocks.date === new Date(Date.now() + 8 * 3600000).toISOString().slice(0, 10).replace(/-/g, '');
+      var tags = s.t.filter(function (t) { return fresh || (t !== '一K站三線' && t !== '★選股'); }).map(function (t) { return '<span class="chip good">' + esc(t) + '</span>'; }).join('');
       return '<tr><td class="nm"><a href="' + link + '" target="_blank">' + c + '</a> ' + esc(s.n) + (s.m ? '<span class="tag">櫃</span>' : '') + '</td><td>' + s.c + '</td>' + pc(s.p) + pc(s.r5) + pc(s.r20) + '<td>' + (s.v || 0).toLocaleString() + '</td>' + pc(s.y) +
         '<td class="chips">' + (tags || '<span class="chip mid">無</span>') + '</td><td><button class="watch-del" data-c="' + c + '" title="移除">✕</button></td></tr>';
     }
@@ -2134,7 +2138,7 @@ function clientScript() {
 
 // 分頁導覽：上排 6 大類，下排是該類的小分頁（單一頁的類別不顯示下排）
 const NAV = [
-  ['pick', '選股', [['main', '一K站三線'], ['latent', '潛伏股'], ['three', '三率三升'], ['cup', '杯柄型態'], ['leader', '千金龍頭'], ['track', '一週追蹤']]],
+  ['pick', '選股', [['main', '一K站三線'], ['latent', '潛伏股'], ['three', '三率三升'], ['cup', '杯柄型態'], ['track', '一週追蹤']]],
   ['watch', '自選股', [['watch', '自選股']]],
   ['chips', '籌碼', [['locked', '主力鎖碼'], ['flow', '三大法人'], ['holders', '千張大戶'], ['aetf', '主動ETF']]],
   ['sector', '產業', [['industry', '產業趨勢'], ['news', '產業新聞'], ['ir50', '0050法說營收']]],
@@ -2468,11 +2472,10 @@ ${renderLatent(extra.latent)}</div>
 <div class="page" data-p="cup" hidden>${renderCups(extra.cups)}</div>
 <div class="page" data-p="three" hidden>${renderThreeUp(extra.threeGroups)}</div>
 <div class="page" data-p="ir50" hidden>${extra.ir50 ? renderIR50(extra.ir50) : '<p class="empty">0050 資料更新失敗</p>'}</div>
-<div class="page" data-p="industry" hidden>${extra.industry ? renderIndustry(extra.industry) : '<p class="empty">產業趨勢計算失敗</p>'}</div>
+<div class="page" data-p="industry" hidden>${extra.crashed && extra.crashed.length ? renderLeaders(extra) : ''}${extra.industry ? renderIndustry(extra.industry) : '<p class="empty">產業趨勢計算失敗</p>'}${extra.crashed && extra.crashed.length ? '' : renderLeaders(extra)}</div>
 <div class="page" data-p="locked" hidden>${extra.locked ? renderLocked(extra.locked) : '<p class="empty">主力鎖碼資料更新失敗</p>'}</div>
 <div class="page" data-p="holders" hidden>${renderHolders(extra.holders)}</div>
 <div class="page" data-p="aetf" hidden>${extra.aetf && extra.aetf.etfs.length ? renderActiveEtf(extra.aetf) : '<p class="empty">主動式 ETF 資料更新失敗</p>'}</div>
-<div class="page" data-p="leader" hidden>${renderLeaders(extra)}</div>
 <div class="page" data-p="flow" hidden>${renderFlow(flow, picks)}</div>
 <div class="page" data-p="track" hidden><div><div class="stabs"><button class="stab on" data-s="tk-cross">一K站三線</button><button class="stab" data-s="tk-cup">杯柄型態</button></div><div class="spage" data-s="tk-cross">${renderTracking(extra.tracking)}</div><div class="spage" data-s="tk-cup" hidden>${extra.cupTracking ? renderTracking(extra.cupTracking, { col: "狀態", cell: (p) => p.status + (p.tight ? "・收斂" : ""), hint: "每天「杯柄型態」頁上榜的股票（柄整理中或近期帶量突破），自 " + TRACK_START.slice(4, 6) + "/" + TRACK_START.slice(6) + " 起；之前的日子是用當時的行情回推（營收用最新一期）。" }) : '<p class="empty">杯柄追蹤計算失敗</p>'}</div></div></div>
 <div class="page" data-p="news" hidden>${renderNews(extra)}</div>
