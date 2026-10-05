@@ -1233,6 +1233,23 @@ async function main() {
     }
     fs.mkdirSync(path.join(ROOT, 'site'), { recursive: true });
     fs.writeFileSync(path.join(ROOT, 'site', 'stocks.json'), JSON.stringify({ date: tradeDate, list }));
+    // 收盤開獎用（Cloudflare 13:35 準時計算）：各族群／產業「可計入」的成分股
+    // 和 industry.js 一樣：20 日均量 ≥ 500 張才計入，族群至少 2 檔、官方產業至少 5 檔
+    try {
+      const avgLots = (c) => {
+        const v = days.slice(Math.max(0, T - 19), T + 1).map((d) => (d.data[c] ? d.data[c].vol : null)).filter((x) => x != null);
+        return v.length ? v.reduce((a, b) => a + b, 0) / v.length / 1000 : 0;
+      };
+      const liq = new Set(Object.keys(today).filter((c) => today[c].close != null && avgLots(c) >= 500));
+      const groups = {}, official = {};
+      for (const [name, list] of Object.entries(THEMES)) { const l = list.filter((c) => liq.has(c)); if (l.length >= 2) groups[name] = l; }
+      for (const c of liq) { const ind = rev[c] && rev[c].industry; if (ind) (official[ind] = official[ind] || []).push(c); }
+      for (const k of Object.keys(official)) if (official[k].length < 5) delete official[k];
+      const otc = [...liq].filter((c) => today[c].mkt === '上櫃');
+      fs.writeFileSync(path.join(ROOT, 'site', 'settle-map.json'), JSON.stringify({ date: tradeDate, groups, official, otc }));
+    } catch (e) {
+      console.error('開獎對照表失敗：', e.message);
+    }
     // 股票日誌用：ETF 名稱與收盤（上市＋上櫃），個股名稱已在 stocks.json
     try {
       const [l, o] = await Promise.all([getJSON('https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL'), getJSON('https://www.tpex.org.tw/openapi/v1/tpex_mainboard_quotes')]);
