@@ -709,6 +709,10 @@ function liveTopbar(API) {
       items.forEach(function (el) {
         var q = (j.quotes || {})[MAP[el.querySelector('.tb-name').textContent.trim()]];
         if (!q || !q.price || !q.prev || !q.time) return;
+        if (!el.dataset.t) { // 頁面上原本那筆的時間（例如「10/6 09:18」），比它舊的報價不要蓋過去
+          var nt = (el.querySelector('.tb-note') || {}).textContent || '', mm = nt.match(/(\d+)\/(\d+) (\d+):(\d+)/);
+          el.dataset.t = mm ? Math.round((Date.UTC(new Date().getUTCFullYear(), +mm[1] - 1, +mm[2], +mm[3], +mm[4]) - 8 * 3600000) / 1000) : 0;
+        }
         if (+el.dataset.t > q.time) return;
         el.dataset.t = q.time;
         var chg = q.price - q.prev, pct = (q.price / q.prev - 1) * 100, d = new Date(q.time * 1000 + 8 * 3600000);
