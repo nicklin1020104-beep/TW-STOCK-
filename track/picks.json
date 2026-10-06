@@ -858,6 +858,18 @@
    "above60": true
   },
   {
+   "code": "6924",
+   "name": "榮惠-KY創",
+   "mkt": "上市",
+   "industry": "電子零組件業",
+   "close": 136.5,
+   "yoy": 84.98932601402866,
+   "star": false,
+   "okUp": true,
+   "okVol": false,
+   "above60": true
+  },
+  {
    "code": "3666",
    "name": "光耀",
    "mkt": "上櫃",
@@ -880,6 +892,18 @@
    "okUp": true,
    "okVol": false,
    "above60": true
+  },
+  {
+   "code": "1413",
+   "name": "宏洲",
+   "mkt": "上市",
+   "industry": "紡織纖維",
+   "close": 9.28,
+   "yoy": 27.66535454898265,
+   "star": false,
+   "okUp": true,
+   "okVol": false,
+   "above60": false
   },
   {
    "code": "6614",
@@ -912,6 +936,42 @@
    "industry": "通信網路業",
    "close": 8.65,
    "yoy": 11.852704257767549,
+   "star": false,
+   "okUp": true,
+   "okVol": false,
+   "above60": true
+  },
+  {
+   "code": "9931",
+   "name": "欣高",
+   "mkt": "上市",
+   "industry": "油電燃氣業",
+   "close": 34.2,
+   "yoy": 17.86569115075795,
+   "star": false,
+   "okUp": true,
+   "okVol": false,
+   "above60": true
+  },
+  {
+   "code": "9926",
+   "name": "新海",
+   "mkt": "上市",
+   "industry": "油電燃氣業",
+   "close": 49.5,
+   "yoy": 0.625,
+   "star": false,
+   "okUp": true,
+   "okVol": false,
+   "above60": true
+  },
+  {
+   "code": "6581",
+   "name": "鋼聯",
+   "mkt": "上市",
+   "industry": "綠能環保",
+   "close": 110,
+   "yoy": 88.18440615223668,
    "star": false,
    "okUp": true,
    "okVol": false,
@@ -1038,6 +1098,18 @@
    "above60": false
   },
   {
+   "code": "5007",
+   "name": "三星",
+   "mkt": "上市",
+   "industry": "鋼鐵工業",
+   "close": 56.3,
+   "yoy": 3.507039906689994,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": true
+  },
+  {
    "code": "1788",
    "name": "杏昌",
    "mkt": "上櫃",
@@ -1084,6 +1156,30 @@
    "okUp": false,
    "okVol": false,
    "above60": null
+  },
+  {
+   "code": "1453",
+   "name": "大將",
+   "mkt": "上市",
+   "industry": "建材營造",
+   "close": 11,
+   "yoy": 1.9047619047619047,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": false
+  },
+  {
+   "code": "1438",
+   "name": "三地開發",
+   "mkt": "上市",
+   "industry": "建材營造",
+   "close": 21.95,
+   "yoy": 41420.552147239265,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": false
   },
   {
    "code": "5215",
