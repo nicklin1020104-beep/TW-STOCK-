@@ -1062,18 +1062,6 @@
    "above60": false
   },
   {
-   "code": "1731",
-   "name": "美吾華",
-   "mkt": "上市",
-   "industry": "生技醫療業",
-   "close": 20.9,
-   "yoy": 17.95743475335529,
-   "star": false,
-   "okUp": false,
-   "okVol": false,
-   "above60": true
-  },
-  {
    "code": "2373",
    "name": "震旦行",
    "mkt": "上市",
@@ -1084,6 +1072,18 @@
    "okUp": false,
    "okVol": false,
    "above60": false
+  },
+  {
+   "code": "1731",
+   "name": "美吾華",
+   "mkt": "上市",
+   "industry": "生技醫療業",
+   "close": 20.9,
+   "yoy": 17.95743475335529,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": true
   },
   {
    "code": "4129",
@@ -1146,18 +1146,6 @@
    "above60": true
   },
   {
-   "code": "1443",
-   "name": "立益物流",
-   "mkt": "上市",
-   "industry": "其他",
-   "close": 23.55,
-   "yoy": 3.8664879085297987,
-   "star": false,
-   "okUp": false,
-   "okVol": false,
-   "above60": null
-  },
-  {
    "code": "1453",
    "name": "大將",
    "mkt": "上市",
@@ -1168,6 +1156,18 @@
    "okUp": false,
    "okVol": false,
    "above60": false
+  },
+  {
+   "code": "1443",
+   "name": "立益物流",
+   "mkt": "上市",
+   "industry": "其他",
+   "close": 23.55,
+   "yoy": 3.8664879085297987,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": null
   },
   {
    "code": "1438",
