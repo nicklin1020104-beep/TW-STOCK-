@@ -1552,10 +1552,12 @@ function renderIR50({ asOf, conf, members, today }) {
   const wk = '日一二三四五六';
   const dlabel = (d) => `${+d.slice(5, 7)}/${+d.slice(8)}（${wk[new Date(d + 'T00:00:00Z').getUTCDay()]}）`;
   const invited = (c) => /受邀|邀請|受.{0,6}邀/.test(c.desc);
+  // 簡報檔名前 12 碼是「代號＋上傳日期」；受邀場常沿用之前的簡報，標出是哪天的版本
+  const deckDate = (c) => { const m = c.files[0].name.match(/^[0-9A-Z]{4}(20[0-9]{2})([0-9]{2})([0-9]{2})/); if (!m) return ''; const dd = m[1] + '-' + m[2] + '-' + m[3]; return '<span class="tag">' + +m[2] + '/' + +m[3] + ' 版' + (dd < c.date ? '（沿用舊簡報）' : '') + '</span>'; };
   const confRow = (c) => `<tr${!invited(c) ? ' class="own"' : ''}><td>${dlabel(c.date)}</td><td>${esc(c.time)}</td>
 <td><a href="https://tw.stock.yahoo.com/quote/${c.code}.TW" target="_blank">${c.code}</a> ${esc(c.name)}${c.weight ? `<span class="tag">權重 ${c.weight}%</span>` : ''}</td>
 <td>${invited(c) ? '<span class="chip mid">受邀</span>' : '<span class="chip hot">自辦</span>'}</td>
-<td class="post">${esc(c.desc)}</td><td>${c.files.map((f) => `<a href="${f.url}" target="_blank">${f.lang}文簡報</a>`).join(' ') || '-'}</td></tr>`;
+<td class="post">${esc(c.desc)}</td><td>${c.files.map((f) => `<a href="${f.url}" target="_blank">${f.lang}文簡報</a>`).join(' ')}${c.files.length ? deckDate(c) : '-'}</td></tr>`;
   const head = '<thead><tr><th>日期</th><th>時間</th><th>公司</th><th>類型</th><th>內容</th><th>簡報</th></tr></thead>';
   const upcoming = conf.filter((c) => c.date >= today).sort((a, b) => (a.date + a.time < b.date + b.time ? -1 : 1));
   const past14 = new Date(Date.parse(today) - 14 * 86400000).toISOString().slice(0, 10);
