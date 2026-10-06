@@ -710,5 +710,90 @@
    "above60": false
   }
  ],
- "20261005": []
+ "20261005": [
+  {
+   "code": "6541",
+   "name": "泰福-KY",
+   "mkt": "上市",
+   "industry": "生技醫療業",
+   "close": 31.45,
+   "yoy": 210.1415494151551,
+   "star": false,
+   "okUp": true,
+   "okVol": false,
+   "above60": false
+  },
+  {
+   "code": "1220",
+   "name": "台榮",
+   "mkt": "上市",
+   "industry": "食品工業",
+   "close": 10.95,
+   "yoy": 28.831968382604725,
+   "star": false,
+   "okUp": true,
+   "okVol": false,
+   "above60": false
+  },
+  {
+   "code": "1323",
+   "name": "永裕",
+   "mkt": "上市",
+   "industry": "塑膠工業",
+   "close": 21.55,
+   "yoy": 34.077133777524274,
+   "star": false,
+   "okUp": true,
+   "okVol": false,
+   "above60": true
+  },
+  {
+   "code": "1777",
+   "name": "生泰",
+   "mkt": "上櫃",
+   "industry": "生技醫療業",
+   "close": 74.4,
+   "yoy": 17.68207527407304,
+   "star": false,
+   "okUp": true,
+   "okVol": false,
+   "above60": true
+  },
+  {
+   "code": "6756",
+   "name": "威鋒電子",
+   "mkt": "上市",
+   "industry": "半導體業",
+   "close": 98.2,
+   "yoy": 96.9406668471583,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": true
+  },
+  {
+   "code": "2115",
+   "name": "六暉-KY",
+   "mkt": "上市",
+   "industry": "汽車工業",
+   "close": 23.9,
+   "yoy": 47.411575042844014,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": true
+  },
+  {
+   "code": "1788",
+   "name": "杏昌",
+   "mkt": "上櫃",
+   "industry": "生技醫療業",
+   "close": 128,
+   "yoy": 8.941288853382764,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": null
+  }
+ ]
 }

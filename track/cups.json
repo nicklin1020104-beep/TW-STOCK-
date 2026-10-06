@@ -233,6 +233,15 @@
  ],
  "20261005": [
   {
+   "code": "6292",
+   "name": "迅德",
+   "mkt": "上櫃",
+   "close": 71.2,
+   "status": "1 天前帶量突破",
+   "tight": false,
+   "pivot": 68.8
+  },
+  {
    "code": "2855",
    "name": "統一證",
    "mkt": "上市",
@@ -240,6 +249,24 @@
    "status": "柄整理中",
    "tight": true,
    "pivot": 59.7
+  },
+  {
+   "code": "6227",
+   "name": "茂綸",
+   "mkt": "上櫃",
+   "close": 142.5,
+   "status": "柄整理中",
+   "tight": false,
+   "pivot": 145.5
+  },
+  {
+   "code": "4967",
+   "name": "十銓",
+   "mkt": "上市",
+   "close": 269.5,
+   "status": "柄整理中",
+   "tight": false,
+   "pivot": 291.5
   }
  ]
 }
