@@ -268,5 +268,34 @@
    "tight": false,
    "pivot": 291.5
   }
+ ],
+ "20261006": [
+  {
+   "code": "6292",
+   "name": "迅德",
+   "mkt": "上櫃",
+   "close": 70.2,
+   "status": "2 天前帶量突破",
+   "tight": false,
+   "pivot": 68.8
+  },
+  {
+   "code": "2855",
+   "name": "統一證",
+   "mkt": "上市",
+   "close": 58.5,
+   "status": "柄整理中",
+   "tight": true,
+   "pivot": 59.7
+  },
+  {
+   "code": "4967",
+   "name": "十銓",
+   "mkt": "上市",
+   "close": 267,
+   "status": "柄整理中",
+   "tight": false,
+   "pivot": 291.5
+  }
  ]
 }
