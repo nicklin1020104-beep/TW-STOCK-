@@ -2510,11 +2510,15 @@ function renderTracking({ signals, stats }, opt = {}) {
   const sigTable = (sg) => {
     const tr = sg.picks
       .map((p) => {
-        const cells = Array.from({ length: TRACK_DAYS }, (_, k) => (p.rets[k] == null ? '<td class="no">·</td>' : pctCell(p.rets[k]))).join('');
+        // 每天各自的漲跌（當天收盤 vs 前一天收盤），最後一欄才是從訊號日算起的累計
+        const daily = (k) => { const c = p.rets[k], b = k === 0 ? 0 : p.rets[k - 1]; return c == null || b == null ? null : ((1 + c / 100) / (1 + b / 100) - 1) * 100; };
+        const cells = Array.from({ length: TRACK_DAYS }, (_, k) => (daily(k) == null ? '<td class="no">·</td>' : pctCell(daily(k)))).join('');
+        const lastRet = [...p.rets].reverse().find((v) => v != null);
+        const cum = lastRet == null ? '<td class="no">·</td>' : pctCell(lastRet).replace('<td class="', '<td class="cum ');
         const res = p.done ? (p.win ? '<td class="up"><b>勝</b></td>' : '<td class="dn"><b>敗</b></td>') : `<td class="no">追蹤中 ${p.rets.length}/${TRACK_DAYS}</td>`;
         return `<tr><td><a href="https://tw.stock.yahoo.com/quote/${p.code}${p.mkt === '上櫃' ? '.TWO' : '.TW'}/technical-analysis" target="_blank">${p.code}</a></td>
 <td>${p.name}${p.star ? '<span class="star">★</span>' : ''}</td><td>${opt.cell ? opt.cell(p) : p.above60 == null ? '-' : p.above60 ? '站上' : '未站上'}</td>
-<td>${p.close}</td>${cells}${p.max == null ? '<td>-</td>' : pctCell(p.max)}${res}</tr>`;
+<td>${p.close}</td>${cells}${cum}${p.max == null ? '<td>-</td>' : pctCell(p.max)}${res}</tr>`;
       })
       .join('');
     const md = (x) => x.slice(4, 6) + '/' + x.slice(6);
@@ -2524,7 +2528,7 @@ function renderTracking({ signals, stats }, opt = {}) {
     const summary = done.length ? `勝率 ${f1((wins / done.length) * 100)}%（${wins}/${done.length}）` : '追蹤中';
     return {
       done: sg.after.length >= TRACK_DAYS,
-      html: `<h3>${md(sg.date)} 訊號 <span class="count">${sg.picks.length} 檔・${summary}</span></h3>${sg.picks.length ? `<div class="scroll"><table><thead><tr><th>代號</th><th>名稱</th><th>${opt.col || '季線'}</th><th>訊號日收盤</th>${head}<th>期間最高</th><th>結果</th></tr></thead><tbody>${tr}</tbody></table></div>` : '<p class="empty">當日無訊號</p>'}`,
+      html: `<h3>${md(sg.date)} 訊號 <span class="count">${sg.picks.length} 檔・${summary}</span></h3>${sg.picks.length ? `<div class="scroll"><table><thead><tr><th>代號</th><th>名稱</th><th>${opt.col || '季線'}</th><th>訊號日收盤</th>${head}<th>累計</th><th>期間最高</th><th>結果</th></tr></thead><tbody>${tr}</tbody></table></div>` : '<p class="empty">當日無訊號</p>'}`,
     };
   };
   const tables = signals.map(sigTable);
@@ -2562,7 +2566,7 @@ h1{font-size:22px;margin:0 0 4px}h2{font-size:17px;margin:28px 0 8px}.sub{color:
 .scroll{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
 th,td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}th:nth-child(-n+3),td:nth-child(-n+3){text-align:left}
 th{color:var(--mute);font-weight:500}.up{color:var(--up)}.dn{color:var(--dn)}a{color:inherit}
-.tag{font-size:11px;color:var(--mute);margin-left:4px}td.lv,td.lv a,a.lv{color:#e0242b!important}.empty{color:var(--mute)}.count{font-weight:400;color:var(--mute);font-size:14px}
+.tag{font-size:11px;color:var(--mute);margin-left:4px}td.lv,td.lv a,a.lv{color:#e0242b!important}td.cum{font-weight:800;background:rgba(127,127,127,.08)}.empty{color:var(--mute)}.count{font-weight:400;color:var(--mute);font-size:14px}
 h3{font-size:14px;margin:14px 0 6px}.cols{display:grid;grid-template-columns:1fr 1fr;gap:20px}@media (max-width:900px){.cols{grid-template-columns:1fr}}
 table.flow td:first-child,table.flow th:first-child{color:var(--mute);text-align:right;width:1em}table.flow td:nth-child(2),table.flow th:nth-child(2){text-align:left}table.flow td:nth-child(3),table.flow th:nth-child(3){text-align:right}
 .tabs{display:flex;gap:6px;flex-wrap:wrap}.tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:999px;cursor:pointer;font:inherit;font-size:13px}.tab.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
