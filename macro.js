@@ -221,6 +221,10 @@ async function getTXF() {
 }
 async function getTopBar() {
   const idx = await getAssets(TOP.map(([s, n]) => [s, n, '']));
+  // 昨收用 range=1d 的 chartPreviousClose（日 K 有時會缺一天，拿前一根當昨收會算錯漲跌）
+  for (const a of idx) {
+    try { a.prevClose = JSON.parse(await get('https://query1.finance.yahoo.com/v8/finance/chart/' + encodeURIComponent(a.sym) + '?range=1d&interval=1d')).chart.result[0].meta.chartPreviousClose || null; } catch {}
+  }
   let txf = null;
   try {
     txf = await getTXF();

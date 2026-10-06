@@ -2286,7 +2286,7 @@ function renderTopBar({ idx, txf }) {
     if (a.live) return cell(a.name, a.live.last, a.live.chg, a.live.pct, twTimeOf(a.live.time)); // 盤中即時（期交所）
     const p = a.pts;
     if (!p || p.length < 2) return '';
-    const last = p[p.length - 1][1], prev = p[p.length - 2][1];
+    const last = p[p.length - 1][1], prev = a.prevClose || p[p.length - 2][1];
     return cell(a.name, last, last - prev, (last / prev - 1) * 100, a.time ? twTimeOf(a.time) : '');
   };
   const [twii, ...others] = idx;
