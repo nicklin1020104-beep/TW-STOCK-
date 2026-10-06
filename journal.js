@@ -677,9 +677,50 @@ function journalClient(API) {
   // 打開這一頁時才載入
   document.addEventListener('click', function (e) { var t = e.target.closest('.ptab[data-p="journal"],.gtab[data-g="journal"],.btab[data-g="journal"]'); if (t) setTimeout(loaded ? render : start, 0); });
   if (location.hash === '#journal') setTimeout(start, 300);
+  // 盤中每分鐘更新報價：價格有變才重畫（日誌頁、首頁的你的收盤總結）
+  function refresh() {
+    if (!loaded || document.hidden || !E.length) return;
+    var r = calc(), syms = r.hold.map(sym).concat(tradeSyms(), ['^TWII']);
+    var before = JSON.stringify(syms.map(function (s) { return Q[s] && Q[s].price; }));
+    syms.forEach(function (s) { delete Q[s]; });
+    quotes(syms).then(function () {
+      if (JSON.stringify(syms.map(function (s) { return Q[s] && Q[s].price; })) === before) return;
+      var pg = root.closest('.page');
+      if (pg && !pg.hidden) render();
+      daySum();
+    });
+  }
+  setInterval(refresh, 60000);
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) refresh(); });
   window.__journalStart = function () { loaded = false; start(); };
   // 會員一進網站就先載入，首頁才能顯示「你的今日總結」
   if (token()) setTimeout(start, 600);
+}
+
+// ---- 置頂指數列：網頁開著時每分鐘自己更新（加權用證交所即時，其他用 Yahoo）----
+function liveTopbar(API) {
+  var MAP = { '加權指數': '^TWII', '日經 225': '^N225', '韓國 KOSPI': '^KS11', '費城半導體': '^SOX' };
+  function fmt(v) { return v.toLocaleString(undefined, { maximumFractionDigits: 2 }); }
+  function tick() {
+    if (document.hidden) return;
+    var items = [].slice.call(document.querySelectorAll('.topbar .tb-item')).filter(function (el) { var n = el.querySelector('.tb-name'); return n && MAP[n.textContent.trim()]; });
+    if (!items.length) return;
+    fetch(API + '/api/quote?s=' + encodeURIComponent(items.map(function (el) { return MAP[el.querySelector('.tb-name').textContent.trim()]; }).join(','))).then(function (r) { return r.json(); }).then(function (j) {
+      items.forEach(function (el) {
+        var q = (j.quotes || {})[MAP[el.querySelector('.tb-name').textContent.trim()]];
+        if (!q || !q.price || !q.prev || !q.time) return;
+        if (+el.dataset.t > q.time) return;
+        el.dataset.t = q.time;
+        var chg = q.price - q.prev, pct = (q.price / q.prev - 1) * 100, d = new Date(q.time * 1000 + 8 * 3600000);
+        el.querySelector('.tb-val').textContent = fmt(q.price);
+        var c = el.querySelector('.tb-chg'); c.className = 'tb-chg ' + (chg >= 0 ? 'up' : 'dn'); c.textContent = (chg >= 0 ? '▲' : '▼') + ' ' + fmt(Math.abs(chg)) + '（' + (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%）';
+        var n = el.querySelector('.tb-note'); if (n) n.textContent = (d.getUTCMonth() + 1) + '/' + d.getUTCDate() + ' ' + String(d.getUTCHours()).padStart(2, '0') + ':' + String(d.getUTCMinutes()).padStart(2, '0');
+      });
+    }).catch(function () {});
+  }
+  setTimeout(tick, 1500);
+  setInterval(tick, 60000);
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) tick(); });
 }
 
 // ---- 手續費試算（不用登入）----
@@ -772,7 +813,7 @@ function feeCalcClient() {
 }
 
 function journalScript(api) {
-  return `<script>(${journalClient.toString()})(${JSON.stringify(api)});(${feeCalcClient.toString()})();</script>`;
+  return `<script>(${journalClient.toString()})(${JSON.stringify(api)});(${feeCalcClient.toString()})();(${liveTopbar.toString()})(${JSON.stringify(api)});</script>`;
 }
 
 module.exports = { renderJournal, renderFeeCalc, JOURNAL_CSS, journalScript };
