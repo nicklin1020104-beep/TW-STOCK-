@@ -206,7 +206,8 @@ const GATE_CSS = `#gate{display:none}html.gated #gate{display:block;position:fix
 .lp-reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease;transition-delay:var(--d,0ms)}.lp-reveal.in{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.lp-reveal{opacity:1;transform:none;transition:none}.lp-track,.lp-demo,.lp-rot span,.lp-toast,.lp-demo-chart .ln,.lp-jcal i,.lp-live{animation:none!important}.lp-rot span{opacity:0}.lp-rot span:first-child{opacity:1}.lp-toast{opacity:1}.lp-demo-chart .ln{stroke-dashoffset:0}}
 .sh-bar{display:flex;justify-content:flex-end;margin:10px 0 -4px}.sh-inline{font:inherit;font-size:13px;font-weight:700;padding:6px 14px;border-radius:999px;border:1.5px solid var(--accent);background:color-mix(in srgb,var(--accent) 8%,transparent);color:var(--accent);cursor:pointer}
-#share-fab{position:fixed;right:16px;bottom:18px;z-index:40;font:inherit;font-size:14px;font-weight:700;padding:11px 18px;border-radius:999px;border:0;background:var(--accent);color:var(--bg);box-shadow:0 6px 18px rgba(0,0,0,.28);cursor:pointer}html.gated #share-fab{display:none}#share-fab[hidden]{display:none}
+.sh-tblbar{display:flex;justify-content:flex-end;margin:6px 0 4px}.sh-tbl{font:inherit;font-size:12.5px;font-weight:600;padding:4px 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--mute);cursor:pointer}.sh-tbl:hover{color:var(--fg);border-color:var(--fg)}
+#share-fab{;right:16px;bottom:18px;z-index:40;font:inherit;font-size:14px;font-weight:700;padding:11px 18px;border-radius:999px;border:0;background:var(--accent);color:var(--bg);box-shadow:0 6px 18px rgba(0,0,0,.28);cursor:pointer}html.gated #share-fab{display:none}#share-fab[hidden]{display:none}
 #share-modal{position:fixed;inset:0;z-index:1200;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:16px}#share-modal[hidden]{display:none}
 .sh-box{background:var(--bg);border-radius:18px;padding:16px;max-width:420px;width:100%;max-height:94vh;overflow:auto;text-align:center}.sh-box img{width:100%;border-radius:10px;display:block;background:var(--card);min-height:200px}
 .sh-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.sh-btns button{font:inherit;font-size:14px;font-weight:700;padding:11px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}.sh-btns .sh-main{grid-column:1/-1;background:var(--accent);border-color:var(--accent);color:var(--bg)}
@@ -265,9 +266,9 @@ function shareClient(SITE) {
     if (td.classList.contains('dn') || td.querySelector('.dn,.chip.bad')) return C.dn;
     return C.fg;
   }
-  function extract(page, key) {
+  function extract(page, key, only) {
     var tables = [].slice.call(page.querySelectorAll('table')).filter(function (t) { return visible(t) && !t.closest('td') && t.querySelector(':scope > thead') && t.querySelectorAll(':scope > tbody > tr').length; });
-    var t = tables[0];
+    var t = only || tables[0];
     if (!t) {
       var links = [].slice.call(page.querySelectorAll('li a, .news a, a.news')).filter(visible).slice(0, 7);
       return { cols: ['標題'], rows: links.map(function (a) { return { name: a.textContent.replace(/\s+/g, ' ').trim(), vals: [] }; }), total: links.length, head: null };
@@ -285,7 +286,7 @@ function shareClient(SITE) {
       return { name: name, vals: want.map(function (i) { return td[i] ? { t: clean(td[i]), c: tone(td[i]) } : { t: '', c: C.fg }; }) };
     });
     var h2 = null, el = t.closest('.scroll') || t;
-    while (el && el !== page && !h2) { var s = el.previousElementSibling; while (s && !h2) { if (s.tagName === 'H2' && visible(s)) h2 = s; s = s.previousElementSibling; } el = el.parentElement; }
+    while (el && el !== page && !h2) { var s = el.previousElementSibling; while (s && !h2) { if ((s.tagName === 'H2' || (only && s.tagName === 'H3')) && visible(s)) h2 = s; s = s.previousElementSibling; } el = el.parentElement; }
     return { cols: [heads[ni]].concat(want.map(function (i) { return heads[i]; })), rows: rows, total: trs.length, head: h2 };
   }
 
@@ -358,13 +359,15 @@ function shareClient(SITE) {
     return cv;
   }
 
-  function open() {
+  function open(only) {
+    if (!(only && only.tagName === 'TABLE')) only = null;
     var page = activePage(); if (!page) return;
     var key = pageKey();
     var tab = document.querySelector('.ptab.on'), st = page.querySelector('.stab.on');
     var title = (tab ? tab.textContent.trim() : '飆股情報局') + (st && visible(st) ? '・' + st.textContent.replace(/\s+\d+$/, '').trim() : '');
-    var data = extract(page, key);
-    var sub = data.head ? data.head.textContent.replace(/\s+/g, ' ').trim() : '';
+    var data = extract(page, key, only);
+    var hc = data.head && data.head.cloneNode(true); if (hc && only) hc.querySelectorAll('.count,.tag,button').forEach(function (x) { x.remove(); });
+    var sub = hc ? hc.textContent.replace(/\s+/g, ' ').trim() : '';
     var base = tab ? tab.textContent.trim() : '';
     if (base && sub.indexOf(base) === 0) sub = sub.slice(base.length).trim();
     var dm = (document.querySelector('.head + .sub') || document.body).textContent.match(/交易日\s*([\d\/]+)/);
@@ -392,6 +395,18 @@ function shareClient(SITE) {
     bar.innerHTML = '<button type="button" class="sh-inline">📤 分享這頁</button>';
     bar.firstChild.onclick = open;
     p.insertBefore(bar, p.firstChild);
+  });
+  // 每個表格上方都有自己的分享按鈕（只分享那一張表）
+  document.querySelectorAll('.page').forEach(function (p) {
+    if (p.dataset.p === 'profile' || p.dataset.p === 'journal' || p.dataset.p === 'watch') return;
+    [].slice.call(p.querySelectorAll('table')).forEach(function (t) {
+      if (t.closest('td') || !t.querySelector(':scope > thead') || !t.querySelectorAll(':scope > tbody > tr').length) return;
+      var at = t.closest('.scroll') || t;
+      var bar = document.createElement('div'); bar.className = 'sh-tblbar';
+      bar.innerHTML = '<button type="button" class="sh-tbl">📤 分享這張表</button>';
+      bar.firstChild.onclick = function () { open(t); };
+      at.parentNode.insertBefore(bar, at);
+    });
   });
   modal.querySelector('.sh-close').onclick = function () { modal.hidden = true; };
   modal.onclick = function (e) { if (e.target === modal) modal.hidden = true; };
