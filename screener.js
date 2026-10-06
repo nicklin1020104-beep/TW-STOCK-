@@ -43,7 +43,8 @@ const NEWS_PER_TOPIC = 8;
 // 回測最佳組合（backtest/run.js，2026/3~9 月）
 const BEST_BREADTH = 0.5; // 大盤強：收盤站上月線的個股比例
 const BEST_MIN_LOTS = 5000;
-const MIN_LOTS_ALL = 3000;
+const MIN_LOTS_ALL = 3000; // 產業族群計算用；名單不再過濾，量少的股票在頁面上用紅字標示
+const LIST_MIN_LOTS = 0;
 const SURGE_RATIO = 2; // 爆量：當日量 >= 前 20 日均量的倍數（且收紅）
 const THREE_FILE = path.join(__dirname, 'track', 'three.json'); // 所有台股頁面（千金龍頭除外）：當日成交量至少張數
 // 潛伏股：營收加速成長、股價還沒起漲
@@ -223,7 +224,7 @@ function rankInsti(insti, today, prev) {
   const rows = [];
   for (const code of Object.keys(insti)) {
     const q = today[code];
-    if (!q || q.close == null || q.vol / 1000 < MIN_LOTS_ALL) continue;
+    if (!q || q.close == null || q.vol / 1000 < LIST_MIN_LOTS) continue;
     const pc = prev[code] && prev[code].close;
     const r = { code, name: q.name, mkt: q.mkt, close: q.close, chg: pc ? (q.close / pc - 1) * 100 : null };
     for (const [k] of INSTI_KINDS) {
@@ -547,7 +548,7 @@ function findLatent(days, T, rev, fund) {
     const closes = days.map((d) => (d.data[code] ? d.data[code].close : null));
     const vols = days.map((d) => (d.data[code] ? d.data[code].vol : null));
     const vavg = ma(vols, 20, T);
-    if (!vavg || vavg / 1000 < LT_MIN_AVG_LOTS || q.vol / 1000 < MIN_LOTS_ALL) continue;
+    if (!vavg || vavg / 1000 < LT_MIN_AVG_LOTS || q.vol / 1000 < LIST_MIN_LOTS) continue;
 
     const past = closes.slice(Math.max(0, T - MA_SEASON), T + 1).filter((v) => v != null);
     const fromLow = (q.close / Math.min(...past) - 1) * 100;
@@ -607,7 +608,7 @@ function findCrosses(days, T, rev, fund) {
     if (!(q.open <= Math.min(...now_) && q.close > Math.max(...now_))) continue;
 
     const lots = q.vol / 1000;
-    if (lots < MIN_LOTS_ALL) continue;
+    if (lots < LIST_MIN_LOTS) continue;
     const ma60 = ma(closes, MA_SEASON, T);
     const prevClose = closes[T - 1];
     const row = {
@@ -820,7 +821,7 @@ async function main() {
   for (const [code, v] of Object.entries(three)) {
     const q = today[code];
     const r = rev[code];
-    if (!v.up || !q || q.close == null || q.vol / 1000 < MIN_LOTS_ALL || !r || r.yoy == null || r.yoy <= MIN_YOY || yoyDown(r)) continue;
+    if (!v.up || !q || q.close == null || q.vol / 1000 < LIST_MIN_LOTS || !r || r.yoy == null || r.yoy <= MIN_YOY || yoyDown(r)) continue;
     const closes = days.map((d) => (d.data[code] ? d.data[code].close : null));
     const m = [...MA_SHORT, MA_SEASON].map((n) => ma(closes, n, T));
     const p = MA_SHORT.map((n) => ma(closes, n, T - 1));
@@ -859,7 +860,7 @@ async function main() {
     threeHist[d] = Object.entries(three)
       .filter(([c, v]) => {
         const q = days[i].data[c], r = rev[c];
-        return v.up && q && q.close != null && q.vol / 1000 >= MIN_LOTS_ALL && r && r.yoy > MIN_YOY && !yoyDown(r);
+        return v.up && q && q.close != null && q.vol / 1000 >= LIST_MIN_LOTS && r && r.yoy > MIN_YOY && !yoyDown(r);
       })
       .map(([c]) => c);
   }
@@ -939,7 +940,7 @@ async function main() {
     const weeks = tdcc.analyze(99).dates.length; // 已有幾週資料
     holders = { ...tdcc.analyze(Math.max(1, Math.min(3, weeks - 1))), partial: weeks < 4 };
     holders.rows = holders.rows
-      .filter((h) => today[h.code] && today[h.code].vol / 1000 >= MIN_LOTS_ALL)
+      .filter((h) => today[h.code] && today[h.code].vol / 1000 >= LIST_MIN_LOTS)
       .map((h) => {
         const q = today[h.code];
         const r = rev[h.code] || {};
@@ -979,7 +980,7 @@ async function main() {
   let cups = [];
   try {
     if (allDays) {
-      cups = findCups(allDays, allDays.length - 1, { minLots: MIN_LOTS_ALL, filter: (c) => rev[c] && rev[c].yoy > MIN_YOY && !yoyDown(rev[c]) });
+      cups = findCups(allDays, allDays.length - 1, { minLots: LIST_MIN_LOTS, filter: (c) => rev[c] && rev[c].yoy > MIN_YOY && !yoyDown(rev[c]) });
       for (const r of cups) Object.assign(r, { industry: rev[r.code].industry, yoy: rev[r.code].yoy, yoyPrev: rev[r.code].yoyPrev, mom: rev[r.code].mom, cumYoy: rev[r.code].cumYoy, trustLots: trustOf(r.code) == null ? null : Math.round(trustOf(r.code) / 1000), ...(fund[r.code] || {}) });
     }
   } catch (e) {
@@ -995,7 +996,7 @@ async function main() {
       } catch {}
       const cupFilter = (c) => rev[c] && rev[c].yoy > MIN_YOY && !yoyDown(rev[c]);
       for (let i = 0; i < allDays.length - 1; i++) {
-        if (allDays[i].date >= TRACK_START && !ct[allDays[i].date]) ct[allDays[i].date] = findCups(allDays, i, { minLots: MIN_LOTS_ALL, filter: cupFilter }).map(toCupPick);
+        if (allDays[i].date >= TRACK_START && !ct[allDays[i].date]) ct[allDays[i].date] = findCups(allDays, i, { minLots: LIST_MIN_LOTS, filter: cupFilter }).map(toCupPick);
       }
       ct[tradeDate] = cups.map(toCupPick);
       fs.mkdirSync(path.dirname(CUP_TRACK_FILE), { recursive: true });
@@ -1109,7 +1110,7 @@ async function main() {
   // 主力鎖碼
   let locked = null;
   try {
-    locked = await buildLocked({ days, T, instiOf: getInsti, holders: tdcc.analyze(1), minLots: MIN_LOTS_ALL });
+    locked = await buildLocked({ days, T, instiOf: getInsti, holders: tdcc.analyze(1), minLots: LIST_MIN_LOTS });
     const addFund = (r) => Object.assign(r, rev[r.code] ? { yoy: rev[r.code].yoy, yoyPrev: rev[r.code].yoyPrev, mom: rev[r.code].mom, cumYoy: rev[r.code].cumYoy } : {}, fund[r.code] || {});
     locked.all.forEach(addFund);
     locked.near.forEach(addFund);
@@ -1345,7 +1346,7 @@ async function main() {
     console.error('個股資料輸出失敗：', e.message);
   }
 
-  const html = renderHtml(tradeDate, groupAbove, groupBelow, flow, picks, { locked, voteRecap, roast, topbar, industry, ir50, threeGroups: threeUp.groups, macro, holders, breadth, bestA, bestB, latentTrust, cups, cupTracking, aetf, allCross, latent, threeUp, tracking, bigLeaders, crashed, stockNews, industryNews });
+  const html = renderHtml(tradeDate, groupAbove, groupBelow, flow, picks, { locked, voteRecap, roast, topbar, industry, ir50, threeGroups: threeUp.groups, macro, holders, breadth, bestA, bestB, latentTrust, cups, cupTracking, aetf, allCross, latent, threeUp, tracking, bigLeaders, crashed, stockNews, industryNews, lowVol: Object.keys(today).filter((c) => today[c].vol != null && today[c].vol / 1000 < MIN_LOTS_ALL) });
   const dated = path.join(REPORTS, `${tradeDate}.html`);
   fs.writeFileSync(dated, html);
   fs.writeFileSync(path.join(ROOT, '最新選股.html'), html);
@@ -1638,7 +1639,7 @@ function renderLocked({ all, near, params: P, flowFrom }) {
     ['lock-near', '符合三項', near.length, table(near)],
   ];
   return `<h2>主力鎖碼股 <span class="count">依籌碼集中度排序</span></h2>
-<div class="rules">① 千張大戶持股連續增加 ≥ ${P.HOLDER_WEEKS} 週（集保）　② 近 ${P.FLOW_DAYS} 個交易日外資＋投信買超 ≥ ${P.FLOW_BUY_DAYS} 天，且累計買超 ≥ 期間成交量 ${P.CONCENTRATION}%（籌碼集中）　③ 融資餘額比 ${P.MARGIN_DAYS} 天前減少（散戶退場）　④ 股價站上月線、近 20 日漲幅 ≤ ${P.MAX_RUN20}%（還沒噴完）　⑤ 當日量 ≥ ${MIN_LOTS_ALL.toLocaleString()} 張</div>
+<div class="rules">① 千張大戶持股連續增加 ≥ ${P.HOLDER_WEEKS} 週（集保）　② 近 ${P.FLOW_DAYS} 個交易日外資＋投信買超 ≥ ${P.FLOW_BUY_DAYS} 天，且累計買超 ≥ 期間成交量 ${P.CONCENTRATION}%（籌碼集中）　③ 融資餘額比 ${P.MARGIN_DAYS} 天前減少（散戶退場）　④ 股價站上月線、近 20 日漲幅 ≤ ${P.MAX_RUN20}%（還沒噴完）</div>
 <p class="hint">「籌碼集中度」＝ 外資＋投信近 ${P.FLOW_DAYS} 日累計淨買超 ÷ 同期成交量。條件欄依序為 大戶／法人／融資／股價。②為必要條件；券商分點（真正的主力進出）有驗證碼無法自動取得，這裡用法人與大戶持股代替。</p>
 <div class="stabs">${tabs.map(([k, t, n], i) => `<button class="stab${i ? '' : ' on'}" data-s="${k}">${t} <b>${n}</b></button>`).join('')}</div>
 ${tabs.map(([k, , , html], i) => `<div class="spage" data-s="${k}"${i ? ' hidden' : ''}>${html}</div>`).join('')}`;
@@ -1685,7 +1686,7 @@ function renderHolders({ rows }) {
     return `<h2>${mkt} <span class="count">${list.length} 檔</span></h2>
 ${list.length ? `<div class="scroll"><table class="stats"><thead><tr><th>代號</th><th>名稱</th><th>連續增加</th><th>千張大戶持股</th><th>增加（百分點）</th></tr></thead><tbody>${tr}</tbody></table></div>` : '<p class="empty">無</p>'}`;
   };
-  return `<h2>上市上櫃千張大戶持續增加的股票 <span class="count">成交量 ≥ ${MIN_LOTS_ALL.toLocaleString()} 張</span></h2>${table('上市')}${table('上櫃')}`;
+  return `<h2>上市上櫃千張大戶持續增加的股票</h2>${table('上市')}${table('上櫃')}`;
 }
 
 function spark(vals, w = 110, h = 30) {
@@ -2445,7 +2446,7 @@ ${pctCell(r.yoy)}<td class="${r.eps == null ? '' : r.eps > 0 ? 'up' : 'dn'}">${f
     ['three-kd', 'KD金叉＋MACD將翻紅', kd.length, '今天 KD 黃金交叉第一天、K 值上彎，且 MACD 柱狀體仍為負但明天就會翻正（KD 9,3,3；MACD 12,26,9）', kdTable],
   ];
   return `<h2>三率三升 <span class="count">${all.length} 檔${label ? '・' + label : ''}</span></h2>
-<p class="hint">單季毛利率、營益率、淨利率皆較上季提升，營收 YoY 為正且未往下，當日量 ≥ ${MIN_LOTS_ALL.toLocaleString()} 張。</p>
+<p class="hint">單季毛利率、營益率、淨利率皆較上季提升，營收 YoY 為正且未往下。</p>
 <div class="stabs">${tabs.map(([k, t, n], i) => `<button class="stab${i ? '' : ' on'}" data-s="${k}">${t} <b>${n}</b></button>`).join('')}</div>
 ${tabs.map(([k, , , desc, html], i) => `<div class="spage" data-s="${k}"${i ? ' hidden' : ''}><p class="hint">${desc}</p>${html}</div>`).join('')}`;
 }
@@ -2472,7 +2473,7 @@ function renderCups(rows) {
     })
     .join('');
   return `<h2>杯柄型態（超級績效 VCP） <span class="count">${rows.length} 檔</span></h2>
-<div class="rules">① 趨勢樣板：收盤 &gt; 50 日線 &gt; 150 日線，150 日線上彎，距低點 ≥ 30%、距高點 ≤ 25%　② 相對強度（近 6 個月漲幅全市場百分位）≥ ${P.RS_MIN}　③ 杯子：創高後回檔 ${P.DEPTH_MIN}～${P.DEPTH_MAX}%、整理 ${P.CUP_MIN}～${P.CUP_MAX} 個交易日、U 型底、右杯緣回到左杯緣 ${Math.round(P.RIGHT_MIN * 100)}% 以上、杯前漲幅 ≥ ${P.PRIOR_UP}%　④ 柄：${P.HANDLE_MIN}～${P.HANDLE_MAX} 天、回檔 ≤ ${P.HANDLE_DEPTH_MAX}%、在杯子上半部　⑤ 收盤距突破價 ${P.NEAR_PIVOT}% 內，或近 ${P.RECENT_BREAK} 天帶量突破（量 ≥ 50 日均量 ${P.BREAK_VOL} 倍）且未追高超過 ${P.MAX_EXTENDED}%　⑥ 營收 YoY 為正且未放緩、成交量 ≥ ${MIN_LOTS_ALL.toLocaleString()} 張</div>
+<div class="rules">① 趨勢樣板：收盤 &gt; 50 日線 &gt; 150 日線，150 日線上彎，距低點 ≥ 30%、距高點 ≤ 25%　② 相對強度（近 6 個月漲幅全市場百分位）≥ ${P.RS_MIN}　③ 杯子：創高後回檔 ${P.DEPTH_MIN}～${P.DEPTH_MAX}%、整理 ${P.CUP_MIN}～${P.CUP_MAX} 個交易日、U 型底、右杯緣回到左杯緣 ${Math.round(P.RIGHT_MIN * 100)}% 以上、杯前漲幅 ≥ ${P.PRIOR_UP}%　④ 柄：${P.HANDLE_MIN}～${P.HANDLE_MAX} 天、回檔 ≤ ${P.HANDLE_DEPTH_MAX}%、在杯子上半部　⑤ 收盤距突破價 ${P.NEAR_PIVOT}% 內，或近 ${P.RECENT_BREAK} 天帶量突破（量 ≥ 50 日均量 ${P.BREAK_VOL} 倍）且未追高超過 ${P.MAX_EXTENDED}%　⑥ 營收 YoY 為正且未放緩</div>
 <p class="hint">「整理多久」從左杯緣（創高那天）算到今天；「最大回檔」是創高後跌最深的幅度；「回檔次數」是整理期間每一波回檔（反轉 ${P.ZIGZAG}% 以上才算一次），幅度一次比一次小＝「收斂」，代表賣壓越來越輕，是書中最理想的 VCP。「柄量縮」&lt; 1 倍代表柄的成交量比杯子期間少，籌碼沉澱。突破價＝右杯緣高點，帶量站上才算有效突破。排序：今日帶量突破 → 其他突破 → 柄整理中，同組收斂優先、再看相對強度。※ 股價未還原除權息，遇大額配息或減資可能失真。</p>
 ${rows.length ? `<div class="scroll"><table><thead><tr><th>代號</th><th>名稱</th><th>產業</th><th>狀態</th><th>走勢</th><th>收盤</th><th>漲跌</th><th>突破價</th><th>距突破價</th><th>整理多久</th><th>創高後最大回檔</th><th>回檔次數</th><th>柄（天/深）</th><th>柄量縮</th><th>今日量比</th><th>杯前漲幅</th><th>相對強度</th><th>量(張)</th><th>營收YoY</th><th>EPS</th><th>本益比</th></tr></thead><tbody>${tr}</tbody></table></div>` : '<p class="empty">今日無符合杯柄型態的個股</p>'}`;
 }
@@ -2561,7 +2562,7 @@ h1{font-size:22px;margin:0 0 4px}h2{font-size:17px;margin:28px 0 8px}.sub{color:
 .scroll{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
 th,td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}th:nth-child(-n+3),td:nth-child(-n+3){text-align:left}
 th{color:var(--mute);font-weight:500}.up{color:var(--up)}.dn{color:var(--dn)}a{color:inherit}
-.tag{font-size:11px;color:var(--mute);margin-left:4px}.empty{color:var(--mute)}.count{font-weight:400;color:var(--mute);font-size:14px}
+.tag{font-size:11px;color:var(--mute);margin-left:4px}td.lv,td.lv a,a.lv{color:#e0242b!important}.empty{color:var(--mute)}.count{font-weight:400;color:var(--mute);font-size:14px}
 h3{font-size:14px;margin:14px 0 6px}.cols{display:grid;grid-template-columns:1fr 1fr;gap:20px}@media (max-width:900px){.cols{grid-template-columns:1fr}}
 table.flow td:first-child,table.flow th:first-child{color:var(--mute);text-align:right;width:1em}table.flow td:nth-child(2),table.flow th:nth-child(2){text-align:left}table.flow td:nth-child(3),table.flow th:nth-child(3){text-align:right}
 .tabs{display:flex;gap:6px;flex-wrap:wrap}.tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:999px;cursor:pointer;font:inherit;font-size:13px}.tab.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
@@ -2578,7 +2579,7 @@ ${extra.topbar ? renderTopBar(extra.topbar) : ''}
 ${renderNav()}
 ${extra.roast && extra.roast.length ? `<div class="roast"><div class="roast-title">🎤 收盤總結 <span class="tag">${d}</span></div><ul>${extra.roast.map((l) => `<li>${esc(l)}</li>`).join('')}</ul></div>` : ''}
 ${renderVote(d, extra)}
-<div class="hint" style="margin-top:6px">除「千金龍頭」外，所有台股頁面只列當日成交量 ≥ ${MIN_LOTS_ALL.toLocaleString()} 張的股票</div>
+
 <div class="page" data-p="main">
 ${renderBest(extra)}
 <h2>一根K棒站上三線（原始條件）</h2>
@@ -2591,7 +2592,7 @@ ${renderAllCross(extra.allCross, picks)}
 <div class="page" data-p="profile" hidden>${renderProfile()}</div>
 <div class="page" data-p="latent" hidden>
 <h2>潛伏股＋投信買超 <span class="count">${extra.latentTrust.length} 檔・回測 20 日勝率 72.8%、平均 20 日報酬 +7.6%（隨機持有 +2.7%）</span></h2>
-<p class="hint">營收加速、股價還在低檔，而且投信今天開始買。回測期間（2026/3～9 月，含當日量 ≥ 3,000 張條件，401 筆）前半 81.9%、後半 66.4%，是目前最穩定的組合。大甲在 7/29～8/12 起漲前就出現在潛伏股名單。</p>
+<p class="hint">營收加速、股價還在低檔，而且投信今天開始買。回測期間（2026/3～9 月，401 筆）前半 81.9%、後半 66.4%，是目前最穩定的組合。大甲在 7/29～8/12 起漲前就出現在潛伏股名單。</p>
 ${extra.latentTrust.length ? renderLatent(extra.latentTrust, true) : '<p class="empty">今日無</p>'}
 ${renderLatent(extra.latent)}</div>
 <div class="page" data-p="cup" hidden>${renderCups(extra.cups)}</div>
@@ -2702,6 +2703,25 @@ ${clientScript()}
 })();
 </script>
 <script>document.querySelectorAll('.ptab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.ptab').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('.page').forEach(p=>p.hidden=p.dataset.p!==b.dataset.p);scrollTo(0,0)})</script>
+<script>(function () {
+  // 當日成交量偏低的股票：代號和名稱用紅字（不另外說明）
+  var LOW = {}; (${JSON.stringify(extra.lowVol || [])}).forEach(function (c) { LOW[c] = 1; });
+  function mark() {
+    document.querySelectorAll('a[href*="tw.stock.yahoo.com/quote/"]:not([data-lv])').forEach(function (a) {
+      a.setAttribute('data-lv', '');
+      var m = a.getAttribute('href').match(/quote[/]([0-9A-Z]+)[.]TWO?/);
+      if (!m || !LOW[m[1]]) return;
+      var td = a.closest('td');
+      if (!td) { a.classList.add('lv'); return; }
+      td.classList.add('lv');
+      var nx = td.nextElementSibling;
+      if (nx && !/[0-9]/.test(nx.textContent)) nx.classList.add('lv');
+    });
+  }
+  mark();
+  var t = null;
+  new MutationObserver(function () { clearTimeout(t); t = setTimeout(mark, 200); }).observe(document.body, { childList: true, subtree: true });
+})();</script>
 ${shareScript()}
 ${pushScript(VOTE_API)}
 ${journalScript(VOTE_API)}
