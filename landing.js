@@ -322,8 +322,24 @@ function shareClient(SITE) {
     // 標題
     g.fillStyle = C.fg; g.font = font(64, true); g.fillText(fit(g, title, W - 120), 60, 228);
     g.fillStyle = C.mute; g.font = font(28); g.fillText(fit(g, sub, W - 120), 62, 286);
+    // 投票：跟網頁一樣的看多／看空長條
+    var top = 330;
+    if (data.bar) {
+      var bb = data.bar, bx = 70, bw = W - 140, bh = 96, byy = top + 74;
+      g.fillStyle = C.card; rr(g, 40, top, W - 80, 210, 26); g.fill();
+      g.fillStyle = C.mute; g.font = font(26, true); g.fillText(bb.label || '大家看明天', 70, top + 42);
+      g.save(); rr(g, bx, byy, bw, bh, 48); g.clip();
+      var split = bx + bw * bb.bull / 100;
+      g.fillStyle = '#e5484d'; g.fillRect(bx, byy, split - bx, bh);
+      g.fillStyle = '#2fb36a'; g.fillRect(split, byy, bx + bw - split, bh);
+      g.restore();
+      g.fillStyle = '#fff'; g.font = font(40, true);
+      if (bb.bull >= 18) g.fillText('看多 ' + bb.bull + '%', bx + 34, byy + bh / 2 + 2);
+      g.textAlign = 'right'; if (bb.bull <= 82) g.fillText('看空 ' + (100 - bb.bull) + '%', bx + bw - 34, byy + bh / 2 + 2); g.textAlign = 'left';
+      top += 240;
+    }
     // 表格
-    var top = 330, rowH = data.rows.length <= 5 ? 112 : 76, n = Math.max(1, data.rows.length), boxH = 70 + n * rowH + 20;
+    var rowH = data.bar ? 70 : data.rows.length <= 5 ? 112 : 76, n = Math.max(1, data.rows.length), boxH = 70 + n * rowH + 20;
     g.fillStyle = C.card; rr(g, 40, top, W - 80, boxH, 26); g.fill();
     var nameW = data.cols.length > 1 ? 380 : W - 160, vx = 70 + nameW, vw = data.cols.length > 1 ? (W - 70 - vx - 30) / (data.cols.length - 1) : 0;
     g.font = font(24, true); g.fillStyle = C.mute;

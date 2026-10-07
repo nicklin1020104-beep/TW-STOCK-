@@ -1830,24 +1830,24 @@ ${recap}
       title = '開獎！' + nd + ' 收盤結果';
       rows.push({ name: '加權指數', vals: [pv(r.tw)] });
       ['🥇', '🥈', '🥉'].forEach(function (m, i) { var t = r.top3[i]; if (t) rows.push({ name: m + ' ' + t, vals: [r.themes[t] != null ? pv(r.themes[t]) : { t: '', c: fg }] }); });
+      var bar = null;
       if (p.total) {
         var b = Math.round(p.bull / p.total * 100), ok = (b >= 50) === (r.tw >= 0);
-        rows.push({ name: '大家看多', vals: [{ t: b + '%', c: fg }] });
-        rows.push({ name: '多數人', vals: [{ t: ok ? '猜對方向 ✓' : '猜錯方向 ✗', c: ok ? up : dn }] });
+        bar = { bull: b, label: '大家的投票' };
+        rows.push({ name: '多數人', vals: [{ t: ok ? '猜對方向' : '猜錯方向', c: ok ? up : dn }] });
       }
       sub = '大家來猜明天漲跌・猜中得分上排行榜';
-      return window.__shareCard({ cols: ['項目', '結果'], rows: rows, total: rows.length }, title, sub, 'main');
+      return window.__shareCard({ bar: bar, cols: ['開獎結果', '漲跌'], rows: rows, total: rows.length }, title, sub, 'main');
     }
     title = '明天怎麼走？大家來猜';
+    var bar = null;
     if (p.total) {
-      var bull = Math.round(p.bull / p.total * 100);
-      rows.push({ name: '🐂 看多', vals: [{ t: bull + '%', c: up }] });
-      rows.push({ name: '🐻 看空', vals: [{ t: (100 - bull) + '%', c: dn }] });
-      (p.themes || []).slice(0, 5).forEach(function (t, i) { rows.push({ name: '看好族群 ' + (i + 1) + '. ' + t.theme, vals: [{ t: '', c: fg }] }); });
+      bar = { bull: Math.round(p.bull / p.total * 100), label: '大家看明天' };
+      (p.themes || []).slice(0, 5).forEach(function (t) { rows.push({ name: t.theme, vals: [{ t: '', c: fg }] }); });
     }
     var rc = box.querySelector('.vote-recap');
     sub = rc ? rc.textContent.split('📊').join('').replace(/[ ]+/g, ' ').trim() : '每天收盤後開放投票，猜中得分上排行榜';
-    window.__shareCard({ cols: ['大家怎麼看', '比例'], rows: rows, total: rows.length, emptyText: '還沒有人投票，來當第一個！' }, title, sub, 'main');
+    window.__shareCard({ bar: bar, cols: ['大家看好的族群', ''], rows: rows, total: rows.length, emptyText: bar ? '還沒有人選族群' : '還沒有人投票，來當第一個！' }, title, sub, 'main');
   };
   function load() { fetch(API + '/api/poll?date=' + date + '&vid=' + encodeURIComponent(vid), authH()).then(function (r) { return r.json(); }).then(function (p) { lastP = p; if (p.closed) closedView(p); else if (p.mine) show(p); }).catch(function () {}); }
   // 先選看多／看空和族群，按「鎖定投票」才送出；09:00 開盤前都可以改
