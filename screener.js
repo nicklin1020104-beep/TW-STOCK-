@@ -1788,6 +1788,7 @@ function renderVote(dateLabel, extra) {
   }
   return `<div class="vote" data-date="${date}">
 <div class="vote-title">🗳️ 明天怎麼走？大家來猜 <span class="tag">每人每天一票，可改票・猜中可得分，排行榜在「個人檔案」</span></div>
+<div class="vote-sharebar"><button type="button" class="vote-share">📤 分享給朋友，邀請大家來投票</button></div>
 <form class="vote-form">
   <label class="vote-theme">明天漲最多的族群：<select name="theme"><option value="">（選擇族群，可不選）</option><optgroup label="細分族群">${groupNames.map((n) => `<option>${esc(n)}</option>`).join('')}</optgroup>${officialNames.length ? `<optgroup label="官方產業別">${officialNames.map((n) => `<option>${esc(n)}</option>`).join('')}</optgroup>` : ''}</select></label>
   <div class="vote-btns"><button type="button" data-bias="bull">🐂 看多</button><button type="button" data-bias="bear">🐻 看空</button></div>
@@ -1798,7 +1799,6 @@ function renderVote(dateLabel, extra) {
 <div class="vote-result" hidden></div>
 <div class="vote-msg"></div>
 ${recap}
-<div class="vote-sharebar"><button type="button" class="sh-tbl vote-share">📤 邀請朋友來投票</button></div>
 </div>
 <script>
 (function () {
@@ -2620,7 +2620,7 @@ h1{font-size:22px;margin:0 0 4px}h2{font-size:17px;margin:28px 0 8px}.sub{color:
 .scroll{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
 th,td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}th:nth-child(-n+3),td:nth-child(-n+3){text-align:left}
 th{color:var(--mute);font-weight:500}.up{color:var(--up)}.dn{color:var(--dn)}a{color:inherit}
-.tag{font-size:11px;color:var(--mute);margin-left:4px}td.lv,td.lv a,a.lv{color:#e0242b!important}.rv-new{display:inline-block;margin-left:4px;padding:0 5px;border-radius:6px;background:#2563eb;color:#fff!important;font-size:10.5px;font-weight:700;line-height:16px;vertical-align:1px}.rv-key{display:block;font-size:10px;font-weight:500;color:var(--mute)}td.cum{font-weight:800;background:rgba(127,127,127,.08)}.vote-sharebar{display:flex;justify-content:flex-end;margin-top:8px}.empty{color:var(--mute)}.count{font-weight:400;color:var(--mute);font-size:14px}
+.tag{font-size:11px;color:var(--mute);margin-left:4px}td.lv,td.lv a,a.lv{color:#e0242b!important}.rv-new{display:inline-block;margin-left:4px;padding:0 5px;border-radius:6px;background:#2563eb;color:#fff!important;font-size:10.5px;font-weight:700;line-height:16px;vertical-align:1px}.rv-key{display:block;font-size:10px;font-weight:500;color:var(--mute)}td.cum{font-weight:800;background:rgba(127,127,127,.08)}.vote-sharebar{margin:8px 0 10px}.vote-share{font:inherit;font-size:14px;font-weight:700;padding:9px 16px;border-radius:999px;border:0;background:#d0312d;color:#fff;cursor:pointer;width:100%;max-width:360px}.vote-share:hover{filter:brightness(1.08)}.empty{color:var(--mute)}.count{font-weight:400;color:var(--mute);font-size:14px}
 h3{font-size:14px;margin:14px 0 6px}.cols{display:grid;grid-template-columns:1fr 1fr;gap:20px}@media (max-width:900px){.cols{grid-template-columns:1fr}}
 table.flow td:first-child,table.flow th:first-child{color:var(--mute);text-align:right;width:1em}table.flow td:nth-child(2),table.flow th:nth-child(2){text-align:left}table.flow td:nth-child(3),table.flow th:nth-child(3){text-align:right}
 .tabs{display:flex;gap:6px;flex-wrap:wrap}.tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:999px;cursor:pointer;font:inherit;font-size:13px}.tab.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
