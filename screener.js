@@ -1189,10 +1189,15 @@ async function main() {
   try {
     const tw = topbar && topbar.idx.find((x) => x.sym === '^TWII');
     let twPct = null;
-    if (tw) {
+    // 加權漲跌優先用證交所即時行情（收盤價／昨收），Yahoo 的日 K 偶爾缺天或延遲，會算錯
+    try {
+      const m = (await getJSON('https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_t00.tw&json=1&delay=0')).msgArray[0];
+      if (m && m.d === tradeDate && +m.z && +m.y) twPct = (m.z / m.y - 1) * 100;
+    } catch {}
+    if (twPct == null && tw) {
       const p = tw.pts, key = (ms) => new Date(ms + 8 * 3600000).toISOString().slice(0, 10).replace(/-/g, '');
       const i = p.findIndex((x) => key(x[0]) === tradeDate);
-      if (i > 0) twPct = (p[i][1] / p[i - 1][1] - 1) * 100;
+      if (i > 0) twPct = (p[i][1] / (tw.prevClose && i === p.length - 1 ? tw.prevClose : p[i - 1][1]) - 1) * 100;
     }
     // 13:35 已收盤開獎（Cloudflare 或 GitHub）就不再覆蓋，避免分數變動
     let settled = fs.existsSync(path.join(ROOT, 'track', `settled-${tradeDate}.json`));
@@ -1221,11 +1226,12 @@ async function main() {
       const top = pr.themes[0];
       const row = top && industry ? [...industry.rows, ...(industry.official ? industry.official.rows : [])].find((x) => x.name === top.theme) : null;
       const tw = topbar && topbar.idx.find((x) => x.sym === '^TWII');
-      let twPct = null;
-      if (tw) {
+      // 已開獎就用開獎的加權漲跌（證交所收盤），跟開獎推播一致
+      let twPct = pr.result && pr.result.tw != null ? pr.result.tw : null;
+      if (twPct == null && tw) {
         const p = tw.pts, key = (ms) => new Date(ms + 8 * 3600000).toISOString().slice(0, 10).replace(/-/g, '');
         const i = p.findIndex((x) => key(x[0]) === tradeDate);
-        if (i > 0) twPct = (p[i][1] / p[i - 1][1] - 1) * 100;
+        if (i > 0) twPct = (p[i][1] / (tw.prevClose && i === p.length - 1 ? tw.prevClose : p[i - 1][1]) - 1) * 100;
       }
       voteRecap = { date: pd, total: pr.total, bullPct: (pr.bull / pr.total) * 100, top: top ? { name: top.theme, n: top.n, r1: row ? row.r1 : null } : null, twPct };
     }
