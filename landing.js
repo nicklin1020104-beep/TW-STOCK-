@@ -126,7 +126,7 @@ function renderGate() {
   <p>用 Google 帳號免費註冊，10 秒完成。<br>股票日誌、預測比賽、推播通知、自選股雲端同步，全部免費。</p>
   <div id="gsi-gate"></div>
   <div class="gate-err"></div>
-  <p class="lp-guestnote">還不想登入？<a class="lp-guest" href="#">先以訪客身分逛逛 →</a>（記帳、投票需要登入）</p>
+  <p class="lp-guestnote">還不想登入？<a class="lp-guest" href="#">先以訪客身分逛逛 →</a>（記帳需要登入；投票訪客也能投，登入才會記分）</p>
   <div class="gate-note">只會取得你的名字、信箱與大頭照，排行榜只顯示暱稱<br>註冊即表示同意 <a href="/TW-STOCK-/privacy.html" target="_blank">隱私權政策與服務條款</a></div>
 </div></section>
 <footer class="lp-foot"><div class="lp-wrap"><div class="lp-brand"><img src="${logo}" alt="">飆股情報局</div><p>每天收盤後的台股選股情報站・本站內容皆由程式依公開資料自動整理，僅供參考，不構成投資建議。</p><p>© 2026 飆股情報局・<a href="/TW-STOCK-/privacy.html" target="_blank">隱私權政策與服務條款</a></p></div></footer>
@@ -214,7 +214,7 @@ const GATE_CSS = `#gate{display:none}html.gated #gate{display:block;position:fix
 .sh-tip{font-size:12px;color:var(--mute);margin-top:10px;line-height:1.6}
 .push-box{margin-bottom:6px}.push-tip{font-size:13.5px;color:var(--mute);line-height:1.7}.push-on{font-weight:700;margin:4px 0 8px}.push-opts{display:flex;flex-direction:column;gap:8px;font-size:14px}.push-opts input{margin-right:6px}.push-acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 .push-enable,.push-acts button{font:inherit;font-size:14px;font-weight:700;padding:9px 16px;border-radius:999px;border:1.5px solid var(--accent);background:var(--accent);color:var(--bg);cursor:pointer}.push-acts button{background:var(--card);color:var(--fg);border-color:var(--line);font-weight:600;font-size:13px;padding:7px 14px}.push-small{margin-top:8px;font-size:13px;padding:6px 14px;background:color-mix(in srgb,var(--accent) 10%,transparent);color:var(--accent)}.push-msg{font-size:13px;color:var(--accent);margin-top:8px}
-.lock-card{display:none}html.anon .lock-card{display:block}html.anon .vote-form,html.anon .push-mini{display:none}html.anon .page[data-p="profile"]>:not(.lock-card),html.anon .page[data-p="watch"]>:not(.lock-card){display:none}
+.lock-card{display:none}html.anon .lock-card{display:block}html.anon .push-mini{display:none}html.anon .page[data-p="profile"]>:not(.lock-card),html.anon .page[data-p="watch"]>:not(.lock-card){display:none}
 .vote-lock{margin-top:4px;padding:12px 14px;border-radius:12px;border:1.5px dashed color-mix(in srgb,var(--accent) 45%,var(--line));background:color-mix(in srgb,var(--accent) 5%,var(--bg))}.lock-row{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;font-size:14.5px}.lock-ic{font-size:22px;line-height:1.2}.lock-sub{font-size:12.5px;color:var(--mute);margin-top:3px;line-height:1.6}.gsi-lock{min-height:44px}
 .pf-lock{text-align:center;max-width:460px;margin:30px auto;padding:30px 22px;border-radius:18px;border:1px solid var(--line);background:var(--card)}.pf-lock h3{font-size:19px;margin:8px 0}.pf-lock p{font-size:14px;color:var(--mute);line-height:1.75;margin:0 0 18px}.pf-lock .gsi-lock{display:flex;justify-content:center}.lock-ic.big{font-size:40px}
 .lp-guest{cursor:pointer}.lp-guestnote{font-size:13px;color:var(--mute);margin-top:14px}
@@ -392,6 +392,85 @@ function shareClient(SITE) {
     if (base && sub.indexOf(base) === 0) sub = sub.slice(base.length).trim();
     render(data, title, sub, key);
   }
+  // ---- 投票邀請圖卡：長得跟網站上的投票框一樣（白底），用來邀請朋友來投 ----
+  // o = { bull: 0~100 或 null, themes: ['CPO矽光子', ...], date: '10/7' }
+  function drawVote(o, url, logo) {
+    var cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+    var g = cv.getContext('2d');
+    var RED = '#d0312d', GRN = '#1a8a3a', INK = '#1a1a1a', MUTE = '#6b7280', LINE = '#e5e5e5', CARD = '#f7f7f7';
+    g.fillStyle = '#ffffff'; g.fillRect(0, 0, W, H);
+    g.textBaseline = 'middle';
+    // 頁首
+    if (logo) { g.save(); rr(g, 60, 50, 84, 84, 20); g.clip(); g.drawImage(logo, 60, 50, 84, 84); g.restore(); }
+    g.fillStyle = INK; g.font = font(40, true); g.fillText('飆股情報局', 162, 80);
+    g.fillStyle = MUTE; g.font = font(23); g.fillText('每天收盤後的台股整理', 164, 116);
+    // 大標
+    g.fillStyle = INK; g.font = font(76, true); g.fillText('明天台股怎麼走？', 60, 232);
+    g.fillStyle = RED; g.font = font(40, true); g.fillText('來猜猜看！猜中得分、上排行榜', 62, 306);
+    // 投票框（跟網站一樣）
+    var bx = 60, by = 370, bw = W - 120, bh = o.bull != null ? 540 : 420;
+    g.fillStyle = CARD; rr(g, bx, by, bw, bh, 28); g.fill();
+    g.strokeStyle = LINE; g.lineWidth = 2; rr(g, bx, by, bw, bh, 28); g.stroke();
+    g.fillStyle = INK; g.font = font(36, true); g.fillText('明天怎麼走？大家來猜', bx + 40, by + 62);
+    g.fillStyle = MUTE; g.font = font(22); g.fillText('每人每天一票・' + (o.date ? '猜 ' + o.date + ' 收盤' : '猜下一個交易日'), bx + 40, by + 106);
+    // 族群選單
+    g.fillStyle = INK; g.font = font(27, true); g.fillText('明天漲最多的族群：', bx + 40, by + 168);
+    g.fillStyle = '#fff'; rr(g, bx + 300, by + 140, bw - 340, 58, 14); g.fill();
+    g.strokeStyle = '#cfcfcf'; rr(g, bx + 300, by + 140, bw - 340, 58, 14); g.stroke();
+    g.fillStyle = MUTE; g.font = font(25); g.fillText('（選擇族群）', bx + 322, by + 170);
+    g.fillText('▾', bx + bw - 70, by + 170);
+    // 看多／看空按鈕
+    var bw2 = (bw - 100) / 2;
+    [['看多', RED], ['看空', GRN]].forEach(function (b, i) {
+      var x = bx + 40 + i * (bw2 + 20), y = by + 228;
+      g.fillStyle = '#fff'; rr(g, x, y, bw2, 96, 20); g.fill();
+      g.strokeStyle = b[1]; g.lineWidth = 4; rr(g, x, y, bw2, 96, 20); g.stroke();
+      g.fillStyle = b[1]; g.font = font(42, true); g.textAlign = 'center'; g.fillText((i ? '▼ ' : '▲ ') + b[0], x + bw2 / 2, y + 50); g.textAlign = 'left';
+    });
+    // 鎖定投票
+    g.fillStyle = INK; rr(g, bx + 40, by + 344, bw - 80, 50, 25); g.fill();
+    g.fillStyle = '#fff'; g.font = font(25, true); g.textAlign = 'center'; g.fillText('鎖定投票', bx + bw / 2, by + 370); g.textAlign = 'left';
+    // 目前大家怎麼看（長條，跟網站一樣）
+    if (o.bull != null) {
+      var ly = by + 424;
+      g.fillStyle = INK; g.font = font(26, true); g.fillText('目前大家怎麼看', bx + 40, ly + 12);
+      if (o.themes && o.themes.length) { g.fillStyle = MUTE; g.font = font(22); g.textAlign = 'right'; g.fillText(fit(g, '最多人看好：' + o.themes.slice(0, 2).join('、'), bw - 400), bx + bw - 40, ly + 12); g.textAlign = 'left'; }
+      var rx = bx + 40, rw = bw - 80, ry = ly + 40, rh = 56, sp = rx + rw * o.bull / 100;
+      g.save(); rr(g, rx, ry, rw, rh, 28); g.clip();
+      g.fillStyle = RED; g.fillRect(rx, ry, sp - rx, rh); g.fillStyle = GRN; g.fillRect(sp, ry, rx + rw - sp, rh); g.restore();
+      g.fillStyle = '#fff'; g.font = font(25, true);
+      if (o.bull >= 15) g.fillText('看多 ' + o.bull + '%', rx + 22, ry + rh / 2 + 1);
+      g.textAlign = 'right'; if (o.bull <= 85) g.fillText('看空 ' + (100 - o.bull) + '%', rx + rw - 22, ry + rh / 2 + 1); else { g.fillStyle = GRN; g.font = font(22, true); g.fillText('看空 ' + (100 - o.bull) + '%', rx + rw, ry + rh + 26); } g.textAlign = 'left';
+      if (o.bull < 15) { g.fillStyle = RED; g.font = font(22, true); g.fillText('看多 ' + o.bull + '%', rx, ry + rh + 26); }
+    }
+    // QR 與邀請
+    var bandH = 96, band = H - bandH, qs = 210, qx = W - 60 - qs, qy = band - 40 - qs;
+    g.fillStyle = '#fff'; rr(g, qx - 12, qy - 12, qs + 24, qs + 24, 18); g.fill();
+    g.strokeStyle = LINE; g.lineWidth = 2; rr(g, qx - 12, qy - 12, qs + 24, qs + 24, 18); g.stroke();
+    var qr = qrcode(0, 'M'); qr.addData(url); qr.make();
+    var m = qr.getModuleCount(), cs = qs / m; g.fillStyle = INK;
+    for (var a = 0; a < m; a++) for (var b = 0; b < m; b++) if (qr.isDark(a, b)) g.fillRect(qx + b * cs, qy + a * cs, cs + 0.6, cs + 0.6);
+    g.fillStyle = INK; g.font = font(46, true); g.fillText('掃 QR Code 來投一票', 60, qy + 50);
+    g.fillStyle = MUTE; g.font = font(27); g.fillText('免登入也能投・開盤前都可以改', 60, qy + 110);
+    g.fillStyle = RED; g.font = font(28, true); g.fillText('搜尋「飆股情報局」', 60, qy + 166);
+    // 投資警語
+    g.fillStyle = '#fff4d6'; g.fillRect(0, band, W, bandH);
+    g.fillStyle = '#5c4400'; g.textAlign = 'center';
+    g.font = font(24, true); g.fillText('投資警語：本內容僅供參考，不構成投資建議或買賣推薦', W / 2, band + 32);
+    g.font = font(20); g.fillText('投票為娛樂性質；投資有風險，請獨立判斷、自負盈虧', W / 2, band + 66);
+    g.textAlign = 'left';
+    return cv;
+  }
+  window.__shareVote = function (o) {
+    var url = SITE + '#main';
+    cur = { title: '明天怎麼走大家來猜', url: url, date: o.date || '' };
+    img.removeAttribute('src'); blob = null; modal.hidden = false;
+    Promise.all([loadQR(), loadImg('/TW-STOCK-/icon-192.png?v=2')]).then(function (r) {
+      var cv = drawVote(o, url, r[1]);
+      img.src = cv.toDataURL('image/png');
+      cv.toBlob(function (b) { blob = b; }, 'image/png');
+    }).catch(function () { modal.querySelector('.sh-tip').textContent = '圖卡產生失敗，請檢查網路後再試一次'; });
+  };
   // 其他地方（例如投票）也可以直接給資料產生圖卡
   window.__shareCard = function (data, title, sub, key) { render(data, title, sub, key || pageKey()); };
   function render(data, title, sub, key) {

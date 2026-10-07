@@ -1794,11 +1794,11 @@ function renderVote(dateLabel, extra) {
   <button type="button" class="vote-save" disabled>🔒 鎖定投票</button>
   <div class="vote-saved" hidden></div>
 </form>
-<div class="lock-card vote-lock"><div class="lock-row"><span class="lock-ic">🔒</span><div><b>登入 Google 才能投票</b><div class="lock-sub">猜明天漲跌和最強族群，猜中得分、上排行榜，開獎還會推播你的得分</div></div></div><div class="gsi-lock"></div></div>
+<div class="lock-card vote-lock"><div class="lock-row"><span class="lock-ic">⭐</span><div><b>訪客也能投票！登入 Google 才會記分</b><div class="lock-sub">登入後猜中得分、上排行榜，開獎還會推播你的得分</div></div><div class="gsi-lock"></div></div>
 <div class="vote-result" hidden></div>
 <div class="vote-msg"></div>
 ${recap}
-<div class="vote-sharebar"><button type="button" class="sh-tbl vote-share">📤 分享投票</button></div>
+<div class="vote-sharebar"><button type="button" class="sh-tbl vote-share">📤 邀請朋友來投票</button></div>
 </div>
 <script>
 (function () {
@@ -1851,32 +1851,12 @@ ${recap}
   // 分享投票：只放大家的結果，不放自己投了什麼
   var lastP = null;
   box.querySelector('.vote-share').onclick = function () {
-    if (!window.__shareCard) return;
-    var p = lastP || {}, rows = [], title, sub = '', up = '#ff5d63', dn = '#3ddc84', fg = '#ffffff';
-    function pv(v) { return { t: (v >= 0 ? '+' : '') + v.toFixed(2) + '%', c: v >= 0 ? up : dn }; }
-    if (p.closed && p.result) {
-      var r = p.result, nd = r.next ? (+r.next.slice(4, 6)) + '/' + (+r.next.slice(6)) : '';
-      title = '開獎！' + nd + ' 收盤結果';
-      rows.push({ name: '加權指數', vals: [pv(r.tw)] });
-      ['🥇', '🥈', '🥉'].forEach(function (m, i) { var t = r.top3[i]; if (t) rows.push({ name: m + ' ' + t, vals: [r.themes[t] != null ? pv(r.themes[t]) : { t: '', c: fg }] }); });
-      var bar = null;
-      if (p.total) {
-        var b = Math.round(p.bull / p.total * 100), ok = (b >= 50) === (r.tw >= 0);
-        bar = { bull: b, label: '大家的投票' };
-        rows.push({ name: '多數人', vals: [{ t: ok ? '猜對方向' : '猜錯方向', c: ok ? up : dn }] });
-      }
-      sub = '大家來猜明天漲跌・猜中得分上排行榜';
-      return window.__shareCard({ bar: bar, cols: ['開獎結果', '漲跌'], rows: rows, total: rows.length }, title, sub, 'main');
-    }
-    title = '明天怎麼走？大家來猜';
-    var bar = null;
-    if (p.total) {
-      bar = { bull: Math.round(p.bull / p.total * 100), label: '大家看明天' };
-      (p.themes || []).slice(0, 5).forEach(function (t) { rows.push({ name: t.theme, vals: [{ t: '', c: fg }] }); });
-    }
-    var rc = box.querySelector('.vote-recap');
-    sub = rc ? rc.textContent.split('📊').join('').replace(/[ ]+/g, ' ').trim() : '每天收盤後開放投票，猜中得分上排行榜';
-    window.__shareCard({ bar: bar, cols: ['大家看好的族群', ''], rows: rows, total: rows.length, emptyText: bar ? '還沒有人選族群' : '還沒有人投票，來當第一個！' }, title, sub, 'main');
+    if (!window.__shareVote) return;
+    // 邀請朋友來投：猜的是投票日的下一個交易日
+    var d = new Date(Date.UTC(+date.slice(0, 4), +date.slice(4, 6) - 1, +date.slice(6)));
+    do d.setUTCDate(d.getUTCDate() + 1); while (d.getUTCDay() === 0 || d.getUTCDay() === 6);
+    var p = lastP || {};
+    window.__shareVote({ bull: p.total ? Math.round(p.bull / p.total * 100) : null, themes: (p.themes || []).map(function (t) { return t.theme; }), date: (d.getUTCMonth() + 1) + '/' + d.getUTCDate() });
   };
   function load() { fetch(API + '/api/poll?date=' + date + '&vid=' + encodeURIComponent(vid), authH()).then(function (r) { return r.json(); }).then(function (p) { lastP = p; if (p.closed) closedView(p); else if (p.mine) show(p); }).catch(function () {}); }
   // 先選看多／看空和族群，按「鎖定投票」才送出；09:00 開盤前都可以改
