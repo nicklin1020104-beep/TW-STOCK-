@@ -1389,7 +1389,7 @@ async function main() {
     console.error('個股資料輸出失敗：', e.message);
   }
 
-  const html = renderHtml(tradeDate, groupAbove, groupBelow, flow, picks, { locked, voteRecap, roast, topbar, industry, ir50, threeGroups: threeUp.groups, macro, holders, breadth, bestA, bestB, latentTrust, cups, cupTracking, aetf, allCross, latent, threeUp, tracking, bigLeaders, crashed, stockNews, industryNews, lowVol: Object.keys(today).filter((c) => today[c].vol != null && today[c].vol / 1000 < MIN_LOTS_ALL) });
+  const html = renderHtml(tradeDate, groupAbove, groupBelow, flow, picks, { locked, voteRecap, roast, topbar, industry, ir50, threeGroups: threeUp.groups, macro, holders, breadth, bestA, bestB, latentTrust, cups, cupTracking, aetf, allCross, latent, threeUp, tracking, bigLeaders, crashed, stockNews, industryNews, lowVol: Object.keys(today).filter((c) => today[c].vol != null && today[c].vol / 1000 < MIN_LOTS_ALL), newRev: (() => { const ms = Object.values(rev).map((r) => r.month).filter(Boolean).sort(); const nw = ms[ms.length - 1], codes = Object.keys(rev).filter((c) => rev[c].month === nw); return codes.length < ms.length * 0.9 ? { m: +nw.slice(3), prev: +prevYM(nw, 1).slice(3), codes } : null; })() });
   const dated = path.join(REPORTS, `${tradeDate}.html`);
   fs.writeFileSync(dated, html);
   fs.writeFileSync(path.join(ROOT, '最新選股.html'), html);
@@ -2640,7 +2640,7 @@ h1{font-size:22px;margin:0 0 4px}h2{font-size:17px;margin:28px 0 8px}.sub{color:
 .scroll{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
 th,td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}th:nth-child(-n+3),td:nth-child(-n+3){text-align:left}
 th{color:var(--mute);font-weight:500}.up{color:var(--up)}.dn{color:var(--dn)}a{color:inherit}
-.tag{font-size:11px;color:var(--mute);margin-left:4px}td.lv,td.lv a,a.lv{color:#e0242b!important}td.cum{font-weight:800;background:rgba(127,127,127,.08)}.vote-sharebar{display:flex;justify-content:flex-end;margin-top:8px}.empty{color:var(--mute)}.count{font-weight:400;color:var(--mute);font-size:14px}
+.tag{font-size:11px;color:var(--mute);margin-left:4px}td.lv,td.lv a,a.lv{color:#e0242b!important}.rv-new{display:inline-block;margin-left:4px;padding:0 5px;border-radius:6px;background:#2563eb;color:#fff!important;font-size:10.5px;font-weight:700;line-height:16px;vertical-align:1px}.rv-key{display:block;font-size:10px;font-weight:500;color:var(--mute)}td.cum{font-weight:800;background:rgba(127,127,127,.08)}.vote-sharebar{display:flex;justify-content:flex-end;margin-top:8px}.empty{color:var(--mute)}.count{font-weight:400;color:var(--mute);font-size:14px}
 h3{font-size:14px;margin:14px 0 6px}.cols{display:grid;grid-template-columns:1fr 1fr;gap:20px}@media (max-width:900px){.cols{grid-template-columns:1fr}}
 table.flow td:first-child,table.flow th:first-child{color:var(--mute);text-align:right;width:1em}table.flow td:nth-child(2),table.flow th:nth-child(2){text-align:left}table.flow td:nth-child(3),table.flow th:nth-child(3){text-align:right}
 .tabs{display:flex;gap:6px;flex-wrap:wrap}.tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:999px;cursor:pointer;font:inherit;font-size:13px}.tab.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
@@ -2799,6 +2799,29 @@ ${clientScript()}
   mark();
   var t = null;
   new MutationObserver(function () { clearTimeout(t); t = setTimeout(mark, 200); }).observe(document.body, { childList: true, subtree: true });
+})();</script>
+<script>(function () {
+  // 營收月份：已經公布新月份營收的股票，在營收 YoY 旁邊標「9月」；沒標的是上個月
+  var NR = ${JSON.stringify(extra.newRev || null)};
+  if (!NR) return;
+  var SET = {}; NR.codes.forEach(function (c) { SET[c] = 1; });
+  function mark() {
+    document.querySelectorAll('table:not([data-rv])').forEach(function (t) {
+      var ths = t.querySelectorAll(':scope > thead > tr > th'); if (!ths.length) return;
+      t.setAttribute('data-rv', '');
+      var cols = [];
+      ths.forEach(function (th, i) { var x = th.textContent; if (/YoY|年增/.test(x) && !/累計|近 ?3|勝率/.test(x)) { cols.push(i); th.insertAdjacentHTML('beforeend', '<span class="rv-key">沒標＝' + NR.prev + '月</span>'); } });
+      if (!cols.length) return;
+      t.querySelectorAll(':scope > tbody > tr').forEach(function (tr) {
+        var a = tr.querySelector('a[href*="tw.stock.yahoo.com/quote/"]'); if (!a) return;
+        var m = a.getAttribute('href').match(/quote[/]([0-9A-Z]+)[.]TW/); if (!m || !SET[m[1]]) return;
+        cols.forEach(function (i) { var td = tr.children[i]; if (td && !td.querySelector('.rv-new') && /[0-9]/.test(td.textContent)) td.insertAdjacentHTML('beforeend', '<span class="rv-new">' + NR.m + '月</span>'); });
+      });
+    });
+  }
+  mark();
+  var tm = null;
+  new MutationObserver(function () { clearTimeout(tm); tm = setTimeout(mark, 300); }).observe(document.body, { childList: true, subtree: true });
 })();</script>
 ${shareScript()}
 ${pushScript(VOTE_API)}
