@@ -19,7 +19,7 @@ const JOURNAL_CSS = `.jn-cards{display:grid;grid-template-columns:repeat(3,1fr);
 .jn-calc{font-size:13px;color:var(--mute);margin-top:8px;line-height:1.7}.jn-calc b{color:var(--fg)}.jn-btns{display:flex;gap:8px;margin-top:16px}.jn-btns button{flex:1}.jn-err{color:var(--up);font-size:13px;margin-top:8px}.jn-hint{font-size:12.5px;color:var(--mute);line-height:1.6;margin:4px 0}
 .jn-del{border:0;background:none;color:var(--mute);cursor:pointer;font-size:13px;padding:2px 6px}.jn-edit{border:0;background:none;color:var(--accent);cursor:pointer;font-size:13px;padding:2px 6px}td.jn-note{white-space:normal;min-width:140px;max-width:260px;text-align:left!important;font-size:12.5px;color:var(--mute)}
 html.anon .page[data-p="journal"]>:not(.lock-card){display:none}
-.jn-quick{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px}.jn-quick button{font:inherit;font-size:13px;font-weight:700;padding:5px 12px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}.jn-quick .jn-pct{font-size:13px}.jn-form .jn-quick input.jn-pctin{width:84px;padding:5px 10px;font-size:15px;border-radius:999px}.st2 h3 .jn-hint{font-weight:400;font-size:13px}.dd button{min-width:40px}td.jn-ops{white-space:nowrap}.jn-eqbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}.jn-eqbar .jn-seg button{flex:0 0 auto;font-size:13px;padding:6px 12px}.jn-eq{min-height:260px}.jn-eq canvas{max-height:300px}.fc [hidden]{display:none!important}.fc .jn-seg button{font-size:14px}.fc-out{margin-top:6px}td.nm .jn-edit[data-pos]{padding:2px 4px 2px 0;font-size:14px}`;
+.jn-quick{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px}.jn-quick button{font:inherit;font-size:13px;font-weight:700;padding:5px 12px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}.jn-quick .jn-pct{font-size:13px}.jn-form .jn-quick input.jn-pctin{width:84px;padding:5px 10px;font-size:15px;border-radius:999px}.st2 h3 .jn-hint{font-weight:400;font-size:13px}.dd button{min-width:40px}td.jn-ops{white-space:nowrap}.jn-eqbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}.jn-eqbar .jn-seg button{flex:0 0 auto;font-size:13px;padding:6px 12px}.jn-eq{min-height:260px}.jn-eq canvas{max-height:300px}.fc [hidden]{display:none!important}.fc .jn-seg button{font-size:14px}.fc-out{margin-top:6px}.fr-out{margin-top:6px}.fr-chk{display:flex;align-items:center;gap:6px;font-size:13.5px;margin:8px 0;font-weight:500}.fr-chk input{width:auto;margin:0}.fr-h{margin-top:28px}td.nm .jn-edit[data-pos]{padding:2px 4px 2px 0;font-size:14px}`;
 
 // ---- 瀏覽器端 ----
 function journalClient(API) {
@@ -43,12 +43,14 @@ function journalClient(API) {
   function isETF(code) { return /^00/.test(code); }
 
   // ---- 手續費／稅 ----
+  // 手續費折扣：個股有設（不同券商）就用個股的，沒有就用全部的
+  function discOf(code) { var s = S || DEF; return (s.perStock && code && s.perStock[code]) || s.feeDiscount || 10; }
   function feeOf(m, side, price, qty, daytrade, code) {
     var s = S || DEF, amt = price * qty;
     if (!amt) return { fee: 0, tax: 0 };
     if (m === 'US') return { fee: Math.max(s.usMinFee || 0, Math.round(amt * (s.usFeeRate || 0) / 100 * 100) / 100), tax: 0 };
     var odd = qty % 1000 !== 0;
-    var fee = Math.max(odd ? s.oddMinFee : s.minFee, Math.floor(amt * 0.001425 * (s.feeDiscount || 10) / 10));
+    var fee = Math.max(odd ? s.oddMinFee : s.minFee, Math.floor(amt * 0.001425 * discOf(code) / 10));
     var tax = side === 'sell' ? Math.floor(amt * (daytrade ? 0.0015 : isETF(code || '') ? 0.001 : 0.003)) : 0;
     return { fee: fee, tax: tax };
   }
@@ -94,7 +96,8 @@ function journalClient(API) {
       if (px == null && p.market === 'TW') { var n = names[p.code]; px = n && n.c; }
       p.price = px; p.avg = p.costLocal / p.qty;
       p.mv = px == null ? null : px * p.qty * (p.market === 'US' ? (fxNow || 0) : 1);
-      p.upnl = p.mv == null ? null : p.mv - p.cost; p.upct = p.upnl == null ? null : p.upnl / p.cost * 100;
+      p.sellCost = p.mv == null || p.market !== 'TW' ? 0 : (function (f) { return f.fee + f.tax; })(feeOf('TW', 'sell', px, p.qty, false, p.code));
+      p.upnl = p.mv == null ? null : p.mv - p.cost - p.sellCost; p.upct = p.upnl == null ? null : p.upnl / p.cost * 100;
     });
     var mv = hold.reduce(function (a, p) { return a + (p.mv || 0); }, 0);
     return { cash: cash, invested: invested, dividends: dividends, hold: hold, realized: realized, mv: mv, total: cash + mv, fxNow: fxNow };
@@ -239,7 +242,7 @@ function journalClient(API) {
     h += r.hold.length ? '<div class="scroll"><table class="compact"><thead><tr><th>股票</th><th>股數</th><th>均價</th><th>現價</th><th>市值（台幣）</th><th>未實現</th><th>報酬率</th><th>停利／停損</th><th>比重</th></tr></thead><tbody>' +
       r.hold.sort(function (a, b) { return (b.mv || 0) - (a.mv || 0); }).map(function (p) {
         return '<tr><td class="nm"><button class="jn-edit" data-pos="' + p.market + ':' + esc(p.code) + '" title="修改">✏️</button>' + esc(p.code) + ' ' + esc(p.name || '') + (p.market === 'US' ? '<span class="tag">美</span>' : '') + '</td><td>' + fmt(p.qty) + '</td><td>' + fmt(p.avg, 2) + '</td><td>' + (p.price == null ? '-' : fmt(p.price, 2)) + '</td><td>' + (p.mv == null ? '-' : fmt(p.mv)) + '</td><td>' + (p.upnl == null ? '-' : pn(p.upnl)) + '</td><td>' + pct(p.upct) + '</td><td class="jn-note">' + tpsl(p) + '</td><td>' + (p.mv ? (p.mv / Math.max(r.total, r.mv) * 100).toFixed(1) + '%' : '-') + '</td></tr>';
-      }).join('') + '</tbody></table></div>' : '<p class="empty">還沒有庫存，按「＋ 記一筆交易」開始</p>';
+      }).join('') + '</tbody></table></div><p class="jn-hint">未實現損益已扣掉預估賣出手續費和證交稅（跟券商 App 算法一樣）。跟 App 對不起來？按 ✏️ →「🧮 跟券商 App 對帳」。</p>' : '<p class="empty">還沒有庫存，按「＋ 記一筆交易」開始</p>';
     h += eqHtml();
     h += plansSection(r);
     if (planErr) h += '<p class="jn-hint">⚠️ 定期定額自動記帳暫時失敗（' + esc(planErr) + '），稍後重新整理會再補上。</p>';
@@ -282,7 +285,7 @@ function journalClient(API) {
   }
   function readSettings(f) {
     var v = function (k, d) { var x = parseFloat(f[k] ? f[k].value : ''); return isFinite(x) ? x : d; };
-    return { feeDiscount: v('feeDiscount', 10), minFee: v('minFee', 20), oddMinFee: v('oddMinFee', 1), usFeeRate: v('usFeeRate', 0.1), usMinFee: v('usMinFee', 0), dcaMinFee: v('dcaMinFee', 1) };
+    return { feeDiscount: v('feeDiscount', 10), minFee: v('minFee', 20), oddMinFee: v('oddMinFee', 1), usFeeRate: v('usFeeRate', 0.1), usMinFee: v('usMinFee', 0), dcaMinFee: v('dcaMinFee', 1), perStock: (S && S.perStock) || {} };
   }
 
   // ---- 圖表（Chart.js，用到才載入）----
@@ -448,7 +451,7 @@ function journalClient(API) {
     var last = list.filter(function (e) { return e.kind === 'buy' || e.kind === 'holding'; })[0];
     var kindTxt = { buy: '買進', sell: '賣出', holding: '原有持股' };
     var f = open('<h3>✏️ ' + esc(code) + ' ' + esc(name) + '</h3><p class="jn-hint">股數或成本不對，就修改下面的紀錄；庫存會自動重算。</p>' +
-      '<div class="jn-acts">' + (last ? '<button type="button" class="main" data-a="tpsl">🎯 修改停利／停損</button>' : '') + '<button type="button" data-a="add-buy">＋ 再買進</button><button type="button" data-a="add-sell">＋ 賣出</button></div>' +
+      '<div class="jn-acts">' + (last ? '<button type="button" class="main" data-a="tpsl">🎯 修改停利／停損</button>' : '') + (mk === 'TW' ? '<button type="button" data-a="recon">🧮 跟券商 App 對帳</button>' : '') + '<button type="button" data-a="add-buy">＋ 再買進</button><button type="button" data-a="add-sell">＋ 賣出</button></div>' +
       '<div class="scroll"><table class="compact"><tbody>' + list.map(function (e) {
         return '<tr><td class="jn-ops"><button type="button" class="jn-edit" data-eid="' + e.id + '">✏️ 編輯</button><button type="button" class="jn-del" data-eid-del="' + e.id + '">刪除</button></td><td>' + (e.kind === 'holding' ? '原有' : e.date.slice(5).replace('-', '/')) + '</td><td><span class="chip ' + (e.kind === 'sell' ? 'bad' : e.kind === 'holding' ? 'mid' : 'good') + '">' + kindTxt[e.kind] + '</span></td><td>' + fmt(e.price, 2) + ' × ' + fmt(e.qty) + '</td></tr>';
       }).join('') + '</tbody></table></div><div class="jn-btns"><button type="button" data-a="close">關閉</button></div><div class="jn-err"></div>');
@@ -456,6 +459,7 @@ function journalClient(API) {
       var a = ev.target.closest('[data-a]');
       if (a && a.dataset.a === 'close') modal.hidden = true;
       if (a && a.dataset.a === 'tpsl') tradeForm(last, false, true);
+      if (a && a.dataset.a === 'recon') { modal.hidden = true; if (window.__frOpen) window.__frOpen(code); }
       if (a && (a.dataset.a === 'add-buy' || a.dataset.a === 'add-sell')) tradeForm({ kind: a.dataset.a === 'add-buy' ? 'buy' : 'sell', market: mk, code: code, name: name, date: today(), tags: [] });
       var ed = ev.target.closest('[data-eid]'); if (ed) tradeForm(E.filter(function (x) { return x.id == ed.dataset.eid; })[0]);
       var dl = ev.target.closest('[data-eid-del]'); if (dl && confirm('確定要刪除這筆紀錄嗎？')) api('/api/journal/delete', { id: +dl.dataset.eidDel }).then(function () { modal.hidden = true; reload(); });
@@ -711,6 +715,33 @@ function journalClient(API) {
   }
   setInterval(refresh, 60000);
   document.addEventListener('visibilitychange', function () { if (!document.hidden) refresh(); });
+  window.__jnPos = function (code) {
+    if (!S) return null;
+    var r = calc(), p = r.hold.filter(function (x) { return x.market === 'TW' && x.code === code; })[0];
+    if (!p) return null;
+    // 不含手續費的平均成本（券商 App 的「成本均價」多半另外算手續費）
+    var q = 0, raw = 0;
+    E.filter(function (e) { return e.market === 'TW' && e.code === code; }).sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : a.id - b.id; }).forEach(function (e) {
+      if (e.kind === 'buy' || e.kind === 'holding') { raw += e.price * e.qty; q += e.qty; } else if (e.kind === 'sell' && q > 0) { var k = Math.min(e.qty, q); raw -= raw / q * k; q -= k; }
+    });
+    return { code: code, name: p.name, qty: p.qty, price: p.price, avg: q > 0 ? raw / q : p.avg, etf: isETF(code), disc: discOf(code) };
+  };
+  window.__jnLogged = function () { return !!S; };
+  // 套用折扣：code 有給＝只改這檔，沒給＝全部；recompute＝把已記錄的手續費也重算
+  window.__jnApply = function (d, code, recompute) {
+    var ns = JSON.parse(JSON.stringify(S || DEF)); ns.perStock = ns.perStock || {};
+    if (code) ns.perStock[code] = d; else ns.feeDiscount = d;
+    return api('/api/journal/settings', ns).then(function (j) {
+      if (j.error) throw new Error(j.error);
+      S = j.settings;
+      if (!recompute) return 0;
+      var items = E.filter(function (e) { return e.market === 'TW' && (e.kind === 'buy' || e.kind === 'sell') && !e.plan && (code ? e.code === code : !(S.perStock && S.perStock[e.code])); }).map(function (e) {
+        var f = feeOf('TW', e.kind, e.price, e.qty, !!e.daytrade, e.code);
+        return { id: e.id, fee: f.fee, tax: e.kind === 'sell' ? f.tax : 0, old: e.fee || 0 };
+      }).filter(function (x) { return x.fee !== x.old; });
+      return items.length ? api('/api/journal/fees', { items: items.map(function (x) { return { id: x.id, fee: x.fee, tax: x.tax }; }) }).then(function () { return items.length; }) : 0;
+    }).then(function (n) { reload(); return n; });
+  };
   window.__journalStart = function () { loaded = false; start(); };
   // 會員一進網站就先載入，首頁才能顯示「你的今日總結」
   if (token()) setTimeout(start, 600);
@@ -759,10 +790,76 @@ function renderFeeCalc() {
   <div class="jn-row"><div><label>目標報酬（%，可不填）</label><input name="target" inputmode="decimal" placeholder="例如 10"></div><div></div></div>
 </form>
 <div class="fc-out"></div>
+<h2 class="fr-h">🔍 跟券商 App 對帳：反推你的手續費折扣 <span class="count">輸入 App 上顯示的損益，算出你實際的折扣，可以套用到日誌</span></h2>
+<form class="fr jn-form" onsubmit="return false" style="max-width:640px;padding:0;background:none">
+  <div class="jn-row"><div><label>股票代號（可不填）</label><input name="code" placeholder="例如 2330"></div><div><label>類型</label><div class="jn-seg fr-ty"><button type="button" data-t="stock" class="on">一般股票</button><button type="button" data-t="etf">ETF</button></div></div></div>
+  <div class="jn-row"><div><label>現價</label><input name="price" inputmode="decimal" placeholder="例如 100"></div><div><label>成本均價（App 上的）</label><input name="avg" inputmode="decimal" placeholder="例如 95"></div></div>
+  <div class="jn-row"><div><label>股數</label><input name="qty" inputmode="decimal" placeholder="例如 1000"></div><div><label>App 顯示的損益（元）</label><input name="pl" inputmode="decimal" placeholder="例如 4870"></div></div>
+  <label class="fr-chk"><input type="checkbox" name="inclBuy" checked> App 的損益有扣「買進手續費」（多數券商是）</label>
+</form>
+<div class="fr-out"></div>
+<p class="jn-hint">券商 App 的「預估損益」通常＝現價 × 股數 − 賣出手續費 − 證交稅 −（成本 × 股數 ＋ 買進手續費）。反推出來的折扣可能跟券商公告差一點點（手續費會無條件捨去）。</p>
 <p class="jn-hint">台股手續費＝成交金額 × 0.1425% × 折扣（不足最低手續費以最低計，無條件捨去）；證交稅只有賣出時收。損益兩平價已依台股升降單位（跳動點）無條件進位。實際金額以券商為準。</p>`;
 }
 
 function feeCalcClient() {
+  // ---- 跟券商 App 對帳：反推手續費折扣 ----
+  (function () {
+    var f = document.querySelector('form.fr'); if (!f) return;
+    var out = document.querySelector('.fr-out'), ty = 'stock', last = null;
+    function num(k) { var v = parseFloat(String(f[k].value).split(',').join('')); return isFinite(v) ? v : null; }
+    function fmt(v, d) { return Number(v).toLocaleString('zh-TW', { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 }); }
+    function solve() {
+      var P = num('price'), C = num('avg'), Q = num('qty'), PL = num('pl'), incl = f.inclBuy.checked;
+      if (!P || !C || !Q || PL == null) { out.innerHTML = '<p class="empty">輸入現價、成本、股數和 App 上的損益，就會算出你的折扣</p>'; last = null; return; }
+      var odd = Q % 1000 !== 0, minF = odd ? 1 : 20, PQ = P * Q, CQ = C * Q, tax = Math.floor(PQ * (ty === 'etf' ? 0.001 : 0.003));
+      function fee(a, d) { return Math.max(minF, Math.floor(a * 0.001425 * d / 10)); }
+      function pl(d) { return PQ - fee(PQ, d) - tax - CQ - (incl ? fee(CQ, d) : 0); }
+      // 手續費無條件捨去，常常一段折扣都算得出同樣的數字：挑誤差最小的那段，優先選整數或小數一位（券商常見的 2.8、6、6.5 折）
+      var errs = [], minE = Infinity;
+      for (var i = 10; i <= 1000; i++) { var e = Math.abs(pl(i / 100) - PL); errs.push(e); if (e < minE) minE = e; }
+      var cand = []; errs.forEach(function (e, k) { if (e <= minE + 1e-9) cand.push((k + 10) / 100); });
+      var round1 = cand.filter(function (x) { return Math.abs(x * 10 - Math.round(x * 10)) < 1e-9; });
+      var pool = round1.length ? round1 : cand, best = { d: pool[Math.floor(pool.length / 2)], e: minE };
+      var d = best.d, gross = PQ - CQ, costs = gross - PL;
+      var ok = best.e <= Math.max(3, Math.abs(PL) * 0.002);
+      var h = '<div class="jn-cards"><div><b>' + (d >= 10 ? '不打折' : d + ' 折') + '</b><span>你的券商手續費折扣（約）</span><small>手續費率 ' + (0.1425 * d / 10).toFixed(4) + '%</small></div>' +
+        '<div><b>$' + fmt(fee(PQ, d)) + '</b><span>預估賣出手續費</span></div><div><b>$' + fmt(tax) + '</b><span>證交稅（' + (ty === 'etf' ? '0.1' : '0.3') + '%）</span></div>' +
+        (incl ? '<div><b>$' + fmt(fee(CQ, d)) + '</b><span>買進手續費</span></div>' : '') +
+        '<div><b>$' + fmt(costs) + '</b><span>App 扣掉的總成本</span><small>沒扣前賺 $' + fmt(gross) + '</small></div></div>';
+      if (!ok) h += '<p class="jn-hint">⚠️ 用這個折扣算出來是 $' + fmt(pl(d)) + '，跟 App 的 $' + fmt(PL) + ' 差了 $' + fmt(Math.abs(pl(d) - PL)) + '。可能是 App 的成本已經含手續費（試試取消上面的勾）、有融資，或股票類型選錯。</p>';
+      var code = String(f.code.value).trim().toUpperCase();
+      if (PL > gross - tax) h = '<p class="jn-hint">⚠️ App 的損益 $' + fmt(PL) + ' 比「只扣證交稅」的 $' + fmt(gross - tax) + ' 還多，代表 App 顯示的損益沒有扣手續費和稅（有些 App 的「損益」只是價差），這種情況反推不出折扣。請改看 App 的「預估損益」或「淨損益」。</p>';
+      if (ok && window.__jnLogged && window.__jnLogged()) {
+        h += '<div class="jn-acts">' + (code ? '<button type="button" class="main" data-fr="one">只套用到 ' + code + '（不同券商用）</button>' : '') + '<button type="button"' + (code ? '' : ' class="main"') + ' data-fr="all">套用到全部股票</button></div>' +
+          '<label class="fr-chk"><input type="checkbox" class="fr-re" checked> 已經記的交易，手續費也一起用新折扣重算</label><div class="fr-msg jn-hint"></div>';
+      } else if (ok) h += '<p class="jn-hint">登入後可以把這個折扣套用到股票日誌。</p>';
+      out.innerHTML = h; last = { d: d, code: code };
+    }
+    f.querySelectorAll('.fr-ty button').forEach(function (b) { b.onclick = function () { ty = b.dataset.t; f.querySelectorAll('.fr-ty button').forEach(function (x) { x.classList.toggle('on', x === b); }); solve(); }; });
+    f.addEventListener('input', solve);
+    f.code.addEventListener('change', function () { var p = window.__jnPos && window.__jnPos(String(f.code.value).trim().toUpperCase()); if (p) fill(p); });
+    function fill(p) {
+      f.code.value = p.code; if (p.price != null) f.price.value = p.price; f.avg.value = Math.round(p.avg * 100) / 100; f.qty.value = p.qty;
+      ty = p.etf ? 'etf' : 'stock'; f.querySelectorAll('.fr-ty button').forEach(function (x) { x.classList.toggle('on', x.dataset.t === ty); });
+      f.pl.value = ''; solve(); setTimeout(function () { f.pl.focus(); }, 300);
+    }
+    out.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-fr]'); if (!b || !last || !window.__jnApply) return;
+      var one = b.dataset.fr === 'one', msg = out.querySelector('.fr-msg');
+      if (!confirm(one ? '把 ' + last.code + ' 的手續費折扣設成 ' + last.d + ' 折？' : '把全部股票的手續費折扣設成 ' + last.d + ' 折？（個別設定過的股票不受影響）')) return;
+      msg.textContent = '套用中…';
+      window.__jnApply(last.d, one ? last.code : null, out.querySelector('.fr-re').checked).then(function (n) { msg.textContent = '✅ 已套用' + (n ? '，重算了 ' + n + ' 筆交易的手續費' : '') + '。日誌的損益會用新的折扣計算。'; }).catch(function (er) { msg.textContent = '套用失敗：' + er.message; });
+    });
+    // 從日誌的個股視窗打開：帶入那檔的資料
+    window.__frOpen = function (code) {
+      var t = document.querySelector('.ptab[data-p="fee"]'); if (t) t.click();
+      var p = window.__jnPos && window.__jnPos(code); if (p) fill(p); else { f.code.value = code; solve(); }
+      var h = document.querySelector('.fr-h'); if (h) setTimeout(function () { h.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50);
+    };
+    solve();
+  })();
+
   // 其他地方的「手續費試算」按鈕：切到這一頁
   document.addEventListener('click', function (e) { var g = e.target.closest('[data-goto]'); if (!g) return; var t = document.querySelector('.ptab[data-p="' + g.dataset.goto + '"]'); if (t) { t.click(); scrollTo(0, 0); } });
   var f = document.querySelector('form.fc'); if (!f) return;
