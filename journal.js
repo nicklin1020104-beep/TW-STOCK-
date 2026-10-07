@@ -110,10 +110,10 @@ function journalClient(API) {
   }
 
   // ---- 我的資產走勢（用交易紀錄＋每天收盤價重算每一天的總資產）----
-  var EQ = { range: 90, mode: 'value', hist: {} }, eqChart = null;
+  var EQ = { range: 'all', mode: 'ret', hist: {} }, eqChart = null;
   function eqHtml() {
-    return '<h2>📈 我的資產走勢</h2><div class="jn-eqbar"><div class="jn-seg jn-rng">' + [[30, '1個月'], [90, '3個月'], [180, '6個月'], [365, '1年'], ['all', '全部']].map(function (x) { return '<button type="button" data-r="' + x[0] + '"' + (String(EQ.range) === String(x[0]) ? ' class="on"' : '') + '>' + x[1] + '</button>'; }).join('') + '</div>' +
-      '<div class="jn-seg jn-mode"><button type="button" data-m="value"' + (EQ.mode === 'value' ? ' class="on"' : '') + '>總資產</button><button type="button" data-m="ret"' + (EQ.mode === 'ret' ? ' class="on"' : '') + '>報酬率 vs 大盤</button></div></div>' +
+    return '<h2>📈 我的資產走勢</h2><div class="jn-eqbar"><div class="jn-seg jn-rng">' + [['all', '從記帳開始'], [30, '近1個月'], [90, '近3個月'], [365, '近1年']].map(function (x) { return '<button type="button" data-r="' + x[0] + '"' + (String(EQ.range) === String(x[0]) ? ' class="on"' : '') + '>' + x[1] + '</button>'; }).join('') + '</div>' +
+      '<div class="jn-seg jn-mode"><button type="button" data-m="value"' + (EQ.mode === 'value' ? ' class="on"' : '') + '>總資產</button><button type="button" data-m="ret"' + (EQ.mode === 'ret' ? ' class="on"' : '') + '>每天漲跌 vs 大盤</button></div></div>' +
       '<div class="jn-chart jn-eq"><canvas id="jn-c3"></canvas><p class="jn-hint jn-eqmsg">計算中…</p></div><div class="jn-cards jn-eqstats"></div>';
   }
   function histOf(sym, from) {
@@ -125,9 +125,12 @@ function journalClient(API) {
   function drawEquity(g0) {
     var box = root.querySelector('.jn-eq'); if (!box) return;
     var msg = box.querySelector('.jn-eqmsg');
-    var trades = E.filter(function (e) { return e.kind !== 'holding'; }).map(function (e) { return e.date; }).sort();
-    var t = today(), start;
-    if (EQ.range === 'all') start = trades[0] || shift(t, -90); else start = shift(t, -EQ.range);
+    // 從「開始記帳那天」算起：最早一筆交易／入金的日期，或第一次輸入資料的那天（原有持股沒有日期）
+    var t = today();
+    var firsts = E.map(function (e) { return e.kind === 'holding' ? (e.created ? new Date(e.created + 8 * 3600000).toISOString().slice(0, 10) : null) : e.date; }).filter(Boolean).sort();
+    var bookStart = firsts[0] || t;
+    var start = EQ.range === 'all' ? bookStart : shift(t, -EQ.range);
+    if (start < bookStart) start = bookStart;
     if (start < shift(t, -1095)) start = shift(t, -1095);
     var keys = {}; E.forEach(function (e) { if (e.kind === 'buy' || e.kind === 'sell' || e.kind === 'holding') keys[e.market + ':' + e.code] = e; });
     var syms = Object.keys(keys).map(function (k) { return sym(keys[k]); });
@@ -176,19 +179,30 @@ function journalClient(API) {
       var my = rows.map(function (x, i) { return base[i] > 0 ? +(((x.v - base[i]) / base[i]) * 100).toFixed(2) : null; });
       var plAmt = rows[rows.length - 1].v - base[base.length - 1];
       var i0 = rows[0].idx, mk = rows.map(function (x) { return x.idx && i0 ? +((x.idx / i0 - 1) * 100).toFixed(2) : null; });
+      // 每天自己的漲跌 %（扣掉當天入金出金）和大盤當天漲跌 %
+      var dMy = [], dMk = [], dLab = [], winDays = 0, nDays = 0;
+      for (var j = 1; j < rows.length; j++) {
+        var pv = rows[j - 1].v, a = pv > 0 ? +(((rows[j].v - rows[j].flow - pv) / pv) * 100).toFixed(2) : null;
+        var b = rows[j].idx && rows[j - 1].idx ? +((rows[j].idx / rows[j - 1].idx - 1) * 100).toFixed(2) : null;
+        dMy.push(a); dMk.push(b); dLab.push(lab[j]);
+        if (a != null && b != null) { nDays++; if (a > b) winDays++; }
+      }
+      if (EQ.mode === 'ret' && !dMy.length) msg.textContent = '從記帳第一天開始算，下一個交易日收盤後就會出現第一根長條';
       var cs = getComputedStyle(document.documentElement), fg = cs.getPropertyValue('--fg').trim() || '#222', up = cs.getPropertyValue('--up').trim() || '#d0312d';
+      var dn = cs.getPropertyValue('--dn').trim() || '#16a34a';
       var ds = EQ.mode === 'value'
         ? [{ label: '總資產', data: rows.map(function (x) { return Math.round(x.v); }), borderColor: '#2563eb', backgroundColor: 'rgba(37,99,235,0.08)', fill: true, tension: 0.25, pointRadius: 0, borderWidth: 2.5 }]
-        : [{ label: '我的總損益 %', data: my, borderColor: up, tension: 0.25, pointRadius: 0, borderWidth: 2.5 }, { label: '加權指數', data: mk, borderColor: '#94a3b8', borderDash: [6, 5], tension: 0.25, pointRadius: 0, borderWidth: 2 }];
+        : [{ label: '我', data: dMy, backgroundColor: dMy.map(function (v) { return v >= 0 ? up : dn; }), borderRadius: 3 }, { label: '大盤（加權指數）', data: dMk, backgroundColor: '#b8c2d1', borderRadius: 3 }];
       loadChart().then(function () {
         if (g0 !== gen) return;
         if (eqChart) eqChart.destroy();
-        eqChart = new Chart(document.getElementById('jn-c3'), { type: 'line', data: { labels: lab, datasets: ds }, options: { interaction: { mode: 'index', intersect: false }, plugins: { legend: { display: EQ.mode === 'ret', labels: { color: fg } }, tooltip: { callbacks: { label: function (c) { return c.dataset.label + '：' + (EQ.mode === 'value' ? '$' + c.raw.toLocaleString() : (c.raw >= 0 ? '+' : '') + c.raw + '%'); } } } }, scales: { x: { ticks: { color: fg, maxTicksLimit: 7 }, grid: { display: false } }, y: { ticks: { color: fg, callback: function (v) { return EQ.mode === 'value' ? (Math.abs(v) >= 1e4 ? (v / 1e4).toFixed(0) + '萬' : v) : v + '%'; } } } } } });
+        eqChart = new Chart(document.getElementById('jn-c3'), { type: EQ.mode === 'value' ? 'line' : 'bar', data: { labels: EQ.mode === 'value' ? lab : dLab, datasets: ds }, options: { interaction: { mode: 'index', intersect: false }, plugins: { legend: { display: EQ.mode === 'ret', labels: { color: fg } }, tooltip: { callbacks: { label: function (c) { return c.dataset.label + '：' + (EQ.mode === 'value' ? '$' + c.raw.toLocaleString() : (c.raw >= 0 ? '+' : '') + c.raw + '%'); } } } }, scales: { x: { ticks: { color: fg, maxTicksLimit: 7 }, grid: { display: false } }, y: { ticks: { color: fg, callback: function (v) { return EQ.mode === 'value' ? (Math.abs(v) >= 1e4 ? (v / 1e4).toFixed(0) + '萬' : v) : v + '%'; } } } } } });
       });
       var lastMy = my[my.length - 1], lastMk = mk[mk.length - 1];
       root.querySelector('.jn-eqstats').innerHTML =
-        '<div><b>' + pct(lastMy) + '</b><span>期間總損益</span><small>' + (plAmt >= 0 ? '+' : '-') + '$' + fmt(Math.abs(plAmt)) + '</small></div>' +
+        '<div><b>' + pct(lastMy) + '</b><span>' + (start === bookStart ? '記帳以來總損益' : '期間總損益') + '</span><small>' + (plAmt >= 0 ? '+' : '-') + '$' + fmt(Math.abs(plAmt)) + '</small></div>' +
         '<div><b>' + (lastMk == null ? '-' : pct(lastMk)) + '</b><span>同期加權指數</span>' + (lastMk == null ? '' : '<small>' + (lastMy >= lastMk ? '贏大盤 ' : '輸大盤 ') + Math.abs(lastMy - lastMk).toFixed(2) + ' 個百分點</small>') + '</div>' +
+        '<div><b>' + winDays + ' / ' + nDays + ' 天</b><span>贏大盤的天數</span><small>當天漲幅比大盤好</small></div>' +
         '<div><b>' + pct(mdd * 100) + '</b><span>最大回撤</span><small>從高點最多跌多少</small></div>' +
         '<div><b>' + (best ? pct(best.r * 100) : '-') + '</b><span>單日最大漲幅</span>' + (best ? '<small>' + +best.d.slice(5, 7) + '/' + +best.d.slice(8) + '</small>' : '') + '</div>' +
         '<div><b>' + (worst ? pct(worst.r * 100) : '-') + '</b><span>單日最大跌幅</span>' + (worst ? '<small>' + +worst.d.slice(5, 7) + '/' + +worst.d.slice(8) + '</small>' : '') + '</div>' +
