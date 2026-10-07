@@ -335,7 +335,7 @@ function shareClient(SITE) {
       g.restore();
       g.fillStyle = '#fff'; g.font = font(40, true);
       if (bb.bull >= 18) g.fillText('看多 ' + bb.bull + '%', bx + 34, byy + bh / 2 + 2);
-      g.textAlign = 'right'; if (bb.bull <= 82) g.fillText('看空 ' + (100 - bb.bull) + '%', bx + bw - 34, byy + bh / 2 + 2); g.textAlign = 'left';
+      g.textAlign = 'right'; if (bb.bull <= 82) g.fillText('看空 ' + (100 - bb.bull) + '%', bx + bw - 34, byy + bh / 2 + 2); else { g.fillStyle = '#2fb36a'; g.font = font(26, true); g.fillText('看空 ' + (100 - bb.bull) + '%', bx + bw, top + 42); } g.textAlign = 'left'; if (bb.bull < 18) { g.fillStyle = '#e5484d'; g.font = font(26, true); g.fillText('看多 ' + bb.bull + '%', bx + 260, top + 42); }
       top += 240;
     }
     // 表格
