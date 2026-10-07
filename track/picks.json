@@ -860,6 +860,18 @@
    "above60": true
   },
   {
+   "code": "2489",
+   "name": "瑞軒",
+   "mkt": "上市",
+   "industry": "光電業",
+   "close": 41.4,
+   "yoy": 32.48,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": true
+  },
+  {
    "code": "9904",
    "name": "寶成",
    "mkt": "上市",
@@ -932,12 +944,12 @@
    "above60": true
   },
   {
-   "code": "6214",
-   "name": "精誠",
+   "code": "1319",
+   "name": "東陽",
    "mkt": "上市",
-   "industry": "資訊服務業",
-   "close": 189.5,
-   "yoy": 61.91075076871571,
+   "industry": "汽車工業",
+   "close": 80,
+   "yoy": 8.71,
    "star": false,
    "okUp": false,
    "okVol": false,
