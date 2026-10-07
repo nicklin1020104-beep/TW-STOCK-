@@ -63,10 +63,10 @@ function journalClient(API) {
       if (e.kind === 'withdraw') { cash -= e.amount; invested -= e.amount; return; }
       if (e.kind === 'dividend') { cash += e.amount; dividends += e.amount; realized.push({ date: e.date, code: e.code, name: e.name, pnl: e.amount, div: true }); return; }
       var fx = e.market === 'US' ? e.fx : 1, key = e.market + ':' + e.code;
-      var p = pos[key] || (pos[key] = { market: e.market, code: e.code, name: e.name, qty: 0, cost: 0, costLocal: 0, since: e.kind === 'holding' ? null : e.date });
+      var p = pos[key] || (pos[key] = { market: e.market, code: e.code, name: e.name, qty: 0, cost: 0, costLocal: 0, rzLocal: 0, since: e.kind === 'holding' ? null : e.date });
       if (e.name) p.name = e.name;
       if (e.kind === 'holding' || e.kind === 'buy') {
-        if (p.qty <= 0) { p.tp = null; p.sl = null; } // 重新建倉，舊的停利停損不算
+        if (p.qty <= 0) { p.tp = null; p.sl = null; p.rzLocal = 0; } // 重新建倉，舊的停利停損、已實現都不算
         if (e.tp) p.tp = e.tp;
         if (e.sl) p.sl = e.sl;
       }
@@ -85,7 +85,9 @@ function journalClient(API) {
         if (q > 0) {
           var part = p.cost / p.qty * q, pnl = got * (q / e.qty) - part;
           realized.push({ date: e.date, code: e.code, name: p.name, market: e.market, qty: q, pnl: pnl, pct: pnl / part * 100, days: p.since ? Math.round((new Date(e.date) - new Date(p.since)) / 86400000) : null });
-          p.costLocal -= p.costLocal / p.qty * q; p.cost -= part; p.qty -= q;
+          // 這次持股期間的已實現損益（原幣），用來算「扣掉已實現後的成本」
+          var partL = p.costLocal / p.qty * q; p.rzLocal += (e.price * e.qty - (e.fee || 0) - (e.tax || 0)) * (q / e.qty) - partL;
+          p.costLocal -= partL; p.cost -= part; p.qty -= q;
         }
       }
     });
@@ -94,7 +96,7 @@ function journalClient(API) {
     hold.forEach(function (p) {
       var q = Q[sym(p)], px = q && q.price;
       if (px == null && p.market === 'TW') { var n = names[p.code]; px = n && n.c; }
-      p.price = px; p.avg = p.costLocal / p.qty;
+      p.price = px; p.avg = p.costLocal / p.qty; p.adjAvg = p.rzLocal ? (p.costLocal - p.rzLocal) / p.qty : null;
       p.mv = px == null ? null : px * p.qty * (p.market === 'US' ? (fxNow || 0) : 1);
       p.sellCost = p.mv == null || p.market !== 'TW' ? 0 : (function (f) { return f.fee + f.tax; })(feeOf('TW', 'sell', px, p.qty, false, p.code));
       p.upnl = p.mv == null ? null : p.mv - p.cost - p.sellCost; p.upct = p.upnl == null ? null : p.upnl / p.cost * 100;
@@ -241,7 +243,7 @@ function journalClient(API) {
     h += '<h2>目前庫存 <span class="count">' + r.hold.length + ' 檔' + (r.fxNow ? '・美元匯率 ' + r.fxNow.toFixed(2) : '') + '</span></h2>';
     h += r.hold.length ? '<div class="scroll"><table class="compact"><thead><tr><th>股票</th><th>股數</th><th>均價</th><th>現價</th><th>市值（台幣）</th><th>未實現</th><th>報酬率</th><th>停利／停損</th><th>比重</th></tr></thead><tbody>' +
       r.hold.sort(function (a, b) { return (b.mv || 0) - (a.mv || 0); }).map(function (p) {
-        return '<tr><td class="nm"><button class="jn-edit" data-pos="' + p.market + ':' + esc(p.code) + '" title="修改">✏️</button>' + esc(p.code) + ' ' + esc(p.name || '') + (p.market === 'US' ? '<span class="tag">美</span>' : '') + '</td><td>' + fmt(p.qty) + '</td><td>' + fmt(p.avg, 2) + '</td><td>' + (p.price == null ? '-' : fmt(p.price, 2)) + '</td><td>' + (p.mv == null ? '-' : fmt(p.mv)) + '</td><td>' + (p.upnl == null ? '-' : pn(p.upnl)) + '</td><td>' + pct(p.upct) + '</td><td class="jn-note">' + tpsl(p) + '</td><td>' + (p.mv ? (p.mv / Math.max(r.total, r.mv) * 100).toFixed(1) + '%' : '-') + '</td></tr>';
+        return '<tr><td class="nm"><button class="jn-edit" data-pos="' + p.market + ':' + esc(p.code) + '" title="修改">✏️</button>' + esc(p.code) + ' ' + esc(p.name || '') + (p.market === 'US' ? '<span class="tag">美</span>' : '') + '</td><td>' + fmt(p.qty) + '</td><td>' + fmt(p.avg, 2) + (p.adjAvg != null ? '<br><span class="jn-hint" title="把這次持股期間賣出賺／賠的錢算進成本後的均價">扣已實現 ' + fmt(p.adjAvg, 2) + '</span>' : '') + '</td><td>' + (p.price == null ? '-' : fmt(p.price, 2)) + '</td><td>' + (p.mv == null ? '-' : fmt(p.mv)) + '</td><td>' + (p.upnl == null ? '-' : pn(p.upnl)) + '</td><td>' + pct(p.upct) + '</td><td class="jn-note">' + tpsl(p) + '</td><td>' + (p.mv ? (p.mv / Math.max(r.total, r.mv) * 100).toFixed(1) + '%' : '-') + '</td></tr>';
       }).join('') + '</tbody></table></div><p class="jn-hint">未實現損益已扣掉預估賣出手續費和證交稅（跟券商 App 算法一樣）。跟 App 對不起來？按 ✏️ →「🧮 跟券商 App 對帳」。</p>' : '<p class="empty">還沒有庫存，按「＋ 記一筆交易」開始</p>';
     h += eqHtml();
     h += plansSection(r);
