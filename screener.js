@@ -2708,10 +2708,14 @@ ${clientScript()}
       for (var i = 0; i < Math.min(3, ths.length); i++) if (NAME.indexOf(ths[i].textContent.trim().split(/\\s/)[0]) >= 0) { n = i + 1; break; }
       var lefts = [], x = 0;
       for (var j = 0; j < n; j++) { lefts.push(x); x += ths[j].getBoundingClientRect().width; }
+      // 固定欄的底色跟著外面的區塊（灰底卡片裡就用灰色），不然會像多一個白框
+      var bg = '', el = t.parentElement;
+      while (el && el !== document.body) { var c = getComputedStyle(el).backgroundColor; if (c && c !== 'rgba(0, 0, 0, 0)' && c !== 'transparent') { bg = c; break; } el = el.parentElement; }
+      if (bg === getComputedStyle(document.body).backgroundColor) bg = '';
       [].forEach.call(t.rows, function (tr) {
         var cells = tr.cells;
         if (cells.length === 1 && cells[0].colSpan > 1) { cells[0].classList.add('stk'); cells[0].style.left = '0px'; return; } // 分組標題列
-        for (var k = 0; k < n && k < cells.length; k++) { cells[k].classList.add('stk'); cells[k].style.left = lefts[k] + 'px'; cells[k].classList.toggle('stk-last', k === n - 1); }
+        for (var k = 0; k < n && k < cells.length; k++) { cells[k].classList.add('stk'); cells[k].style.left = lefts[k] + 'px'; cells[k].classList.toggle('stk-last', k === n - 1); if (bg && !tr.classList.contains('own') && !tr.classList.contains('det') && !tr.classList.contains('watch-gh')) cells[k].style.background = bg; }
       });
     });
   }
