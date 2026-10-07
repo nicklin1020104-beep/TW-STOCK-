@@ -37,7 +37,7 @@ async function getMargin(date) {
 }
 
 // days：由舊到新的每日行情；instiOf(date) 回傳該日三大法人；holders：tdcc.analyze 的結果
-async function buildLocked({ days, T, instiOf, holders, minLots }) {
+async function buildLocked({ days, T, instiOf, holders, minLots, pass }) {
   const today = days[T].data;
   const flowDates = days.slice(T - P.FLOW_DAYS + 1, T + 1).map((d) => d.date);
   const flows = [];
@@ -47,7 +47,7 @@ async function buildLocked({ days, T, instiOf, holders, minLots }) {
 
   const rows = [];
   for (const [code, q] of Object.entries(today)) {
-    if (q.close == null || (q.vol || 0) / 1000 < minLots) continue;
+    if (q.close == null || (pass ? !pass(code, q) : (q.vol || 0) / 1000 < minLots)) continue;
     // ① 千張大戶
     const h = holderMap[code];
     const okHolder = !!h && h.streak >= P.HOLDER_WEEKS;

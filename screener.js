@@ -43,8 +43,10 @@ const NEWS_PER_TOPIC = 8;
 // 回測最佳組合（backtest/run.js，2026/3~9 月）
 const BEST_BREADTH = 0.5; // 大盤強：收盤站上月線的個股比例
 const BEST_MIN_LOTS = 5000;
-const MIN_LOTS_ALL = 3000; // 產業族群計算用；名單不再過濾，量少的股票在頁面上用紅字標示
-const LIST_MIN_LOTS = 0;
+const MIN_LOTS_ALL = 3000; // 名單只列當日量 ≥ 3,000 張（例外：產業市值前五大、股價 ≥ 1,000 元）
+// 例外名單（產業龍頭）在 main 裡算好；量不足但因例外入選的股票，頁面上用紅字標示
+let KEEP = new Set();
+const passLots = (code, q) => !!q && q.vol != null && (q.vol / 1000 >= MIN_LOTS_ALL || q.close >= 1000 || KEEP.has(code));
 const SURGE_RATIO = 2; // 爆量：當日量 >= 前 20 日均量的倍數（且收紅）
 const THREE_FILE = path.join(__dirname, 'track', 'three.json'); // 所有台股頁面（千金龍頭除外）：當日成交量至少張數
 // 潛伏股：營收加速成長、股價還沒起漲
@@ -224,7 +226,7 @@ function rankInsti(insti, today, prev) {
   const rows = [];
   for (const code of Object.keys(insti)) {
     const q = today[code];
-    if (!q || q.close == null || q.vol / 1000 < LIST_MIN_LOTS) continue;
+    if (!q || q.close == null || !passLots(code, q)) continue;
     const pc = prev[code] && prev[code].close;
     const r = { code, name: q.name, mkt: q.mkt, close: q.close, chg: pc ? (q.close / pc - 1) * 100 : null };
     for (const [k] of INSTI_KINDS) {
@@ -548,7 +550,7 @@ function findLatent(days, T, rev, fund) {
     const closes = days.map((d) => (d.data[code] ? d.data[code].close : null));
     const vols = days.map((d) => (d.data[code] ? d.data[code].vol : null));
     const vavg = ma(vols, 20, T);
-    if (!vavg || vavg / 1000 < LT_MIN_AVG_LOTS || q.vol / 1000 < LIST_MIN_LOTS) continue;
+    if (!vavg || vavg / 1000 < LT_MIN_AVG_LOTS || !passLots(code, q)) continue;
 
     const past = closes.slice(Math.max(0, T - MA_SEASON), T + 1).filter((v) => v != null);
     const fromLow = (q.close / Math.min(...past) - 1) * 100;
@@ -608,7 +610,7 @@ function findCrosses(days, T, rev, fund) {
     if (!(q.open <= Math.min(...now_) && q.close > Math.max(...now_))) continue;
 
     const lots = q.vol / 1000;
-    if (lots < LIST_MIN_LOTS) continue;
+    if (!passLots(code, q)) continue;
     const ma60 = ma(closes, MA_SEASON, T);
     const prevClose = closes[T - 1];
     const row = {
@@ -813,6 +815,23 @@ async function main() {
   const groupAbove = [];
   const groupBelow = [];
 
+  // 產業龍頭（同產業市值前五大）：量不到 3,000 張也列入名單
+  let sharesAll = {};
+  try {
+    sharesAll = await getShares();
+  } catch (e) {
+    console.error('發行股數下載失敗：', e.message);
+  }
+  {
+    const byInd = {};
+    for (const [c, q] of Object.entries(today)) {
+      const ind = rev[c] && rev[c].industry;
+      if (!ind || q.close == null || !sharesAll[c]) continue;
+      (byInd[ind] = byInd[ind] || []).push([c, q.close * sharesAll[c]]);
+    }
+    KEEP = new Set(Object.values(byInd).flatMap((l) => l.sort((a, b) => b[1] - a[1]).slice(0, 5).map((x) => x[0])));
+    console.log('產業龍頭例外', KEEP.size, '檔');
+  }
   const allCross = findCrosses(days, T, rev, fund);
   const latent = findLatent(days, T, rev, fund);
   const crossSet = new Set(allCross.map((r) => r.code));
@@ -821,7 +840,7 @@ async function main() {
   for (const [code, v] of Object.entries(three)) {
     const q = today[code];
     const r = rev[code];
-    if (!v.up || !q || q.close == null || q.vol / 1000 < LIST_MIN_LOTS || !r || r.yoy == null || r.yoy <= MIN_YOY || yoyDown(r)) continue;
+    if (!v.up || !q || q.close == null || !passLots(code, q) || !r || r.yoy == null || r.yoy <= MIN_YOY || yoyDown(r)) continue;
     const closes = days.map((d) => (d.data[code] ? d.data[code].close : null));
     const m = [...MA_SHORT, MA_SEASON].map((n) => ma(closes, n, T));
     const p = MA_SHORT.map((n) => ma(closes, n, T - 1));
@@ -860,7 +879,7 @@ async function main() {
     threeHist[d] = Object.entries(three)
       .filter(([c, v]) => {
         const q = days[i].data[c], r = rev[c];
-        return v.up && q && q.close != null && q.vol / 1000 >= LIST_MIN_LOTS && r && r.yoy > MIN_YOY && !yoyDown(r);
+        return v.up && q && q.close != null && passLots(c, q) && r && r.yoy > MIN_YOY && !yoyDown(r);
       })
       .map(([c]) => c);
   }
@@ -940,7 +959,7 @@ async function main() {
     const weeks = tdcc.analyze(99).dates.length; // 已有幾週資料
     holders = { ...tdcc.analyze(Math.max(1, Math.min(3, weeks - 1))), partial: weeks < 4 };
     holders.rows = holders.rows
-      .filter((h) => today[h.code] && today[h.code].vol / 1000 >= LIST_MIN_LOTS)
+      .filter((h) => passLots(h.code, today[h.code]))
       .map((h) => {
         const q = today[h.code];
         const r = rev[h.code] || {};
@@ -954,12 +973,7 @@ async function main() {
   // 產業趨勢
   let industry = null;
   let allDays = null;
-  let sharesAll = {};
-  try {
-    sharesAll = await getShares();
-  } catch (e) {
-    console.error('發行股數下載失敗：', e.message);
-  }
+
   try {
     // 用全部快取的歷史（約 9 個月）計算，回測統計比較可靠
     const hist = fs
@@ -980,7 +994,7 @@ async function main() {
   let cups = [];
   try {
     if (allDays) {
-      cups = findCups(allDays, allDays.length - 1, { minLots: LIST_MIN_LOTS, filter: (c) => rev[c] && rev[c].yoy > MIN_YOY && !yoyDown(rev[c]) });
+      cups = findCups(allDays, allDays.length - 1, { minLots: 0, filter: (c) => passLots(c, allDays[allDays.length - 1].data[c]) && rev[c] && rev[c].yoy > MIN_YOY && !yoyDown(rev[c]) });
       for (const r of cups) Object.assign(r, { industry: rev[r.code].industry, yoy: rev[r.code].yoy, yoyPrev: rev[r.code].yoyPrev, mom: rev[r.code].mom, cumYoy: rev[r.code].cumYoy, trustLots: trustOf(r.code) == null ? null : Math.round(trustOf(r.code) / 1000), ...(fund[r.code] || {}) });
     }
   } catch (e) {
@@ -996,7 +1010,7 @@ async function main() {
       } catch {}
       const cupFilter = (c) => rev[c] && rev[c].yoy > MIN_YOY && !yoyDown(rev[c]);
       for (let i = 0; i < allDays.length - 1; i++) {
-        if (allDays[i].date >= TRACK_START && !ct[allDays[i].date]) ct[allDays[i].date] = findCups(allDays, i, { minLots: LIST_MIN_LOTS, filter: cupFilter }).map(toCupPick);
+        if (allDays[i].date >= TRACK_START && !ct[allDays[i].date]) ct[allDays[i].date] = findCups(allDays, i, { minLots: 0, filter: (c) => passLots(c, allDays[i].data[c]) && cupFilter(c) }).map(toCupPick);
       }
       ct[tradeDate] = cups.map(toCupPick);
       fs.mkdirSync(path.dirname(CUP_TRACK_FILE), { recursive: true });
@@ -1110,7 +1124,7 @@ async function main() {
   // 主力鎖碼
   let locked = null;
   try {
-    locked = await buildLocked({ days, T, instiOf: getInsti, holders: tdcc.analyze(1), minLots: LIST_MIN_LOTS });
+    locked = await buildLocked({ days, T, instiOf: getInsti, holders: tdcc.analyze(1), minLots: 0, pass: passLots });
     const addFund = (r) => Object.assign(r, rev[r.code] ? { yoy: rev[r.code].yoy, yoyPrev: rev[r.code].yoyPrev, mom: rev[r.code].mom, cumYoy: rev[r.code].cumYoy } : {}, fund[r.code] || {});
     locked.all.forEach(addFund);
     locked.near.forEach(addFund);
@@ -1755,6 +1769,7 @@ function renderVote(dateLabel, extra) {
 <div class="vote-result" hidden></div>
 <div class="vote-msg"></div>
 ${recap}
+<div class="vote-sharebar"><button type="button" class="sh-tbl vote-share">📤 分享投票</button></div>
 </div>
 <script>
 (function () {
@@ -1804,7 +1819,37 @@ ${recap}
     res.hidden = false;
     msg.textContent = '14:00 開放投下一個交易日・排行榜在「個人檔案」';
   }
-  function load() { fetch(API + '/api/poll?date=' + date + '&vid=' + encodeURIComponent(vid), authH()).then(function (r) { return r.json(); }).then(function (p) { if (p.closed) closedView(p); else if (p.mine) show(p); }).catch(function () {}); }
+  // 分享投票：只放大家的結果，不放自己投了什麼
+  var lastP = null;
+  box.querySelector('.vote-share').onclick = function () {
+    if (!window.__shareCard) return;
+    var p = lastP || {}, rows = [], title, sub = '', up = '#ff5d63', dn = '#3ddc84', fg = '#ffffff';
+    function pv(v) { return { t: (v >= 0 ? '+' : '') + v.toFixed(2) + '%', c: v >= 0 ? up : dn }; }
+    if (p.closed && p.result) {
+      var r = p.result, nd = r.next ? (+r.next.slice(4, 6)) + '/' + (+r.next.slice(6)) : '';
+      title = '🎉 開獎！' + nd + ' 收盤結果';
+      rows.push({ name: '加權指數', vals: [pv(r.tw)] });
+      ['🥇', '🥈', '🥉'].forEach(function (m, i) { var t = r.top3[i]; if (t) rows.push({ name: m + ' ' + t, vals: [r.themes[t] != null ? pv(r.themes[t]) : { t: '', c: fg }] }); });
+      if (p.total) {
+        var b = Math.round(p.bull / p.total * 100), ok = (b >= 50) === (r.tw >= 0);
+        rows.push({ name: '大家看多', vals: [{ t: b + '%', c: fg }] });
+        rows.push({ name: '多數人', vals: [{ t: ok ? '猜對方向 ✓' : '猜錯方向 ✗', c: ok ? up : dn }] });
+      }
+      sub = '大家來猜明天漲跌・猜中得分上排行榜';
+      return window.__shareCard({ cols: ['項目', '結果'], rows: rows, total: rows.length }, title, sub, 'main');
+    }
+    title = '🗳️ 明天怎麼走？大家來猜';
+    if (p.total) {
+      var bull = Math.round(p.bull / p.total * 100);
+      rows.push({ name: '🐂 看多', vals: [{ t: bull + '%', c: up }] });
+      rows.push({ name: '🐻 看空', vals: [{ t: (100 - bull) + '%', c: dn }] });
+      (p.themes || []).slice(0, 5).forEach(function (t, i) { rows.push({ name: '看好族群 ' + (i + 1) + '. ' + t.theme, vals: [{ t: '', c: fg }] }); });
+    }
+    var rc = box.querySelector('.vote-recap');
+    sub = rc ? rc.textContent.split('📊').join('').replace(/[ ]+/g, ' ').trim() : '每天收盤後開放投票，猜中得分上排行榜';
+    window.__shareCard({ cols: ['大家怎麼看', '比例'], rows: rows, total: rows.length, emptyText: '還沒有人投票，來當第一個！' }, title, sub, 'main');
+  };
+  function load() { fetch(API + '/api/poll?date=' + date + '&vid=' + encodeURIComponent(vid), authH()).then(function (r) { return r.json(); }).then(function (p) { lastP = p; if (p.closed) closedView(p); else if (p.mine) show(p); }).catch(function () {}); }
   // 先選看多／看空和族群，按「鎖定投票」才送出；09:00 開盤前都可以改
   var bias = null, saved = null;
   var saveBtn = box.querySelector('.vote-save'), savedBox = box.querySelector('.vote-saved');
@@ -2230,7 +2275,7 @@ function clientScript() {
         '<h3>每日訪客 <span class="count">今天 ' + (tv ? tv.total : 0) + ' 人（會員 ' + (tv ? tv.members : 0) + '・訪客 ' + (tv ? tv.guests : 0) + '・只看介紹頁 ' + (tv ? tv.landing : 0) + '）</span></h3>' +
         (vis ? '<div class="scroll"><table class="compact"><thead><tr><th>日期</th><th>總人數</th><th>會員</th><th>訪客</th><th>只看介紹頁</th><th>平均停留</th><th>總停留</th></tr></thead><tbody>' + vis + '</tbody></table></div><p class="hint">以「裝置」計算，同一台裝置一天只算一次；同一天先當訪客、後來登入，算會員。</p>' : '<p class="empty">還沒有訪客資料</p>') +
         '<h3>今天上線的會員 <span class="count">' + onlineToday.length + ' 人</span></h3>' + (onlineToday.length ? '<div class="scroll"><table class="compact"><thead><tr><th>最近上線</th><th>暱稱</th><th>今天停留</th><th>Google 名字</th><th>信箱</th></tr></thead><tbody>' + onlineToday.map(function (m) { return '<tr><td>' + new Date(m.last_login).toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit', hour12: false }) + '</td><td class="nm">' + esc(m.nickname || '（未取暱稱）') + '</td><td><b>' + dur(m.today_secs) + '</b></td><td>' + esc(m.name || '') + '</td><td class="hint">' + esc(m.email || '') + '</td></tr>'; }).join('') + '</tbody></table></div><p class="hint">「最近上線」＝最後一次使用網站的時間（最多 5 分鐘更新一次）。上面的會員數是「裝置數」，同一人用手機和電腦會算 2。</p>' : '<p class="empty">今天還沒有會員上線</p>') + '<h3>每日新會員</h3>' + (sign ? '<div class="scroll"><table class="compact"><thead><tr><th>日期</th><th>新會員</th></tr></thead><tbody>' + sign + '</tbody></table></div>' : '<p class="empty">尚無會員</p>') +
-        '<h3>開啟通知的人 <span class="count">' + (j.pushList || []).length + ' 台裝置</span></h3>' + ((j.pushList || []).length ? '<details open><summary>名單（最新開啟在最上面；沒登入就開的顯示「訪客」）</summary><div class="scroll"><table class="compact"><thead><tr><th>開啟時間</th><th>暱稱</th><th>Google 名字</th><th>信箱</th><th>裝置</th><th>開盤</th><th>收盤</th><th>報告</th></tr></thead><tbody>' + j.pushList.map(function (p) { var on = function (k) { return p.prefs[k] === false ? '<span class="hint">關</span>' : '✅'; }; return '<tr><td>' + tf(p.created) + '</td><td class="nm">' + (p.email ? esc(p.nickname || '（未取暱稱）') : '<span class="hint">訪客</span>') + '</td><td>' + esc(p.name || '') + '</td><td class="hint">' + esc(p.email || '') + '</td><td>' + esc(p.dev) + '</td><td>' + on('open') + '</td><td>' + on('close') + '</td><td>' + on('report') + '</td></tr>'; }).join('') + '</tbody></table></div></details>' : '<p class="empty">還沒有人開啟通知</p>') +
+        '<h3>開啟通知的人 <span class="count">' + (j.pushList || []).length + ' 台裝置</span></h3>' + ((j.pushList || []).length ? '<details open><summary>名單（最新開啟在最上面；沒登入就開的顯示「訪客」）</summary><div class="scroll"><table class="compact"><thead><tr><th>開啟時間</th><th>暱稱</th><th>Google 名字</th><th>信箱</th><th>裝置</th><th>開盤</th><th>收盤</th><th>報告</th><th>最後推送</th></tr></thead><tbody>' + j.pushList.map(function (p) { var on = function (k) { return p.prefs[k] === false ? '<span class="hint">關</span>' : '✅'; }; return '<tr><td>' + tf(p.created) + '</td><td class="nm">' + (p.email ? esc(p.nickname || '（未取暱稱）') : '<span class="hint">訪客</span>') + '</td><td>' + esc(p.name || '') + '</td><td class="hint">' + esc(p.email || '') + '</td><td>' + esc(p.dev) + '</td><td>' + on('open') + '</td><td>' + on('close') + '</td><td>' + on('report') + '</td><td>' + (!p.lastTry ? '<span class="hint">尚無紀錄</span>' : p.lastErr ? '<b class="dn">失敗</b> ' + tf(p.lastTry) + '<br><span class="hint">' + esc(p.lastErr) + '</span>' : '<span class="up">✓ 成功</span> ' + tf(p.lastOk)) + '</td></tr>'; }).join('') + '</tbody></table></div></details>' : '<p class="empty">還沒有人開啟通知</p>') +
         '<h3>最新加入的會員</h3>' + (mem ? '<details open><summary>會員名單（最新加入在最上面，最多 100 人）</summary><div class="scroll"><table class="compact"><thead><tr><th>加入時間</th><th>暱稱</th><th>Google 名字</th><th>信箱</th><th>最近上線</th><th>累計停留</th></tr></thead><tbody>' + mem + '</tbody></table></div></details>' : '') +
         '<h3>每日投票總覽</h3>' +
         (days ? '<div class="scroll"><table class="compact"><thead><tr><th>投票日</th><th>票數</th><th>登入會員</th><th>看多</th></tr></thead><tbody>' + days + '</tbody></table></div>' : '<p class="empty">尚無投票</p>') +
@@ -2566,7 +2611,7 @@ h1{font-size:22px;margin:0 0 4px}h2{font-size:17px;margin:28px 0 8px}.sub{color:
 .scroll{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
 th,td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}th:nth-child(-n+3),td:nth-child(-n+3){text-align:left}
 th{color:var(--mute);font-weight:500}.up{color:var(--up)}.dn{color:var(--dn)}a{color:inherit}
-.tag{font-size:11px;color:var(--mute);margin-left:4px}td.lv,td.lv a,a.lv{color:#e0242b!important}td.cum{font-weight:800;background:rgba(127,127,127,.08)}.empty{color:var(--mute)}.count{font-weight:400;color:var(--mute);font-size:14px}
+.tag{font-size:11px;color:var(--mute);margin-left:4px}td.lv,td.lv a,a.lv{color:#e0242b!important}td.cum{font-weight:800;background:rgba(127,127,127,.08)}.vote-sharebar{display:flex;justify-content:flex-end;margin-top:8px}.empty{color:var(--mute)}.count{font-weight:400;color:var(--mute);font-size:14px}
 h3{font-size:14px;margin:14px 0 6px}.cols{display:grid;grid-template-columns:1fr 1fr;gap:20px}@media (max-width:900px){.cols{grid-template-columns:1fr}}
 table.flow td:first-child,table.flow th:first-child{color:var(--mute);text-align:right;width:1em}table.flow td:nth-child(2),table.flow th:nth-child(2){text-align:left}table.flow td:nth-child(3),table.flow th:nth-child(3){text-align:right}
 .tabs{display:flex;gap:6px;flex-wrap:wrap}.tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:999px;cursor:pointer;font:inherit;font-size:13px}.tab.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}

@@ -248,6 +248,10 @@ function shareClient(SITE) {
   modal.innerHTML = '<div class="sh-box"><img alt="分享圖卡預覽"><div class="sh-btns"><button type="button" class="sh-main sh-share">分享圖片</button><button type="button" class="sh-dl">下載圖片</button><button type="button" class="sh-copy">複製連結</button><button type="button" class="sh-close" style="grid-column:1/-1">關閉</button></div><div class="sh-tip">Threads 不能貼連結也沒關係，圖上有 QR Code，朋友掃一下就能進來。</div></div>';
   document.body.appendChild(modal);
   var img = modal.querySelector('img'), blob = null, cur = null;
+  if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && /Macintosh/.test(navigator.userAgent))) {
+    modal.querySelector('.sh-dl').textContent = '存到相簿';
+    modal.querySelector('.sh-tip').textContent = '按「存到相簿」後選「儲存影像」，或長按上面的圖片 →「加入照片」。Threads 不能貼連結也沒關係，圖上有 QR Code。';
+  }
 
   function activePage() { return document.querySelector('.page:not([hidden])'); }
   function pageKey() { var p = activePage(); return p ? p.dataset.p : 'main'; }
@@ -327,7 +331,7 @@ function shareClient(SITE) {
     g.textAlign = 'right';
     data.cols.slice(1).forEach(function (h, i) { g.fillText(fit(g, h, vw - 12), vx + vw * (i + 1), top + 40); });
     g.textAlign = 'left';
-    if (!data.rows.length) { g.fillStyle = C.mute; g.font = font(32); g.fillText('今日無符合條件的股票', 70, top + 110); }
+    if (!data.rows.length) { g.fillStyle = C.mute; g.font = font(32); g.fillText(data.emptyText || '今日無符合條件的股票', 70, top + 110); }
     data.rows.forEach(function (r, k) {
       var y = top + 70 + k * rowH;
       g.fillStyle = C.line; g.fillRect(64, y, W - 128, 2);
@@ -370,6 +374,11 @@ function shareClient(SITE) {
     var sub = hc ? hc.textContent.replace(/\s+/g, ' ').trim() : '';
     var base = tab ? tab.textContent.trim() : '';
     if (base && sub.indexOf(base) === 0) sub = sub.slice(base.length).trim();
+    render(data, title, sub, key);
+  }
+  // 其他地方（例如投票）也可以直接給資料產生圖卡
+  window.__shareCard = function (data, title, sub, key) { render(data, title, sub, key || pageKey()); };
+  function render(data, title, sub, key) {
     var dm = (document.querySelector('.head + .sub') || document.body).textContent.match(/交易日\s*([\d\/]+)/);
     var date = dm ? dm[1] : '';
     var url = SITE + '#' + key;
@@ -384,6 +393,10 @@ function shareClient(SITE) {
   function fileName() { return '飆股情報局_' + cur.title.replace(/[\\/:*?"<>|・]/g, '_') + '_' + cur.date.replace(/\//g, '') + '.png'; }
   function download() {
     if (!blob) return;
+    // 手機：叫出系統分享選單，選「儲存影像」就會存進相簿（直接下載只會進「檔案」）
+    var mobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && /Macintosh/.test(navigator.userAgent));
+    var f = new File([blob], fileName(), { type: 'image/png' });
+    if (mobile && navigator.canShare && navigator.canShare({ files: [f] })) { navigator.share({ files: [f] }).catch(function () {}); return; }
     var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = fileName(); a.click();
     setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
   }
