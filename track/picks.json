@@ -845,5 +845,139 @@
    "okVol": false,
    "above60": true
   }
+ ],
+ "20261007": [
+  {
+   "code": "2515",
+   "name": "中工",
+   "mkt": "上市",
+   "industry": "建材營造",
+   "close": 12.15,
+   "yoy": 28.83948243046841,
+   "star": true,
+   "okUp": true,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "9904",
+   "name": "寶成",
+   "mkt": "上市",
+   "industry": "運動休閒",
+   "close": 24.95,
+   "yoy": 4.325261712464019,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "2464",
+   "name": "盟立",
+   "mkt": "上市",
+   "industry": "其他電子業",
+   "close": 193,
+   "yoy": 73.70780965783624,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "2610",
+   "name": "華航",
+   "mkt": "上市",
+   "industry": "航運業",
+   "close": 20.35,
+   "yoy": 27.22342415074881,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": false
+  },
+  {
+   "code": "6472",
+   "name": "保瑞",
+   "mkt": "上市",
+   "industry": "生技醫療業",
+   "close": 428,
+   "yoy": 59.21841576870238,
+   "star": false,
+   "okUp": true,
+   "okVol": false,
+   "above60": true
+  },
+  {
+   "code": "3363",
+   "name": "上詮",
+   "mkt": "上櫃",
+   "industry": "通信網路業",
+   "close": 679,
+   "yoy": 13.197373811184553,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": true
+  },
+  {
+   "code": "4904",
+   "name": "遠傳",
+   "mkt": "上市",
+   "industry": "通信網路業",
+   "close": 106,
+   "yoy": 15.651609823935727,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": true
+  },
+  {
+   "code": "6214",
+   "name": "精誠",
+   "mkt": "上市",
+   "industry": "資訊服務業",
+   "close": 189.5,
+   "yoy": 61.91075076871571,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": true
+  },
+  {
+   "code": "2540",
+   "name": "愛山林",
+   "mkt": "上市",
+   "industry": "建材營造",
+   "close": 48.75,
+   "yoy": 98.38295459889332,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": false
+  },
+  {
+   "code": "8454",
+   "name": "富邦媒",
+   "mkt": "上市",
+   "industry": "數位雲端",
+   "close": 244.5,
+   "yoy": 7.796143351300176,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": false
+  },
+  {
+   "code": "9908",
+   "name": "大台北",
+   "mkt": "上市",
+   "industry": "油電燃氣業",
+   "close": 29.05,
+   "yoy": 4.842315057251162,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": false
+  }
  ]
 }
