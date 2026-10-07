@@ -1827,7 +1827,7 @@ ${recap}
     function pv(v) { return { t: (v >= 0 ? '+' : '') + v.toFixed(2) + '%', c: v >= 0 ? up : dn }; }
     if (p.closed && p.result) {
       var r = p.result, nd = r.next ? (+r.next.slice(4, 6)) + '/' + (+r.next.slice(6)) : '';
-      title = '🎉 開獎！' + nd + ' 收盤結果';
+      title = '開獎！' + nd + ' 收盤結果';
       rows.push({ name: '加權指數', vals: [pv(r.tw)] });
       ['🥇', '🥈', '🥉'].forEach(function (m, i) { var t = r.top3[i]; if (t) rows.push({ name: m + ' ' + t, vals: [r.themes[t] != null ? pv(r.themes[t]) : { t: '', c: fg }] }); });
       if (p.total) {
@@ -1838,7 +1838,7 @@ ${recap}
       sub = '大家來猜明天漲跌・猜中得分上排行榜';
       return window.__shareCard({ cols: ['項目', '結果'], rows: rows, total: rows.length }, title, sub, 'main');
     }
-    title = '🗳️ 明天怎麼走？大家來猜';
+    title = '明天怎麼走？大家來猜';
     if (p.total) {
       var bull = Math.round(p.bull / p.total * 100);
       rows.push({ name: '🐂 看多', vals: [{ t: bull + '%', c: up }] });

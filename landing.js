@@ -337,7 +337,7 @@ function shareClient(SITE) {
       g.fillStyle = C.line; g.fillRect(64, y, W - 128, 2);
       var cy = y + rowH / 2 + 2;
       g.fillStyle = C.gold; g.font = font(26, true); g.fillText(String(k + 1), 70, cy);
-      g.fillStyle = C.fg; g.font = font(data.cols.length > 1 ? 34 : 30, true); g.fillText(fit(g, r.name, nameW - 50), 112, cy);
+      g.fillStyle = C.fg; g.font = font(data.cols.length > 1 ? 34 : 30, true); g.fillText(fit(g, r.name, r.vals.every(function (v) { return !v.t; }) ? W - 200 : nameW - 50), 112, cy);
       g.textAlign = 'right';
       r.vals.forEach(function (v, i) { g.fillStyle = v.c; g.font = font(v.t.length > 8 ? 24 : 32, true); g.fillText(fit(g, v.t, vw - 12), vx + vw * (i + 1), cy); });
       g.textAlign = 'left';
