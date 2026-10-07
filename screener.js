@@ -292,11 +292,12 @@ async function getNews(query) {
 }
 
 // 公開資訊觀測站某月營收彙總（big5 HTML）：{ code: { rev, mom, yoy, cumYoy } }
-async function getRevenueMonth(rocYM, market) {
+// live＝當月還在陸續公布：不讀不寫快取、筆數少也接受
+async function getRevenueMonth(rocYM, market, live) {
   const dir = path.join(CACHE, 'revenue');
   fs.mkdirSync(dir, { recursive: true });
   const file = path.join(dir, `${rocYM}_${market}.json`);
-  if (fs.existsSync(file)) return JSON.parse(fs.readFileSync(file, 'utf8'));
+  if (!live && fs.existsSync(file)) return JSON.parse(fs.readFileSync(file, 'utf8'));
   const url = `https://mopsov.twse.com.tw/nas/t21/${market}/t21sc03_${+rocYM.slice(0, 3)}_${+rocYM.slice(3)}_0.html`;
   const res = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0' } });
   const html = new TextDecoder('big5').decode(await res.arrayBuffer());
@@ -307,6 +308,7 @@ async function getRevenueMonth(rocYM, market) {
       out[cells[0]] = { rev: num(cells[2]), mom: num(cells[5]), yoy: num(cells[6]), cumYoy: num(cells[9]) };
     }
   }
+  if (live) return out;
   if (Object.keys(out).length < 100) throw new Error(`營收資料異常 ${url}`);
   fs.writeFileSync(file, JSON.stringify(out));
   return out;
@@ -316,6 +318,7 @@ async function getRevenueMonth(rocYM, market) {
 const prevYM = (ym, n = 1) => {
   let y = +ym.slice(0, 3), m = +ym.slice(3) - n;
   while (m <= 0) (m += 12), y--;
+  while (m > 12) (m -= 12), y++; // n 是負的＝往後推（例 '11512' -1 -> '11601'）
   return `${y}${String(m).padStart(2, '0')}`;
 };
 
@@ -438,6 +441,26 @@ async function getRevenue() {
       month: r['資料年月'],
       industry: r['產業別'],
     };
+  }
+  // 開放資料要等全部公司公布完（約每月 10 號後）才換月份；已經先公布下個月營收的公司，從觀測站彙總表補上
+  const months = Object.values(out).map((r) => r.month).filter(Boolean).sort();
+  const latest = months[months.length - 1];
+  if (latest) {
+    const next = prevYM(latest, -1);
+    let n = 0;
+    for (const mk of ['sii', 'otc']) {
+      try {
+        const live = await getRevenueMonth(next, mk, true);
+        for (const [code, v] of Object.entries(live)) {
+          if (!out[code] || !(out[code].month < next)) continue;
+          Object.assign(out[code], { yoy: v.yoy, mom: v.mom, amt: v.rev, cumYoy: v.cumYoy, month: next });
+          n++;
+        }
+      } catch (e) {
+        console.error('新月份營收下載失敗', next, mk, e.message);
+      }
+    }
+    console.log(`營收：${next} 已公布 ${n} 檔，其餘用 ${latest}`);
   }
   return out;
 }
@@ -1593,11 +1616,11 @@ function renderIR50({ asOf, conf, members, today }) {
 <td>${trend(r)}${r.yoyPrev != null && r.yoy != null ? (r.yoy >= r.yoyPrev ? ' <span class="chip good">加速</span>' : ' <span class="chip bad">放緩</span>') : ''}</td>
 <td>${r.close ?? '-'}</td>${r.chg == null ? '<td>-</td>' : pctCell(r.chg)}</tr>`)
     .join('');
-  const ym = members.find((r) => r.month);
+  const ms = members.map((r) => r.month).filter(Boolean).sort(), ym = ms.length ? { month: ms[ms.length - 1] } : null, nNew = ym ? ms.filter((x) => x === ym.month).length : 0;
   return `<h2>0050 成分股：法說會與營收 <span class="count">成分股資料日期 ${asOf || '-'}，共 ${members.length} 檔</span></h2>
 <h3>即將召開的法說會 <span class="count">${upcoming.length} 場・紅底為公司自辦（通常公布財報與展望）</span></h3>${tbl(upcoming)}
 <details><summary>近 14 天已召開（${recent.length} 場）</summary>${tbl(recent)}</details>
-<h3>最新月營收 <span class="count">${ym ? ym.month.slice(0, 3) + ' 年 ' + +ym.month.slice(3) + ' 月' : ''}・依 YoY 由高到低</span></h3>
+<h3>最新月營收 <span class="count">${ym ? ym.month.slice(0, 3) + ' 年 ' + +ym.month.slice(3) + ' 月' + (nNew < ms.length ? `（已公布 ${nNew} 檔，其餘為上個月）` : '') : ''}・依 YoY 由高到低</span></h3>
 <div class="scroll"><table><thead><tr><th>代號</th><th>名稱</th><th>0050 權重</th><th>營收(億)</th><th>月增</th><th>年增</th><th>累計年增</th><th>YoY 近 3 月</th><th>收盤</th><th>漲跌</th></tr></thead><tbody>${revRows}</tbody></table></div>`;
 }
 
