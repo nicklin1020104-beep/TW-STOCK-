@@ -113,7 +113,7 @@ function journalClient(API) {
   var EQ = { range: 'all', mode: 'ret', hist: {} }, eqChart = null;
   function eqHtml() {
     return '<h2>📈 我的資產走勢</h2><div class="jn-eqbar"><div class="jn-seg jn-rng">' + [['all', '從記帳開始'], [30, '近1個月'], [90, '近3個月'], [365, '近1年']].map(function (x) { return '<button type="button" data-r="' + x[0] + '"' + (String(EQ.range) === String(x[0]) ? ' class="on"' : '') + '>' + x[1] + '</button>'; }).join('') + '</div>' +
-      '<div class="jn-seg jn-mode"><button type="button" data-m="value"' + (EQ.mode === 'value' ? ' class="on"' : '') + '>總資產</button><button type="button" data-m="ret"' + (EQ.mode === 'ret' ? ' class="on"' : '') + '>每天漲跌 vs 大盤</button></div></div>' +
+      '<div class="jn-seg jn-mode"><button type="button" data-m="value"' + (EQ.mode === 'value' ? ' class="on"' : '') + '>總資產</button><button type="button" data-m="ret"' + (EQ.mode === 'ret' ? ' class="on"' : '') + '>報酬率 vs 大盤</button></div></div>' +
       '<div class="jn-chart jn-eq"><canvas id="jn-c3"></canvas><p class="jn-hint jn-eqmsg">計算中…</p></div><div class="jn-cards jn-eqstats"></div>';
   }
   function histOf(sym, from) {
@@ -187,16 +187,15 @@ function journalClient(API) {
         dMy.push(a); dMk.push(b); dLab.push(lab[j]);
         if (a != null && b != null) { nDays++; if (a > b) winDays++; }
       }
-      if (EQ.mode === 'ret' && !dMy.length) msg.textContent = '從記帳第一天開始算，下一個交易日收盤後就會出現第一根長條';
       var cs = getComputedStyle(document.documentElement), fg = cs.getPropertyValue('--fg').trim() || '#222', up = cs.getPropertyValue('--up').trim() || '#d0312d';
       var dn = cs.getPropertyValue('--dn').trim() || '#16a34a';
       var ds = EQ.mode === 'value'
         ? [{ label: '總資產', data: rows.map(function (x) { return Math.round(x.v); }), borderColor: '#2563eb', backgroundColor: 'rgba(37,99,235,0.08)', fill: true, tension: 0.25, pointRadius: 0, borderWidth: 2.5 }]
-        : [{ label: '我', data: dMy, backgroundColor: dMy.map(function (v) { return v >= 0 ? up : dn; }), borderRadius: 3 }, { label: '大盤（加權指數）', data: dMk, backgroundColor: '#b8c2d1', borderRadius: 3 }];
+        : [{ label: '我的總損益 %', data: my, borderColor: up, tension: 0.25, pointRadius: 0, borderWidth: 2.5 }, { label: '加權指數', data: mk, borderColor: '#94a3b8', borderDash: [6, 5], tension: 0.25, pointRadius: 0, borderWidth: 2 }];
       loadChart().then(function () {
         if (g0 !== gen) return;
         if (eqChart) eqChart.destroy();
-        eqChart = new Chart(document.getElementById('jn-c3'), { type: EQ.mode === 'value' ? 'line' : 'bar', data: { labels: EQ.mode === 'value' ? lab : dLab, datasets: ds }, options: { interaction: { mode: 'index', intersect: false }, plugins: { legend: { display: EQ.mode === 'ret', labels: { color: fg } }, tooltip: { callbacks: { label: function (c) { return c.dataset.label + '：' + (EQ.mode === 'value' ? '$' + c.raw.toLocaleString() : (c.raw >= 0 ? '+' : '') + c.raw + '%'); } } } }, scales: { x: { ticks: { color: fg, maxTicksLimit: 7 }, grid: { display: false } }, y: { ticks: { color: fg, callback: function (v) { return EQ.mode === 'value' ? (Math.abs(v) >= 1e4 ? (v / 1e4).toFixed(0) + '萬' : v) : v + '%'; } } } } } });
+        eqChart = new Chart(document.getElementById('jn-c3'), { type: 'line', data: { labels: lab, datasets: ds }, options: { interaction: { mode: 'index', intersect: false }, plugins: { legend: { display: EQ.mode === 'ret', labels: { color: fg } }, tooltip: { callbacks: { label: function (c) { return c.dataset.label + '：' + (EQ.mode === 'value' ? '$' + c.raw.toLocaleString() : (c.raw >= 0 ? '+' : '') + c.raw + '%'); } } } }, scales: { x: { ticks: { color: fg, maxTicksLimit: 7 }, grid: { display: false } }, y: { ticks: { color: fg, callback: function (v) { return EQ.mode === 'value' ? (Math.abs(v) >= 1e4 ? (v / 1e4).toFixed(0) + '萬' : v) : v + '%'; } } } } } });
       });
       var lastMy = my[my.length - 1], lastMk = mk[mk.length - 1];
       root.querySelector('.jn-eqstats').innerHTML =
@@ -225,8 +224,8 @@ function journalClient(API) {
     var r = calc();
     var rz = r.realized.reduce(function (a, x) { return a + x.pnl; }, 0), uz = r.hold.reduce(function (a, p) { return a + (p.upnl || 0); }, 0);
     var trades = r.realized.filter(function (x) { return !x.div; }), wins = trades.filter(function (x) { return x.pnl > 0; });
-    var ret = r.invested > 0 ? (r.total - r.invested) / r.invested * 100 : null;
-    var h = '<div class="jn-cards"><div><b>' + money(r.total) + '</b><span>總資產（現金＋股票）</span>' + (ret == null ? '' : '<small>總報酬 ' + pct(ret) + '</small>') + '</div>' +
+    var ret = r.invested > 0 ? (r.total - r.invested) / r.invested * 100 : null, dcT = dayCalc();
+    var h = '<div class="jn-cards"><div><b>' + money(r.total) + '</b><span>總資產（現金＋股票）</span>' + (ret == null && !dcT ? '' : '<small>' + (ret == null ? '' : '總報酬 ' + pct(ret)) + (dcT && dcT.my != null ? '　今日 ' + pct(dcT.my) : '') + '</small>') + '</div>' +
       '<div><b>' + money(r.cash) + '</b><span>現金</span></div><div><b>' + money(r.mv) + '</b><span>股票市值</span></div>' +
       '<div><b>' + pn(uz) + '</b><span>未實現損益</span></div><div><b>' + pn(rz) + '</b><span>已實現損益（含股利）</span></div>' +
       '<div><b>' + (trades.length ? Math.round(wins.length / trades.length * 100) + '%' : '-') + '</b><span>勝率（' + trades.length + ' 筆賣出）</span></div></div>';
@@ -608,9 +607,7 @@ function journalClient(API) {
     E.forEach(function (e) { if ((e.kind === 'buy' || e.kind === 'sell') && e.date === t) out.push(sym(e)); });
     return out;
   }
-  function daySum() {
-    var old = document.getElementById('jn-today'); if (old) old.remove();
-    var ix = Q['^TWII']; if (!ix || !ix.price || !ix.prev) return;
+  function dayCalc() {
     var t = today(), r = calc(), fxNow = r.fxNow || 0, pos = {};
     r.hold.forEach(function (p) { pos[p.market + ':' + p.code] = { market: p.market, code: p.code, name: p.name, qty: p.qty, tp: p.tp, sl: p.sl, flow: 0, dq: 0 }; });
     var depToday = 0;
@@ -634,7 +631,15 @@ function journalClient(API) {
       list.push({ code: p.code, name: p.name || (names[p.code] && names[p.code].n) || p.code, pnl: v, chg: (q.price / q.prev - 1) * 100, held: p.qty > 0, price: q.price, tp: p.tp, sl: p.sl });
     });
     if (!list.length) return;
-    var base = r.total - pnl - depToday, my = base > 0 ? pnl / base * 100 : null, mk = (ix.price / ix.prev - 1) * 100;
+    if (!list.length) return null;
+    var base = r.total - pnl - depToday;
+    return { t: t, r: r, list: list, pnl: pnl, miss: miss, my: base > 0 ? pnl / base * 100 : null };
+  }
+  function daySum() {
+    var old = document.getElementById('jn-today'); if (old) old.remove();
+    var ix = Q['^TWII']; if (!ix || !ix.price || !ix.prev) return;
+    var dc = dayCalc(); if (!dc) return;
+    var t = dc.t, r = dc.r, list = dc.list, pnl = dc.pnl, miss = dc.miss, my = dc.my, mk = (ix.price / ix.prev - 1) * 100;
     var d = new Date((ix.time || 0) * 1000 + 8 * 3600000).toISOString().slice(5, 10).replace('-', '/');
     var held = list.filter(function (x) { return x.held; }).sort(function (a, b) { return b.chg - a.chg; });
     // 靠北版：同一天抽到的句子固定，不會一重整就換
