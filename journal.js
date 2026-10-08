@@ -19,7 +19,7 @@ const JOURNAL_CSS = `.jn-cards{display:grid;grid-template-columns:repeat(3,1fr);
 .jn-calc{font-size:13px;color:var(--mute);margin-top:8px;line-height:1.7}.jn-calc b{color:var(--fg)}.jn-btns{display:flex;gap:8px;margin-top:16px}.jn-btns button{flex:1}.jn-err{color:var(--up);font-size:13px;margin-top:8px}.jn-hint{font-size:12.5px;color:var(--mute);line-height:1.6;margin:4px 0}
 .jn-del{border:0;background:none;color:var(--mute);cursor:pointer;font-size:13px;padding:2px 6px}.jn-edit{border:0;background:none;color:var(--accent);cursor:pointer;font-size:13px;padding:2px 6px}td.jn-note{white-space:normal;min-width:140px;max-width:260px;text-align:left!important;font-size:12.5px;color:var(--mute)}
 html.anon .page[data-p="journal"]>:not(.lock-card){display:none}
-.jn-quick{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px}.jn-quick button{font:inherit;font-size:13px;font-weight:700;padding:5px 12px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}.jn-quick .jn-pct{font-size:13px}.jn-form .jn-quick input.jn-pctin{width:84px;padding:5px 10px;font-size:15px;border-radius:999px}.st2 h3 .jn-hint{font-weight:400;font-size:13px}.dd button{min-width:40px}td.jn-ops{white-space:nowrap}.jn-eqbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}.jn-eqbar .jn-seg button{flex:0 0 auto;font-size:13px;padding:6px 12px}.jn-eq{min-height:260px}.jn-eq canvas{max-height:300px}.fc [hidden]{display:none!important}.fc .jn-seg button{font-size:14px}.fc-out{margin-top:6px}.fr-out{margin-top:6px}.fr-chk{display:flex;align-items:center;gap:6px;font-size:13.5px;margin:8px 0;font-weight:500}.fr-chk input{width:auto;margin:0}.fr-h{margin-top:28px}.fr-list{max-height:280px;overflow:auto;border:1px solid var(--line);border-radius:12px;padding:4px 12px}.fr-list .fr-chk{margin:6px 0}td.nm .jn-edit[data-pos]{padding:2px 4px 2px 0;font-size:14px}`;
+.jn-quick{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px}.jn-quick button{font:inherit;font-size:13px;font-weight:700;padding:5px 12px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}.jn-quick .jn-pct{font-size:13px}.jn-form .jn-quick input.jn-pctin{width:84px;padding:5px 10px;font-size:15px;border-radius:999px}.st2 h3 .jn-hint{font-weight:400;font-size:13px}.dd button{min-width:40px}td.jn-ops{white-space:nowrap}.jn-eqbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}.jn-eqbar .jn-seg button{flex:0 0 auto;font-size:13px;padding:6px 12px}.jn-eq{min-height:260px}.jn-eq canvas{max-height:300px}.fc [hidden]{display:none!important}.fc .jn-seg button{font-size:14px}.fc-out{margin-top:6px}.fr-out{margin-top:6px}.sell-only[hidden],.jn-form input[name=lot][hidden]{display:none}.fr-chk{display:flex;align-items:center;gap:6px;font-size:13.5px;margin:8px 0;font-weight:500}.fr-chk input{width:auto;margin:0}.fr-h{margin-top:28px}.fr-list{max-height:280px;overflow:auto;border:1px solid var(--line);border-radius:12px;padding:4px 12px}.fr-list .fr-chk{margin:6px 0}td.nm .jn-edit[data-pos]{padding:2px 4px 2px 0;font-size:14px}`;
 
 // ---- 瀏覽器端 ----
 function journalClient(API) {
@@ -83,10 +83,13 @@ function journalClient(API) {
         cash += got;
         var q = Math.min(e.qty, p.qty);
         if (q > 0) {
-          var part = p.cost / p.qty * q, pnl = got * (q / e.qty) - part;
+          var part = p.cost / p.qty * q;
+          // 有指定賣的是哪一筆（當初買進價）：扣掉那筆的成本；全部賣光就全扣
+          if (e.lot && q < p.qty - 1e-9) part = Math.min(p.cost, e.lot * q * (p.cost / p.costLocal));
+          var pnl = got * (q / e.qty) - part;
           realized.push({ date: e.date, code: e.code, name: p.name, market: e.market, qty: q, pnl: pnl, pct: pnl / part * 100, days: p.since ? Math.round((new Date(e.date) - new Date(p.since)) / 86400000) : null });
           // 這次持股期間的已實現損益（原幣），用來算「扣掉已實現後的成本」
-          var partL = p.costLocal / p.qty * q; p.rzLocal += (e.price * e.qty - (e.fee || 0) - (e.tax || 0)) * (q / e.qty) - partL;
+          var partL = q >= p.qty - 1e-9 ? p.costLocal : e.lot ? Math.min(p.costLocal, e.lot * q) : p.costLocal / p.qty * q; p.rzLocal += (e.price * e.qty - (e.fee || 0) - (e.tax || 0)) * (q / e.qty) - partL;
           p.costLocal -= partL; p.cost -= part; p.qty -= q;
         }
       }
@@ -340,6 +343,7 @@ function journalClient(API) {
       '<label>日期</label><input type="date" name="date" value="' + e.date + '">' +
       '<label>股票</label><div class="jn-sug"><input name="code" autocomplete="off" placeholder="代號或名稱，例如 2330、台積電、0050、AAPL" value="' + esc(e.code ? e.code + (e.name ? ' ' + e.name : '') : '') + '"><ul hidden></ul></div>' +
       '<div class="jn-row"><div><label>成交價</label><input name="price" inputmode="decimal" value="' + (e.price || '') + '"></div><div><label class="qlab">股數</label><input name="qty" inputmode="decimal" value="' + (e.qty || '') + '"></div></div>' +
+      '<div class="sell-only"><label>賣的是哪一筆？（會影響剩下股票的均價）</label><select name="lotsel"></select><input name="lot" inputmode="decimal" placeholder="當初買進的價格" value="' + (e.lot || '') + '" style="margin-top:6px"></div>' +
       '<div class="jn-hint tw-only">台股以「股」為單位：1 張＝1000 股，零股直接填股數。<button type="button" class="jn-edit" data-a="lot">×1000（換成張）</button>　<label style="display:inline;color:inherit"><input type="checkbox" name="daytrade" style="width:auto"' + (e.daytrade ? ' checked' : '') + '> 當沖</label></div>' +
       '<div class="us-only"><label>匯率（美元→台幣）</label><input name="fx" inputmode="decimal" value="' + (e.fx && e.market === 'US' ? e.fx : '') + '"></div>' +
       '<div class="jn-row"><div><label>手續費</label><input name="fee" inputmode="decimal" value="' + (e.id ? e.fee : '') + '"></div><div><label>交易稅</label><input name="tax" inputmode="decimal" value="' + (e.id ? e.tax : '') + '"></div></div>' +
@@ -396,8 +400,19 @@ function journalClient(API) {
       f.querySelector('.tw-only').hidden = st.market !== 'TW'; f.querySelector('.us-only').hidden = st.market !== 'US';
       f.tax.parentNode.hidden = st.market === 'US';
       f.querySelector('.qlab').textContent = st.market === 'US' ? '股數' : '股數（1 張 = 1000）';
+      f.querySelector('.sell-only').hidden = H || st.kind !== 'sell'; lots();
       if (st.market === 'US' && !f.fx.value) quotes(['USDTWD=X']).then(function () { if (!f.fx.value && Q['USDTWD=X']) { f.fx.value = Q['USDTWD=X'].price.toFixed(2); recalc(); } });
       recalc();
+    }
+    // 這檔股票之前的每一筆買進（含原有持股），讓使用者選這次賣的是哪一筆
+    function lots() {
+      var sel = f.lotsel; if (!sel || st.kind !== 'sell') return;
+      var keep = f.lot.value;
+      var list = E.filter(function (x) { return x.market === st.market && x.code === st.code && (x.kind === 'buy' || x.kind === 'holding') && x.id !== e.id; }).sort(function (a, b) { return a.date < b.date ? -1 : 1; });
+      sel.innerHTML = '<option value="">用平均成本算（不指定）</option>' + list.map(function (x) { return '<option value="' + x.price + '">' + (x.kind === 'holding' ? '原有持股' : x.date.slice(5).replace('-', '/') + ' 買') + ' ' + fmt(x.qty) + ' 股 @ ' + fmt(x.price, 2) + '</option>'; }).join('') + '<option value="custom">自己輸入價格</option>';
+      var hit = [].some.call(sel.options, function (o) { return o.value && o.value !== 'custom' && +o.value === +keep; });
+      sel.value = !keep ? '' : hit ? String(list.filter(function (x) { return +x.price === +keep; })[0].price) : 'custom';
+      f.lot.hidden = sel.value !== 'custom';
     }
     function recalc() {
       var p = parseFloat(f.price.value) || 0, q = parseFloat(f.qty.value) || 0;
@@ -410,19 +425,29 @@ function journalClient(API) {
       if (!st.manualFee) { f.fee.value = p && q ? c.fee : ''; f.tax.value = p && q && st.market === 'TW' ? c.tax : ''; }
       var fee = parseFloat(f.fee.value) || 0, tax = parseFloat(f.tax.value) || 0, fx = st.market === 'US' ? parseFloat(f.fx.value) || 0 : 1;
       var total = st.kind === 'buy' ? (p * q + fee) : (p * q - fee - tax);
-      f.querySelector('.jn-calc').innerHTML = p && q ? (st.kind === 'buy' ? '應付' : '實收') + ' <b>' + (st.market === 'US' ? 'US$' + fmt(total, 2) + '（約台幣 $' + fmt(total * fx) + '）' : '$' + fmt(total)) + '</b>' + (st.manualFee ? '' : '　<span>手續費、稅已依你的設定自動計算，可手動修改</span>') : '';
+      var after = '';
+      if (st.kind === 'sell' && p && q && st.code && !e.id) {
+        var cur = calc().hold.filter(function (x) { return x.market === st.market && x.code === st.code; })[0];
+        if (cur) {
+          var lot = parseFloat(f.lot.value) || 0, qq = Math.min(q, cur.qty), costOut = qq >= cur.qty ? cur.costLocal : lot ? Math.min(cur.costLocal, lot * qq) : cur.costLocal / cur.qty * qq;
+          var gain = total * (qq / q) - costOut, rem = cur.qty - qq;
+          after = '<br>這筆' + (gain >= 0 ? '賺' : '賠') + ' <b class="' + (gain >= 0 ? 'up' : 'dn') + '">$' + fmt(Math.abs(gain), st.market === 'US' ? 2 : 0) + '</b>' + (rem > 1e-9 ? '　賣完剩 ' + fmt(rem) + ' 股，均價 <b>' + fmt((cur.costLocal - costOut) / rem, 2) + '</b>（原本 ' + fmt(cur.avg, 2) + '）' : '　全部賣光');
+        }
+      }
+      f.querySelector('.jn-calc').innerHTML = p && q ? (st.kind === 'buy' ? '應付' : '實收') + ' <b>' + (st.market === 'US' ? 'US$' + fmt(total, 2) + '（約台幣 $' + fmt(total * fx) + '）' : '$' + fmt(total)) + '</b>' + after + (st.manualFee ? '' : '　<span>手續費、稅已依你的設定自動計算，可手動修改</span>') : '';
     }
     f.querySelectorAll('.mk button').forEach(function (b) { b.onclick = function () { st.market = b.dataset.m; st.code = ''; st.name = ''; f.code.value = ''; seg(); }; });
     f.querySelectorAll('.sd button').forEach(function (b) { b.onclick = function () { st.kind = b.dataset.s; seg(); }; });
     f.querySelectorAll('.jn-tags button').forEach(function (b) { b.onclick = function () { b.classList.toggle('on'); }; });
-    ['price', 'qty', 'fx'].forEach(function (k) { f[k].addEventListener('input', recalc); });
+    ['price', 'qty', 'fx', 'lot'].forEach(function (k) { f[k].addEventListener('input', recalc); });
+    f.lotsel.addEventListener('change', function () { var v = f.lotsel.value; f.lot.hidden = v !== 'custom'; if (v !== 'custom') f.lot.value = v; else { f.lot.value = ''; f.lot.focus(); } recalc(); });
     f.daytrade.addEventListener('change', recalc);
     ['fee', 'tax'].forEach(function (k) { f[k].addEventListener('input', function () { st.manualFee = true; recalc(); }); });
     f.querySelector('[data-a="lot"]').onclick = function () { var q = parseFloat(f.qty.value) || 0; if (q) { f.qty.value = q * 1000; recalc(); } };
     // 股票建議清單（手機也能用）
     var ul = f.querySelector('.jn-sug ul');
     function pick(code, name) {
-      st.code = code; st.name = name || ''; f.code.value = code + (name ? ' ' + name : ''); ul.hidden = true; recalc();
+      st.code = code; st.name = name || ''; f.code.value = code + (name ? ' ' + name : ''); ul.hidden = true; lots(); recalc();
       if (!f.price.value && !H) quotes([sym({ market: st.market, code: code })]).then(function () { var q = Q[sym({ market: st.market, code: code })]; if (q && q.price && !f.price.value) { f.price.value = q.price; recalc(); } if (st.market === 'US' && q && q.name && !st.name) { st.name = q.name; f.code.value = code + ' ' + q.name; } });
     }
     f.code.addEventListener('input', function () {
@@ -441,6 +466,7 @@ function journalClient(API) {
       if (a.dataset.a === 'save-trade' || a.dataset.a === 'skip' || a.dataset.a === 'save-final') {
         if (!st.code) { var v = f.code.value.trim().split(' ')[0].toUpperCase(); if (st.market === 'US' && /^[A-Z.\-]{1,10}$/.test(v)) st.code = v; else if (names[v]) { st.code = v; st.name = names[v].n; } }
         var body = { id: e.id, kind: H ? 'buy' : st.kind, market: st.market, date: H ? '2000-01-01' : f.date.value, code: st.code, name: st.name, price: parseFloat(f.price.value), qty: parseFloat(f.qty.value), fee: parseFloat(f.fee.value) || 0, tax: st.market === 'TW' ? parseFloat(f.tax.value) || 0 : 0, fx: st.market === 'US' ? parseFloat(f.fx.value) : 1, daytrade: st.market === 'TW' && f.daytrade.checked, tags: [].map.call(f.querySelectorAll('.jn-tags button.on'), function (b) { return b.dataset.t; }), note: f.note.value };
+        body.lot = st.kind === 'sell' ? parseFloat(f.lot.value) || null : null;
         if (H) { body.fee = 0; body.tax = 0; body.daytrade = false; body.tags = []; } // 原有持股：存成日期 2000-01-01、零手續費的買進
         if (!body.code) return (errEl.textContent = '請從清單選擇股票');
         if (!body.price || !body.qty) return (errEl.textContent = '請填價格和股數');
