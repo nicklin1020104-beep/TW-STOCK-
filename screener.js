@@ -1156,7 +1156,7 @@ async function main() {
   }
 
   // 收盤靠杯總結
-  let roast = [];
+  let roast = [], premarket = null;
   try {
     const prev = days[T - 1].data;
     let up = 0, down = 0, limitUp = 0, limitDown = 0, val = 0;
@@ -1366,6 +1366,15 @@ async function main() {
       const i = tw && tw.pts ? tw.pts.findIndex((x) => key(x[0]) === tradeDate) : -1;
       if (i > 0) twiiNow = { close: tw.pts[i][1], pct: +((tw.pts[i][1] / tw.pts[i - 1][1] - 1) * 100).toFixed(2) };
     }
+    let pre = null;
+    const twNow = new Date(Date.now() + 8 * 3600000);
+    if (tradeDate < todayStr && twNow.getUTCHours() < 9) {
+      try { pre = await buildPremarket({ todayStr, tradeDate, topbar, macro, industry, bestA, bestB, cups, latentTrust, insti, today, ir50, twii: twiiNow }); } catch (e) { console.error('盤前重點失敗：', e.message); }
+    } else {
+      // 白天的更新：沿用今天早上的盤前重點
+      try { const old = JSON.parse(fs.readFileSync(path.join(ROOT, 'site', 'brief.json'), 'utf8')); if (old.pre && old.pre.date === todayStr) pre = old.pre; } catch {}
+    }
+    premarket = pre;
     const themeTop = industry ? [...industry.rows].sort((a, b) => b.r1 - a.r1).slice(0, 3).map((r) => ({ name: r.name, r1: +r.r1.toFixed(2) })) : [];
     fs.writeFileSync(
       path.join(ROOT, 'site', 'brief.json'),
@@ -1383,13 +1392,14 @@ async function main() {
         aetfBuy: aetf ? aetf.consensusBuy.slice(0, 3).map((g) => g.name) : [],
         aetfSell: aetf ? aetf.consensusSell.slice(0, 3).map((g) => g.name) : [],
         roast: Array.isArray(roast) && roast.length ? String(roast[0]).replace(/<[^>]+>/g, "") : null,
+        pre,
       })
     );
   } catch (e) {
     console.error('個股資料輸出失敗：', e.message);
   }
 
-  const html = renderHtml(tradeDate, groupAbove, groupBelow, flow, picks, { locked, voteRecap, roast, topbar, industry, ir50, threeGroups: threeUp.groups, macro, holders, breadth, bestA, bestB, latentTrust, cups, cupTracking, aetf, allCross, latent, threeUp, tracking, bigLeaders, crashed, stockNews, industryNews, lowVol: Object.keys(today).filter((c) => today[c].vol != null && today[c].vol / 1000 < MIN_LOTS_ALL), newRev: (() => { const ms = Object.values(rev).map((r) => r.month).filter(Boolean).sort(); const nw = ms[ms.length - 1], codes = Object.keys(rev).filter((c) => rev[c].month === nw); return codes.length < ms.length * 0.9 ? { m: +nw.slice(3), prev: +prevYM(nw, 1).slice(3), codes } : null; })() });
+  const html = renderHtml(tradeDate, groupAbove, groupBelow, flow, picks, { locked, voteRecap, roast, topbar, industry, ir50, threeGroups: threeUp.groups, macro, holders, breadth, bestA, bestB, latentTrust, cups, cupTracking, aetf, allCross, latent, threeUp, tracking, bigLeaders, crashed, stockNews, industryNews, premarket, lowVol: Object.keys(today).filter((c) => today[c].vol != null && today[c].vol / 1000 < MIN_LOTS_ALL), newRev: (() => { const ms = Object.values(rev).map((r) => r.month).filter(Boolean).sort(); const nw = ms[ms.length - 1], codes = Object.keys(rev).filter((c) => rev[c].month === nw); return codes.length < ms.length * 0.9 ? { m: +nw.slice(3), prev: +prevYM(nw, 1).slice(3), codes } : null; })() });
   const dated = path.join(REPORTS, `${tradeDate}.html`);
   fs.writeFileSync(dated, html);
   fs.writeFileSync(path.join(ROOT, '最新選股.html'), html);
@@ -2332,6 +2342,72 @@ ${NAV.map(([g, , pages], i) => `<div class="subtabs${pages.length === 1 ? ' sing
 </div>`;
 }
 
+// ---------- 盤前重點（每天 08:35 那次產生，開盤前看）：8～10 點、每點一句 ----------
+async function buildPremarket({ todayStr, tradeDate, topbar, macro, industry, bestA, bestB, cups, latentTrust, insti, today, ir50, twii }) {
+  const sg = (v, d = 2) => (v >= 0 ? '+' : '') + v.toFixed(d) + '%';
+  const chgOf = (a) => { const p = a && a.pts; if (!p || p.length < 2) return null; const last = p[p.length - 1][1], prev = a.prevClose || p[p.length - 2][1]; return { last, pct: (last / prev - 1) * 100 }; };
+  const fmt = (v) => v.toLocaleString(undefined, { maximumFractionDigits: 2 });
+  const lines = [];
+  // 美股
+  try {
+    const us = await getUSIndexes();
+    const nm = { '^DJI': '道瓊', '^GSPC': 'S&P', '^IXIC': '那指', '^SOX': '費半' };
+    const parts = us.map((a) => { const c = chgOf(a); return c ? nm[a.sym] + ' ' + sg(c.pct) : null; }).filter(Boolean);
+    if (parts.length) lines.push('🇺🇸 美股：' + parts.join('｜'));
+  } catch {}
+  // 台指期夜盤、日韓
+  const tx = topbar && topbar.txf;
+  const night = tx && [tx.main, tx.other].find((x) => x && /夜/.test(x.session));
+  if (night) lines.push('🌙 台指期夜盤 ' + fmt(night.last) + '（' + sg(night.pct) + '）');
+  const asia = ((topbar && topbar.idx) || []).filter((a) => a.sym === '^N225' || a.sym === '^KS11').map((a) => { const c = chgOf(a); return c ? (a.sym === '^N225' ? '日經 ' : '韓股 ') + sg(c.pct) : null; }).filter(Boolean);
+  if (asia.length) lines.push('🌏 亞股開盤：' + asia.join('・'));
+  // 總經
+  const as = (sym) => ((macro && macro.assets) || []).find((a) => a.sym === sym);
+  const m1 = [], dxy = chgOf(as('DX-Y.NYB')), vix = chgOf(as('^VIX')), oil = chgOf(as('CL=F')), gold = chgOf(as('GC=F'));
+  if (dxy) m1.push('美元指數 ' + dxy.last.toFixed(1) + '（' + sg(dxy.pct) + '）');
+  const ys = ((macro && macro.yields) || []).filter((r) => r['10 Yr'] != null);
+  if (ys.length > 1) { const a = ys[ys.length - 1]['10 Yr'], b = ys[ys.length - 2]['10 Yr']; m1.push('美債10年 ' + a.toFixed(2) + '%（' + (a >= b ? '+' : '') + Math.round((a - b) * 100) + 'bp）'); }
+  if (m1.length) lines.push('💵 ' + m1.join('・'));
+  const m2 = [];
+  if (vix) m2.push('VIX ' + vix.last.toFixed(1) + (vix.last >= 25 ? '（偏高⚠️）' : ''));
+  if (oil) m2.push('原油 ' + sg(oil.pct, 1));
+  if (gold) m2.push('黃金 ' + sg(gold.pct, 1));
+  if (m2.length) lines.push('🛢️ ' + m2.join('・'));
+  // 昨天台股
+  const md = (d) => +d.slice(4, 6) + '/' + +d.slice(6);
+  const amt = (k) => Object.entries(insti || {}).reduce((a, [c, x]) => a + (today[c] && today[c].close ? (x[k] * today[c].close) / 1e8 : 0), 0);
+  const y1 = [];
+  if (twii) y1.push('加權 ' + fmt(twii.close) + '（' + sg(twii.pct) + '）');
+  if (insti && Object.keys(insti).length) { const f = amt('foreign'), t = amt('trust'); y1.push('外資 ' + (f >= 0 ? '+' : '') + f.toFixed(0) + ' 億・投信 ' + (t >= 0 ? '+' : '') + t.toFixed(0) + ' 億'); }
+  if (y1.length) lines.push('📊 ' + md(tradeDate) + ' 台股：' + y1.join('，'));
+  if (industry && industry.rows.length) lines.push('🔥 昨天最強族群：' + [...industry.rows].sort((a, b) => b.r1 - a.r1).slice(0, 3).map((r) => r.name + ' ' + sg(r.r1, 1)).join('、'));
+  // 網站焦點
+  const best = [...new Set([...bestA, ...bestB].map((r) => r.name))].slice(0, 3);
+  const f1 = [];
+  if (best.length) f1.push('一K站三線＋投信 ' + best.join('、'));
+  if (cups.length) f1.push('杯柄 ' + cups.slice(0, 2).map((r) => r.name).join('、'));
+  if (f1.length) lines.push('⭐ 網站焦點：' + f1.join('｜'));
+  if (latentTrust.length) lines.push('🕵️ 潛伏股投信開買：' + latentTrust.slice(0, 3).map((r) => r.name).join('、'));
+  // 今天行程：法說、今晚美國數據
+  const iso = todayStr.slice(0, 4) + '-' + todayStr.slice(4, 6) + '-' + todayStr.slice(6);
+  const ev = [];
+  const conf = ((ir50 && ir50.conf) || []).filter((c) => c.date === iso).sort((a, b) => (a.time < b.time ? -1 : 1));
+  if (conf.length) ev.push('法說 ' + conf.slice(0, 3).map((c) => c.name + ' ' + c.time).join('、'));
+  const dayStart = Date.parse(iso + 'T12:00:00+08:00'), dayEnd = dayStart + 18 * 3600000; // 今天中午～明天早上 6 點（台灣時間）
+  const data = ((macro && macro.indicators) || []).filter((x) => x.next && x.next.at && Date.parse(x.next.at) >= dayStart && Date.parse(x.next.at) < dayEnd);
+  if (data.length) ev.push('今晚美國公布 ' + data.slice(0, 2).map((x) => x.name.replace(/^美國 /, '') + (x.next.consensus ? '（預期 ' + x.next.consensus + '）' : '')).join('、'));
+  if (ev.length) lines.push('📅 今天：' + ev.join('；'));
+  lines.push('🗳️ 猜今天漲跌：09:00 開盤前截止');
+  return { date: todayStr, lines: lines.slice(0, 10) };
+}
+
+function renderPremarket(pre) {
+  if (!pre || !pre.lines.length) return '';
+  const d = +pre.date.slice(4, 6) + '/' + +pre.date.slice(6);
+  return `<div class="premarket" data-date="${pre.date}"><div class="roast-title">☀️ 盤前重點 <span class="tag">${d} 開盤前・每天 08:35 更新</span></div><ul>${pre.lines.map((l) => `<li>${esc(l)}</li>`).join('')}</ul></div>
+<script>(function () { var b = document.querySelector('.premarket'); if (!b) return; var n = new Date(Date.now() + 8 * 3600000), d = n.toISOString().slice(0, 10).replace(/-/g, ''); if (d !== b.dataset.date || n.getUTCHours() * 60 + n.getUTCMinutes() > 13 * 60 + 30) b.remove(); })();</script>`;
+}
+
 function renderTopBar({ idx, txf }) {
   const fmt = (v) => v.toLocaleString(undefined, { maximumFractionDigits: 2 });
   const sign = (v, d = 2) => (v >= 0 ? '+' : '') + v.toFixed(d);
@@ -2620,7 +2696,7 @@ h1{font-size:22px;margin:0 0 4px}h2{font-size:17px;margin:28px 0 8px}.sub{color:
 .scroll{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
 th,td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}th:nth-child(-n+3),td:nth-child(-n+3){text-align:left}
 th{color:var(--mute);font-weight:500}.up{color:var(--up)}.dn{color:var(--dn)}a{color:inherit}
-.tag{font-size:11px;color:var(--mute);margin-left:4px}td.lv,td.lv a,a.lv{color:#e0242b!important}.rv-new{display:inline-block;margin-left:4px;padding:0 5px;border-radius:6px;background:#2563eb;color:#fff!important;font-size:10.5px;font-weight:700;line-height:16px;vertical-align:1px}.rv-key{display:block;font-size:10px;font-weight:500;color:var(--mute)}td.cum{font-weight:800;background:rgba(127,127,127,.08)}.vote-sharebar{margin:8px 0 10px}.vote-share{font:inherit;font-size:14px;font-weight:700;padding:9px 16px;border-radius:999px;border:0;background:#d0312d;color:#fff;cursor:pointer;width:100%;max-width:360px}.vote-share:hover{filter:brightness(1.08)}.empty{color:var(--mute)}.count{font-weight:400;color:var(--mute);font-size:14px}
+.tag{font-size:11px;color:var(--mute);margin-left:4px}td.lv,td.lv a,a.lv{color:#e0242b!important}.rv-new{display:inline-block;margin-left:4px;padding:0 5px;border-radius:6px;background:#2563eb;color:#fff!important;font-size:10.5px;font-weight:700;line-height:16px;vertical-align:1px}.rv-key{display:block;font-size:10px;font-weight:500;color:var(--mute)}.premarket{margin:10px 0;padding:12px 16px;border-radius:12px;background:color-mix(in srgb,#f5a623 8%,var(--bg));border:1px solid color-mix(in srgb,#f5a623 35%,var(--line))}.premarket ul{margin:6px 0 0;padding-left:0;list-style:none;font-size:14px;line-height:1.75}.premarket li{padding:1px 0}td.cum{font-weight:800;background:rgba(127,127,127,.08)}.vote-sharebar{margin:8px 0 10px}.vote-share{font:inherit;font-size:14px;font-weight:700;padding:9px 16px;border-radius:999px;border:0;background:#d0312d;color:#fff;cursor:pointer;width:100%;max-width:360px}.vote-share:hover{filter:brightness(1.08)}.empty{color:var(--mute)}.count{font-weight:400;color:var(--mute);font-size:14px}
 h3{font-size:14px;margin:14px 0 6px}.cols{display:grid;grid-template-columns:1fr 1fr;gap:20px}@media (max-width:900px){.cols{grid-template-columns:1fr}}
 table.flow td:first-child,table.flow th:first-child{color:var(--mute);text-align:right;width:1em}table.flow td:nth-child(2),table.flow th:nth-child(2){text-align:left}table.flow td:nth-child(3),table.flow th:nth-child(3){text-align:right}
 .tabs{display:flex;gap:6px;flex-wrap:wrap}.tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:999px;cursor:pointer;font:inherit;font-size:13px}.tab.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
@@ -2635,7 +2711,7 @@ ${renderGate()}
 ${extra.topbar ? renderTopBar(extra.topbar) : ''}
 <div class="head"><h1>飆股情報局</h1><div class="auth"><span class="auth-user" hidden></span><button class="auth-out" hidden>登出</button><div id="gsi-btn"></div><span class="auth-note"></span></div></div><div class="sub">交易日 ${d}　產出時間 ${new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' })}</div>
 ${renderNav()}
-${extra.roast && extra.roast.length ? `<div class="roast"><div class="roast-title">🎤 收盤總結 <span class="tag">${d}</span></div><ul>${extra.roast.map((l) => `<li>${esc(l)}</li>`).join('')}</ul></div>` : ''}
+${renderPremarket(extra.premarket)}${extra.roast && extra.roast.length ? `<div class="roast"><div class="roast-title">🎤 收盤總結 <span class="tag">${d}</span></div><ul>${extra.roast.map((l) => `<li>${esc(l)}</li>`).join('')}</ul></div>` : ''}
 ${renderVote(d, extra)}
 
 <div class="page" data-p="main">
