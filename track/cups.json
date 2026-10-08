@@ -299,6 +299,15 @@
    "status": "柄整理中",
    "tight": true,
    "pivot": 59.7
+  },
+  {
+   "code": "2347",
+   "name": "聯強",
+   "mkt": "上市",
+   "close": 96.4,
+   "status": "柄整理中",
+   "tight": true,
+   "pivot": 100
   }
  ]
 }
