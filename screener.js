@@ -1311,6 +1311,8 @@ async function main() {
         r20: p20 ? +((q.close / p20 - 1) * 100).toFixed(1) : null,
         v: Math.round((q.vol || 0) / 1000),
         y: r.yoy != null ? +r.yoy.toFixed(1) : null,
+        mo: r.mom != null ? +r.mom.toFixed(1) : null, // 營收月增
+        rm: r.month ? +r.month.slice(3) : null, // 營收月份
         i: themeOf[c] ? themeOf[c].join('、') : r.industry || '',
         t: tagMap[c] || [],
       };
@@ -2060,12 +2062,12 @@ function clientScript() {
     if (!codes.length) { box.innerHTML = '<p class="empty">還沒有自選股，從上面輸入代號或名稱加入</p>'; return; }
     function row(c) {
       var s = stocks.list[c];
-      if (!s) return '<tr><td class="nm">' + esc(c) + '</td><td colspan="7" class="no">今日收盤價稍後更新（成交量少的上櫃股約 15:10 補上）</td><td><button class="watch-del" data-c="' + esc(c) + '">✕</button></td></tr>';
+      if (!s) return '<tr><td class="nm">' + esc(c) + '</td><td colspan="8" class="no">今日收盤價稍後更新（成交量少的上櫃股約 15:10 補上）</td><td><button class="watch-del" data-c="' + esc(c) + '">✕</button></td></tr>';
       var link = 'https://tw.stock.yahoo.com/quote/' + c + (s.m ? '.TWO' : '.TW') + '/technical-analysis';
       // 一K站三線、★選股是「當天」的訊號：資料不是今天的（例如隔天早上還沒更新）就不顯示
       var fresh = stocks.date === new Date(Date.now() + 8 * 3600000).toISOString().slice(0, 10).replace(/-/g, '');
       var tags = s.t.filter(function (t) { return fresh || (t !== '一K站三線' && t !== '★選股'); }).map(function (t) { return '<span class="chip good">' + esc(t) + '</span>'; }).join('');
-      return '<tr><td class="nm"><a href="' + link + '" target="_blank">' + c + '</a> ' + esc(s.n) + (s.m ? '<span class="tag">櫃</span>' : '') + '</td><td>' + s.c + '</td>' + pc(s.p) + pc(s.r5) + pc(s.r20) + '<td>' + (s.v || 0).toLocaleString() + '</td>' + pc(s.y) +
+      return '<tr><td class="nm"><a href="' + link + '" target="_blank">' + c + '</a> ' + esc(s.n) + (s.m ? '<span class="tag">櫃</span>' : '') + '</td><td>' + s.c + '</td>' + pc(s.p) + pc(s.r5) + pc(s.r20) + '<td>' + (s.v || 0).toLocaleString() + '</td>' + pc(s.mo) + pc(s.y) +
         '<td class="chips">' + (tags || '<span class="chip mid">無</span>') + '</td><td><button class="watch-del" data-c="' + c + '" title="移除">✕</button></td></tr>';
     }
     // 依族群分組（族群優先，沒有族群的用官方產業），只列有自選股的組
@@ -2080,9 +2082,9 @@ function clientScript() {
       var list = groups[g];
       var ps = list.map(function (c) { return stocks.list[c] && stocks.list[c].p; }).filter(function (v) { return v != null; });
       var avg = ps.length ? ps.reduce(function (a, b) { return a + b; }, 0) / ps.length : null;
-      return '<tr class="watch-gh"><td colspan="9">' + esc(g) + '<span class="tag">' + list.length + ' 檔</span>' + (avg == null ? '' : ' <span class="' + (avg >= 0 ? 'up' : 'dn') + '">平均 ' + (avg >= 0 ? '+' : '') + avg.toFixed(2) + '%</span>') + '</td></tr>' + list.map(row).join('');
+      return '<tr class="watch-gh"><td colspan="10">' + esc(g) + '<span class="tag">' + list.length + ' 檔</span>' + (avg == null ? '' : ' <span class="' + (avg >= 0 ? 'up' : 'dn') + '">平均 ' + (avg >= 0 ? '+' : '') + avg.toFixed(2) + '%</span>') + '</td></tr>' + list.map(row).join('');
     }).join('');
-    box.innerHTML = '<div class="scroll"><table class="compact"><thead><tr><th>股票</th><th>收盤</th><th>今日</th><th>近5日</th><th>近20日</th><th>量(張)</th><th>營收YoY</th><th>今日名單</th><th></th></tr></thead><tbody>' + body + '</tbody></table></div>';
+    box.innerHTML = '<div class="scroll"><table class="compact"><thead><tr><th>股票</th><th>收盤</th><th>今日</th><th>近5日</th><th>近20日</th><th>量(張)</th><th>營收MoM</th><th>營收YoY</th><th>今日名單</th><th></th></tr></thead><tbody>' + body + '</tbody></table></div>';
     if (typeof renderCalc === 'function') renderCalc();
     box.querySelectorAll('.watch-del').forEach(function (b) { b.onclick = function () { codes = codes.filter(function (x) { return x !== b.dataset.c; }); saveCodes(); renderWatch(); }; });
   }
@@ -2877,7 +2879,7 @@ ${clientScript()}
       var ths = t.querySelectorAll(':scope > thead > tr > th'); if (!ths.length) return;
       t.setAttribute('data-rv', '');
       var cols = [];
-      ths.forEach(function (th, i) { var x = th.textContent; if (/YoY|年增/.test(x) && !/累計|近 ?3|勝率/.test(x)) { cols.push(i); th.insertAdjacentHTML('beforeend', '<span class="rv-key">沒標＝' + NR.prev + '月</span>'); } });
+      ths.forEach(function (th, i) { var x = th.textContent; if (/YoY|年增|MoM|月增/.test(x) && !/累計|近 ?3|勝率/.test(x)) { cols.push(i); th.insertAdjacentHTML('beforeend', '<span class="rv-key">沒標＝' + NR.prev + '月</span>'); } });
       if (!cols.length) return;
       t.querySelectorAll(':scope > tbody > tr').forEach(function (tr) {
         var a = tr.querySelector('a[href*="tw.stock.yahoo.com/quote/"]'); if (!a) return;
