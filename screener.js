@@ -1368,7 +1368,7 @@ async function main() {
     }
     let pre = null;
     const twNow = new Date(Date.now() + 8 * 3600000);
-    if (tradeDate < todayStr && twNow.getUTCHours() < 9) {
+    if (tradeDate < todayStr && twNow.getUTCHours() * 60 + twNow.getUTCMinutes() < 13 * 60 + 30) { // 收盤前的更新都重新整理盤前重點（08:35 那次趕上開盤推播）
       try { pre = await buildPremarket({ todayStr, tradeDate, topbar, macro, industry, bestA, bestB, cups, latentTrust, insti, today, ir50, twii: twiiNow }); } catch (e) { console.error('盤前重點失敗：', e.message); }
     } else {
       // 白天的更新：沿用今天早上的盤前重點
