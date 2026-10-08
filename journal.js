@@ -249,7 +249,7 @@ function journalClient(API) {
     h += plansSection(r);
     if (planErr) h += '<p class="jn-hint">⚠️ 定期定額自動記帳暫時失敗（' + esc(planErr) + '），稍後重新整理會再補上。</p>';
     // 圖表
-    h += '<h2>圖表</h2><div class="jn-charts"><div class="jn-chart"><h4>資產配置</h4><canvas id="jn-c1"></canvas></div><div class="jn-chart"><h4>每月已實現損益</h4><canvas id="jn-c2"></canvas></div></div>';
+    h += '<h2>圖表</h2><div class="jn-charts"><div class="jn-chart"><h4>資產配置</h4><canvas id="jn-c1"></canvas></div><div class="jn-chart"><h4>投資產業配置 <span class="jn-hint">ETF 合併計算</span></h4><canvas id="jn-c4"></canvas></div><div class="jn-chart"><h4>每月已實現損益</h4><canvas id="jn-c2"></canvas></div></div>';
     // 已實現統計
     if (trades.length) {
       var avgW = wins.length ? wins.reduce(function (a, x) { return a + x.pct; }, 0) / wins.length : null;
@@ -309,6 +309,16 @@ function journalClient(API) {
       var c1 = document.getElementById('jn-c1'), c2 = document.getElementById('jn-c2');
       if (c1 && data.length) charts.push(new Chart(c1, { type: 'doughnut', data: { labels: labels, datasets: [{ data: data, backgroundColor: labels.map(function (l, i) { return l === '現金' ? '#94a3b8' : pal[i % pal.length]; }), borderWidth: 0 }] }, options: { plugins: { legend: { position: 'right', labels: { color: fg, boxWidth: 12 } }, tooltip: { callbacks: { label: function (c) { var t = data.reduce(function (a, b) { return a + b; }, 0); return c.label + '：$' + c.raw.toLocaleString() + '（' + (c.raw / t * 100).toFixed(1) + '%）'; } } } }, cutout: '62%' } }));
       else if (c1) c1.parentNode.insertAdjacentHTML('beforeend', '<p class="empty">還沒有資產</p>');
+      // 投資產業配置：個股用網站的族群分類，ETF 全部算一塊，美股算一塊
+      var c4 = document.getElementById('jn-c4');
+      if (c4) {
+        var ind = {};
+        items.forEach(function (p) { var k = p.market === 'US' ? '美股' : isETF(p.code) ? 'ETF' : (names[p.code] && names[p.code].i) || '其他'; ind[k] = (ind[k] || 0) + p.mv; });
+        var ik = Object.keys(ind).sort(function (a, b) { return ind[b] - ind[a]; }), il = ik.slice(0, 8), iv = il.map(function (k) { return Math.round(ind[k]); });
+        var irest = ik.slice(8).reduce(function (a, k) { return a + ind[k]; }, 0); if (irest > 0) { il.push('其他產業'); iv.push(Math.round(irest)); }
+        if (iv.length) charts.push(new Chart(c4, { type: 'pie', data: { labels: il, datasets: [{ data: iv, backgroundColor: il.map(function (l, i) { return l === 'ETF' ? '#94a3b8' : pal[i % pal.length]; }), borderWidth: 1, borderColor: getComputedStyle(document.body).backgroundColor }] }, options: { plugins: { legend: { position: 'right', labels: { color: fg, boxWidth: 12 } }, tooltip: { callbacks: { label: function (c) { var t = iv.reduce(function (a, b) { return a + b; }, 0); return c.label + '：$' + c.raw.toLocaleString() + '（' + (c.raw / t * 100).toFixed(1) + '%）'; } } } } } }));
+        else c4.parentNode.insertAdjacentHTML('beforeend', '<p class="empty">還沒有持股</p>');
+      }
       var byM = {}; r.realized.forEach(function (x) { var m = x.date.slice(0, 7); byM[m] = (byM[m] || 0) + x.pnl; });
       var ms = Object.keys(byM).sort().slice(-12);
       if (c2 && ms.length) charts.push(new Chart(c2, { type: 'bar', data: { labels: ms.map(function (m) { return +m.slice(5) + '月'; }), datasets: [{ data: ms.map(function (m) { return Math.round(byM[m]); }), backgroundColor: ms.map(function (m) { return byM[m] >= 0 ? up : dn; }), borderRadius: 6 }] }, options: { plugins: { legend: { display: false } }, scales: { x: { ticks: { color: fg }, grid: { display: false } }, y: { ticks: { color: fg } } } } }));
@@ -603,7 +613,7 @@ function journalClient(API) {
   function loadNames() {
     if (Object.keys(names).length) return Promise.resolve();
     return Promise.all([
-      fetch('/TW-STOCK-/stocks.json').then(function (r) { return r.json(); }).then(function (j) { Object.keys(j.list).forEach(function (c) { var s = j.list[c]; names[c] = { n: s.n, m: s.m, c: s.c }; }); }).catch(function () {}),
+      fetch('/TW-STOCK-/stocks.json').then(function (r) { return r.json(); }).then(function (j) { Object.keys(j.list).forEach(function (c) { var s = j.list[c]; names[c] = { n: s.n, m: s.m, c: s.c, i: s.i }; }); }).catch(function () {}),
       fetch('/TW-STOCK-/etfs.json').then(function (r) { return r.json(); }).then(function (j) { Object.keys(j).forEach(function (c) { names[c] = { n: j[c][0], m: j[c][1], c: j[c][2] }; }); }).catch(function () {}),
     ]);
   }
