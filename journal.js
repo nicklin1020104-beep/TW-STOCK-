@@ -78,6 +78,7 @@ function journalClient(API) {
         var c = (e.price * e.qty + (e.fee || 0)) * fx;
         cash -= c; if (p.qty <= 0) p.since = e.date;
         p.qty += e.qty; p.cost += c; p.costLocal += e.price * e.qty + (e.fee || 0);
+        (p.lotFee = p.lotFee || {})[e.price] = (e.fee || 0) / e.qty; // 每筆買進每股的手續費，賣出指定這筆時一起扣
       } else {
         var got = (e.price * e.qty - (e.fee || 0) - (e.tax || 0)) * fx;
         cash += got;
@@ -85,11 +86,12 @@ function journalClient(API) {
         if (q > 0) {
           var part = p.cost / p.qty * q;
           // 有指定賣的是哪一筆（當初買進價）：扣掉那筆的成本；全部賣光就全扣
-          if (e.lot && q < p.qty - 1e-9) part = Math.min(p.cost, e.lot * q * (p.cost / p.costLocal));
+          var lotPs = e.lot ? e.lot + ((p.lotFee && p.lotFee[e.lot]) || 0) : 0;
+          if (e.lot && q < p.qty - 1e-9) part = Math.min(p.cost, lotPs * q * (p.cost / p.costLocal));
           var pnl = got * (q / e.qty) - part;
           realized.push({ date: e.date, code: e.code, name: p.name, market: e.market, qty: q, pnl: pnl, pct: pnl / part * 100, days: p.since ? Math.round((new Date(e.date) - new Date(p.since)) / 86400000) : null });
           // 這次持股期間的已實現損益（原幣），用來算「扣掉已實現後的成本」
-          var partL = q >= p.qty - 1e-9 ? p.costLocal : e.lot ? Math.min(p.costLocal, e.lot * q) : p.costLocal / p.qty * q; p.rzLocal += (e.price * e.qty - (e.fee || 0) - (e.tax || 0)) * (q / e.qty) - partL;
+          var partL = q >= p.qty - 1e-9 ? p.costLocal : e.lot ? Math.min(p.costLocal, lotPs * q) : p.costLocal / p.qty * q; p.rzLocal += (e.price * e.qty - (e.fee || 0) - (e.tax || 0)) * (q / e.qty) - partL;
           p.costLocal -= partL; p.cost -= part; p.qty -= q;
         }
       }
@@ -429,7 +431,7 @@ function journalClient(API) {
       if (st.kind === 'sell' && p && q && st.code && !e.id) {
         var cur = calc().hold.filter(function (x) { return x.market === st.market && x.code === st.code; })[0];
         if (cur) {
-          var lot = parseFloat(f.lot.value) || 0, qq = Math.min(q, cur.qty), costOut = qq >= cur.qty ? cur.costLocal : lot ? Math.min(cur.costLocal, lot * qq) : cur.costLocal / cur.qty * qq;
+          var lot = parseFloat(f.lot.value) || 0, lb = lot ? E.filter(function (x) { return x.market === st.market && x.code === st.code && x.kind === 'buy' && +x.price === lot; })[0] : null; if (lb) lot += (lb.fee || 0) / lb.qty; var qq = Math.min(q, cur.qty), costOut = qq >= cur.qty ? cur.costLocal : lot ? Math.min(cur.costLocal, lot * qq) : cur.costLocal / cur.qty * qq;
           var gain = total * (qq / q) - costOut, rem = cur.qty - qq;
           after = '<br>這筆' + (gain >= 0 ? '賺' : '賠') + ' <b class="' + (gain >= 0 ? 'up' : 'dn') + '">$' + fmt(Math.abs(gain), st.market === 'US' ? 2 : 0) + '</b>' + (rem > 1e-9 ? '　賣完剩 ' + fmt(rem) + ' 股，均價 <b>' + fmt((cur.costLocal - costOut) / rem, 2) + '</b>（原本 ' + fmt(cur.avg, 2) + '）' : '　全部賣光');
         }
