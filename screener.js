@@ -2698,7 +2698,7 @@ h1{font-size:22px;margin:0 0 4px}h2{font-size:17px;margin:28px 0 8px}.sub{color:
 .scroll{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
 th,td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}th:nth-child(-n+3),td:nth-child(-n+3){text-align:left}
 th{color:var(--mute);font-weight:500}.up{color:var(--up)}.dn{color:var(--dn)}a{color:inherit}
-.tag{font-size:11px;color:var(--mute);margin-left:4px}td.lv,td.lv a,a.lv{color:#e0242b!important}.rv-new{display:inline-block;margin-left:4px;padding:0 5px;border-radius:6px;background:#2563eb;color:#fff!important;font-size:10.5px;font-weight:700;line-height:16px;vertical-align:1px}.rv-key{display:block;font-size:10px;font-weight:500;color:var(--mute)}.premarket{margin:10px 0;padding:12px 16px;border-radius:12px;background:color-mix(in srgb,#f5a623 8%,var(--bg));border:1px solid color-mix(in srgb,#f5a623 35%,var(--line))}.premarket ul{margin:6px 0 0;padding-left:0;list-style:none;font-size:14px;line-height:1.75}.premarket li{padding:1px 0}td.cum{font-weight:800;background:rgba(127,127,127,.08)}.vote-sharebar{margin:8px 0 10px}.vote-share{font:inherit;font-size:14px;font-weight:700;padding:9px 16px;border-radius:999px;border:0;background:#d0312d;color:#fff;cursor:pointer;width:100%;max-width:360px}.vote-share:hover{filter:brightness(1.08)}.empty{color:var(--mute)}.count{font-weight:400;color:var(--mute);font-size:14px}
+.tag{font-size:11px;color:var(--mute);margin-left:4px}td.lv,td.lv a,a.lv{color:#e0242b!important}.rv-new{display:inline-block;margin-left:4px;padding:0 5px;border-radius:6px;background:#2563eb;color:#fff!important;font-size:10.5px;font-weight:700;line-height:16px;vertical-align:1px}.rv-key{display:block;font-size:10px;font-weight:500;color:var(--mute)}.premarket{margin:10px 0;padding:12px 16px;border-radius:12px;background:color-mix(in srgb,#f5a623 8%,var(--bg));border:1px solid color-mix(in srgb,#f5a623 35%,var(--line))}.premarket ul{margin:6px 0 0;padding-left:0;list-style:none;font-size:14px;line-height:1.75}.premarket li{padding:1px 0}.data-date{font-size:12.5px;color:var(--mute);margin:6px 0 2px}.data-date b{color:var(--fg)}td.cum{font-weight:800;background:rgba(127,127,127,.08)}.vote-sharebar{margin:8px 0 10px}.vote-share{font:inherit;font-size:14px;font-weight:700;padding:9px 16px;border-radius:999px;border:0;background:#d0312d;color:#fff;cursor:pointer;width:100%;max-width:360px}.vote-share:hover{filter:brightness(1.08)}.empty{color:var(--mute)}.count{font-weight:400;color:var(--mute);font-size:14px}
 h3{font-size:14px;margin:14px 0 6px}.cols{display:grid;grid-template-columns:1fr 1fr;gap:20px}@media (max-width:900px){.cols{grid-template-columns:1fr}}
 table.flow td:first-child,table.flow th:first-child{color:var(--mute);text-align:right;width:1em}table.flow td:nth-child(2),table.flow th:nth-child(2){text-align:left}table.flow td:nth-child(3),table.flow th:nth-child(3){text-align:right}
 .tabs{display:flex;gap:6px;flex-wrap:wrap}.tab{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 14px;border-radius:999px;cursor:pointer;font:inherit;font-size:13px}.tab.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
@@ -2868,6 +2868,15 @@ ${clientScript()}
   mark();
   var t = null;
   new MutationObserver(function () { clearTimeout(t); t = setTimeout(mark, 200); }).observe(document.body, { childList: true, subtree: true });
+})();</script>
+<script>(function () {
+  // 每一頁最上面標資料日期和網站更新時間，一眼看出是不是最新的
+  var txt = '📅 資料日期 <b>${+date.slice(4, 6)}/${+date.slice(6)}（${'日一二三四五六'[new Date(Date.UTC(+date.slice(0, 4), +date.slice(4, 6) - 1, +date.slice(6))).getUTCDay()]}）收盤</b>・網站更新 ${new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false })}';
+  document.querySelectorAll('.page').forEach(function (p) {
+    if (/^(profile|journal|fee|macro|news)$/.test(p.dataset.p) || p.querySelector('.data-date')) return;
+    var d = document.createElement('div'); d.className = 'data-date'; d.innerHTML = txt;
+    p.insertBefore(d, p.firstChild);
+  });
 })();</script>
 <script>(function () {
   // 營收月份：已經公布新月份營收的股票，在營收 YoY 旁邊標「9月」；沒標的是上個月
