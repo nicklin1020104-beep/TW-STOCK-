@@ -280,5 +280,25 @@
    "tight": true,
    "pivot": 59.7
   }
+ ],
+ "20261008": [
+  {
+   "code": "5230",
+   "name": "雷笛克光學",
+   "mkt": "上櫃",
+   "close": 25,
+   "status": "今日帶量突破",
+   "tight": true,
+   "pivot": 24.1
+  },
+  {
+   "code": "2855",
+   "name": "統一證",
+   "mkt": "上市",
+   "close": 58.6,
+   "status": "柄整理中",
+   "tight": true,
+   "pivot": 59.7
+  }
  ]
 }

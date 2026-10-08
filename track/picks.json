@@ -991,5 +991,103 @@
    "okVol": false,
    "above60": false
   }
+ ],
+ "20261008": [
+  {
+   "code": "4157",
+   "name": "太景*-KY",
+   "mkt": "上櫃",
+   "industry": "生技醫療業",
+   "close": 9.33,
+   "yoy": 172.2115013508298,
+   "star": true,
+   "okUp": true,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "3045",
+   "name": "台灣大",
+   "mkt": "上市",
+   "industry": "通信網路業",
+   "close": 124,
+   "yoy": 8.499575061975785,
+   "star": true,
+   "okUp": true,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "4904",
+   "name": "遠傳",
+   "mkt": "上市",
+   "industry": "通信網路業",
+   "close": 106,
+   "yoy": 15.651609823935727,
+   "star": true,
+   "okUp": true,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "3231",
+   "name": "緯創",
+   "mkt": "上市",
+   "industry": "電腦及週邊設備業",
+   "close": 188.5,
+   "yoy": 166.4840985505344,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "3264",
+   "name": "欣銓",
+   "mkt": "上櫃",
+   "industry": "半導體業",
+   "close": 256,
+   "yoy": 46.93,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "8932",
+   "name": "智通*",
+   "mkt": "上櫃",
+   "industry": "數位雲端",
+   "close": 92.7,
+   "yoy": 12.75986290062482,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": false
+  },
+  {
+   "code": "6510",
+   "name": "精測",
+   "mkt": "上櫃",
+   "industry": "半導體業",
+   "close": 3320,
+   "yoy": 55.85,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": true
+  },
+  {
+   "code": "1903",
+   "name": "士紙",
+   "mkt": "上市",
+   "industry": "造紙工業",
+   "close": 47.45,
+   "yoy": 3.8968870128891235,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": false
+  }
  ]
 }
