@@ -309,5 +309,34 @@
    "tight": true,
    "pivot": 100
   }
+ ],
+ "20261012": [
+  {
+   "code": "5230",
+   "name": "雷笛克光學",
+   "mkt": "上櫃",
+   "close": 25.05,
+   "status": "1 天前帶量突破",
+   "tight": true,
+   "pivot": 24.1
+  },
+  {
+   "code": "2855",
+   "name": "統一證",
+   "mkt": "上市",
+   "close": 59.5,
+   "status": "柄整理中",
+   "tight": true,
+   "pivot": 59.7
+  },
+  {
+   "code": "2347",
+   "name": "聯強",
+   "mkt": "上市",
+   "close": 98.9,
+   "status": "柄整理中",
+   "tight": true,
+   "pivot": 100
+  }
  ]
 }

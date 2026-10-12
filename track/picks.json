@@ -1041,5 +1041,55 @@
    "okVol": false,
    "above60": true
   }
+ ],
+ "20261012": [
+  {
+   "code": "2610",
+   "name": "華航",
+   "mkt": "上市",
+   "industry": "航運業",
+   "close": 20.4,
+   "yoy": 31.861356890902748,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": false
+  },
+  {
+   "code": "2489",
+   "name": "瑞軒",
+   "mkt": "上市",
+   "industry": "光電業",
+   "close": 41,
+   "yoy": 32.484742867667954,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "1909",
+   "name": "榮成",
+   "mkt": "上市",
+   "industry": "造紙工業",
+   "close": 10.25,
+   "yoy": 25.293580244394978,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": null
+  },
+  {
+   "code": "6640",
+   "name": "均華",
+   "mkt": "上櫃",
+   "industry": "半導體業",
+   "close": 1155,
+   "yoy": 87.1907109097257,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": true
+  }
  ]
 }
