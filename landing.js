@@ -677,7 +677,7 @@ function tourClient() {
     ['📈', '選股名單每天自動更新', '一K站三線、杯柄型態、三率三升、潛伏股…<br>每頁最上面有<b>資料日期</b>，看就知道是不是最新的。<br>想分享，按表格上的 <b>📤 分享這張表</b>。'],
     ['⭐', '自選股', '把想追的股票加進來，<br>每天看漲跌、營收 MoM／YoY，<br>還會標出它今天上了哪些名單。'],
     ['🗳️', '每天猜明天漲跌', '開盤前投票：看多還是看空、哪個族群最強。<br>13:35 收盤開獎，<b>猜中得分上排行榜</b>。'],
-    ['📒', '股票日誌：你的投資記帳本', '① 按 <b>📦 原有持股</b>，把現在有的股票加進來<br>② 之後每次買賣按 <b>＋ 記一筆交易</b><br>③ 賣出時選「賣的是哪一筆」，均價自動重算<br>損益、產業配置、跟大盤比，全部自動畫好。'],
+    ['📒', '股票日誌：你的投資記帳本', '① 按 <b>📦 原有持股</b>，把現在有的股票加進來<br>② 之後每次買賣按 <b>＋ 記一筆交易</b><br>③ 賣出時選「賣的是哪一筆」，均價自動重算<br>損益、產業配置、跟大盤比，全部自動畫好。<br><span style="font-size:13px">（股票日誌、自選股要<b>登入 Google</b> 才能用，免費）</span>'],
     ['🔔', '打開通知，不錯過重點', '08:55 盤前重點、13:35 收盤開獎、14:00 盤後報告，<br>像 App 一樣跳出來。到「個人檔案」就能開。'],
   ];
   var i = 0, m = null;
@@ -691,6 +691,7 @@ function tourClient() {
     m.querySelector('.tr-prev').style.visibility = i ? 'visible' : 'hidden';
     m.querySelector('.tr-next').textContent = last ? '開始使用 🚀' : '下一步';
     m.querySelector('.tr-go').hidden = !last;
+    m.querySelector('.tr-go').textContent = token() ? '📒 現在就去記第一筆' : '⭐ 登入 Google，解鎖日誌和自選股';
   }
   function open() {
     if (m) return;
@@ -703,7 +704,7 @@ function tourClient() {
     m.querySelector('.tr-skip').onclick = done;
     m.querySelector('.tr-prev').onclick = function () { if (i > 0) { i--; draw(); } };
     m.querySelector('.tr-next').onclick = function () { if (i < SLIDES.length - 1) { i++; draw(); } else done(); };
-    m.querySelector('.tr-go').onclick = function () { done(); var g = document.querySelector('.gtab[data-g="journal"],.btab[data-g="journal"]'); if (g) g.click(); scrollTo(0, 0); };
+    m.querySelector('.tr-go').onclick = function () { done(); var g = document.querySelector(token() ? '.gtab[data-g="journal"],.btab[data-g="journal"]' : '.gtab[data-g="me"],.btab[data-g="me"]'); if (g) g.click(); scrollTo(0, 0); };
     // 手機左右滑
     var x0 = null;
     m.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
@@ -712,13 +713,15 @@ function tourClient() {
   }
   window.__openTour = open;
   function check() {
-    if (!token() || seen() || m) return;
+    if (seen() || m) return;
+    // 還停在介紹頁（沒登入、也還沒按訪客進入）：等進到網站再出現；訪客也會看到
+    if (document.documentElement.classList.contains('gated')) return setTimeout(check, 1500);
     var nick = document.getElementById('nick-modal');
     if (nick && !nick.hidden) return setTimeout(check, 1500); // 新會員先取暱稱
     open();
   }
   var orig = window.__pushCheck;
-  window.__pushCheck = function () { if (token() && !seen()) { setTimeout(check, 800); return; } if (orig) orig(); };
+  window.__pushCheck = function () { if (!seen()) { setTimeout(check, 800); return; } if (orig) orig(); };
   setTimeout(check, 1500);
 }
 function tourScript() {
