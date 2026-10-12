@@ -319,11 +319,11 @@ function journalClient(API) {
       // 投資產業配置：個股用網站的族群分類，ETF 全部算一塊，美股算一塊
       var c4 = document.getElementById('jn-c4');
       if (c4) {
-        var ind = {};
-        items.forEach(function (p) { var k = p.market === 'US' ? '美股' : isETF(p.code) ? 'ETF' : (names[p.code] && names[p.code].i) || '其他'; ind[k] = (ind[k] || 0) + p.mv; });
+        var ind = {}, mem = {};
+        items.forEach(function (p) { var k = p.market === 'US' ? '美股' : isETF(p.code) ? 'ETF' : (names[p.code] && names[p.code].i) || '其他'; ind[k] = (ind[k] || 0) + p.mv; (mem[k] = mem[k] || []).push(p); });
         var ik = Object.keys(ind).sort(function (a, b) { return ind[b] - ind[a]; }), il = ik.slice(0, 8), iv = il.map(function (k) { return Math.round(ind[k]); });
-        var irest = ik.slice(8).reduce(function (a, k) { return a + ind[k]; }, 0); if (irest > 0) { il.push('其他產業'); iv.push(Math.round(irest)); }
-        if (iv.length) charts.push(new Chart(c4, { type: 'pie', data: { labels: il, datasets: [{ data: iv, backgroundColor: il.map(function (l, i) { return l === 'ETF' ? '#94a3b8' : pal[i % pal.length]; }), borderWidth: 1, borderColor: getComputedStyle(document.body).backgroundColor }] }, options: { plugins: { legend: { position: 'right', labels: { color: fg, boxWidth: 12 } }, tooltip: { callbacks: { label: function (c) { var t = iv.reduce(function (a, b) { return a + b; }, 0); return c.label + '：$' + c.raw.toLocaleString() + '（' + (c.raw / t * 100).toFixed(1) + '%）'; } } } } } }));
+        var irest = ik.slice(8).reduce(function (a, k) { return a + ind[k]; }, 0); if (irest > 0) { il.push('其他產業'); iv.push(Math.round(irest)); mem['其他產業'] = ik.slice(8).reduce(function (a, k) { return a.concat(mem[k]); }, []); }
+        if (iv.length) charts.push(new Chart(c4, { type: 'pie', data: { labels: il, datasets: [{ data: iv, backgroundColor: il.map(function (l, i) { return l === 'ETF' ? '#94a3b8' : pal[i % pal.length]; }), borderWidth: 1, borderColor: getComputedStyle(document.body).backgroundColor }] }, options: { plugins: { legend: { position: 'right', labels: { color: fg, boxWidth: 12 } }, tooltip: { callbacks: { label: function (c) { var t = iv.reduce(function (a, b) { return a + b; }, 0); return c.label + '：$' + c.raw.toLocaleString() + '（' + (c.raw / t * 100).toFixed(1) + '%）'; }, afterLabel: function (c) { return (mem[c.label] || []).slice().sort(function (a, b) { return b.mv - a.mv; }).map(function (p) { return '・' + (p.name || p.code) + '  $' + Math.round(p.mv).toLocaleString(); }); } } } } } }));
         else c4.parentNode.insertAdjacentHTML('beforeend', '<p class="empty">還沒有持股</p>');
       }
       var byM = {}; r.realized.forEach(function (x) { var m = x.date.slice(0, 7); byM[m] = (byM[m] || 0) + x.pnl; });
