@@ -201,7 +201,7 @@ function journalClient(API) {
       var dn = cs.getPropertyValue('--dn').trim() || '#16a34a';
       var ds = EQ.mode === 'value'
         ? [{ label: '總資產', data: rows.map(function (x) { return Math.round(x.v); }), borderColor: '#2563eb', backgroundColor: 'rgba(37,99,235,0.08)', fill: true, tension: 0.25, pointRadius: 0, borderWidth: 2.5 }]
-        : [{ label: '我的總損益 %', data: my, borderColor: up, tension: 0.25, pointRadius: 0, borderWidth: 2.5 }, { label: '加權指數', data: mk, borderColor: '#94a3b8', borderDash: [6, 5], tension: 0.25, pointRadius: 0, borderWidth: 2 }];
+        : [{ label: (start === bookStart ? '記帳以來' : '期間') + '漲跌 %', data: my, borderColor: up, tension: 0.25, pointRadius: 0, borderWidth: 2.5 }, { label: '加權指數', data: mk, borderColor: '#94a3b8', borderDash: [6, 5], tension: 0.25, pointRadius: 0, borderWidth: 2 }];
       loadChart().then(function () {
         if (g0 !== gen) return;
         if (eqChart) eqChart.destroy();
@@ -209,7 +209,9 @@ function journalClient(API) {
       });
       var lastMy = my[my.length - 1], lastMk = mk[mk.length - 1];
       root.querySelector('.jn-eqstats').innerHTML =
-        '<div><b>' + pct(lastMy) + '</b><span>' + (start === bookStart ? '記帳以來總損益' : '期間總損益') + '</span><small>' + (plAmt >= 0 ? '+' : '-') + '$' + fmt(Math.abs(plAmt)) + '</small></div>' +
+        // 總報酬：用你的成本算（原有持股用你填的成本），跟上面「總資產」卡片一樣；記帳以來：從記帳第一天的收盤價算起
+        (function () { var lr = rows[rows.length - 1], tot = lr.inv > 0 ? (lr.v - lr.inv) / lr.inv * 100 : null; return tot == null ? '' : '<div><b>' + pct(tot) + '</b><span>總報酬（依成本）</span><small>' + (lr.v - lr.inv >= 0 ? '+' : '-') + '$' + fmt(Math.abs(lr.v - lr.inv)) + '・含記帳前就有的漲幅</small></div>'; })() +
+        '<div><b>' + pct(lastMy) + '</b><span>' + (start === bookStart ? '記帳以來漲跌' : '這段期間漲跌') + '</span><small>' + (plAmt >= 0 ? '+' : '-') + '$' + fmt(Math.abs(plAmt)) + '・從 ' + +start.slice(5, 7) + '/' + +start.slice(8) + ' 收盤算起</small></div>' +
         '<div><b>' + (lastMk == null ? '-' : pct(lastMk)) + '</b><span>同期加權指數</span>' + (lastMk == null ? '' : '<small>' + (lastMy >= lastMk ? '贏大盤 ' : '輸大盤 ') + Math.abs(lastMy - lastMk).toFixed(2) + ' 個百分點</small>') + '</div>' +
         '<div><b>' + winDays + ' / ' + nDays + ' 天</b><span>贏大盤的天數</span><small>當天漲幅比大盤好</small></div>' +
         '<div><b>' + pct(mdd * 100) + '</b><span>最大回撤</span><small>從高點最多跌多少</small></div>' +
