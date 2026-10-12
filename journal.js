@@ -46,7 +46,6 @@ function journalClient(API) {
   // 手續費折扣：個股有設（不同券商）就用個股的，沒有就用全部的
   function discOf(code) { var s = S || DEF; return (s.perStock && code && s.perStock[code]) || s.feeDiscount || 10; }
   function feeOf(m, side, price, qty, daytrade, code) {
-    return { fee: 0, tax: 0 }; // 手續費、交易稅不計（站長決定：日誌只看成交價）
     var s = S || DEF, amt = price * qty;
     if (!amt) return { fee: 0, tax: 0 };
     if (m === 'US') return { fee: Math.max(s.usMinFee || 0, Math.round(amt * (s.usFeeRate || 0) / 100 * 100) / 100), tax: 0 };
@@ -243,7 +242,7 @@ function journalClient(API) {
       '<div><b>' + pn(uz) + '</b><span>未實現損益</span></div><div><b>' + pn(rz) + '</b><span>已實現損益（含股利）</span></div>' +
       '<div><b>' + (trades.length ? Math.round(wins.length / trades.length * 100) + '%' : '-') + '</b><span>勝率（' + trades.length + ' 筆賣出）</span></div></div>';
     if (r.cash < 0) h += '<p class="jn-hint">⚠️ 現金是負的：可能還沒記「入金」，按「💵 現金」補上起始資金或入金。</p>';
-    h += '<div class="jn-acts"><button type="button" class="main" data-a="trade">＋ 記一筆交易</button><button type="button" data-a="holding">📦 原有持股</button><button type="button" data-a="plans">🔁 定期定額</button><button type="button" data-a="cash">💵 現金／股利</button><button type="button" onclick="window.__openTour && window.__openTour()">📖 使用教學</button></div>';
+    h += '<div class="jn-acts"><button type="button" class="main" data-a="trade">＋ 記一筆交易</button><button type="button" data-a="holding">📦 原有持股</button><button type="button" data-a="plans">🔁 定期定額</button><button type="button" data-a="cash">💵 現金／股利</button><button type="button" data-a="settings">⚙️ 手續費調整</button><button type="button" onclick="window.__openTour && window.__openTour()">📖 使用教學</button></div>';
     // 庫存
     // 到價提醒
     var hits = r.hold.filter(function (p) { return p.price != null && ((p.tp && p.price >= p.tp) || (p.sl && p.price <= p.sl)); });
@@ -273,10 +272,10 @@ function journalClient(API) {
       var what = isT ? esc(e.code) + ' ' + esc(e.name || '') + (e.market === 'US' ? '<span class="tag">美</span>' : '') : e.kind === 'dividend' ? esc((e.code || '') + ' ' + (e.name || '')) : '-';
       var detail = isT ? fmt(e.price, 2) + ' × ' + fmt(e.qty) + (e.market === 'US' ? '（匯率 ' + e.fx + '）' : '') : money(e.amount);
       var cost = isT ? fmt((e.fee || 0) + (e.tax || 0), e.market === 'US' ? 2 : 0) : '';
-      return '<tr><td class="jn-ops"><button class="jn-edit" data-id="' + e.id + '">✏️ 編輯</button><button class="jn-del" data-id="' + e.id + '">刪除</button></td><td>' + (e.kind === 'holding' ? '原有' : e.date.slice(5).replace('-', '/')) + '</td><td><span class="chip ' + (e.kind === 'holding' ? 'mid' : e.kind === 'buy' || e.kind === 'deposit' || e.kind === 'dividend' ? 'good' : 'bad') + '">' + kindTxt[e.kind] + (e.daytrade ? '・當沖' : '') + '</span></td><td class="nm">' + what + '</td><td>' + detail + '</td><td class="jn-note">' + (e.tags && e.tags.length ? e.tags.map(function (t) { return '<span class="chip mid">' + esc(t) + '</span>'; }).join('') + ' ' : '') + esc(e.note || '') + '</td></tr>';
+      return '<tr><td class="jn-ops"><button class="jn-edit" data-id="' + e.id + '">✏️ 編輯</button><button class="jn-del" data-id="' + e.id + '">刪除</button></td><td>' + (e.kind === 'holding' ? '原有' : e.date.slice(5).replace('-', '/')) + '</td><td><span class="chip ' + (e.kind === 'holding' ? 'mid' : e.kind === 'buy' || e.kind === 'deposit' || e.kind === 'dividend' ? 'good' : 'bad') + '">' + kindTxt[e.kind] + (e.daytrade ? '・當沖' : '') + '</span></td><td class="nm">' + what + '</td><td>' + detail + '</td><td>' + cost + '</td><td class="jn-note">' + (e.tags && e.tags.length ? e.tags.map(function (t) { return '<span class="chip mid">' + esc(t) + '</span>'; }).join('') + ' ' : '') + esc(e.note || '') + '</td></tr>';
     }).join('');
-    h += '<h2>交易紀錄 <span class="count">' + E.length + ' 筆</span></h2>' + (rows ? '<div class="scroll"><table class="compact"><thead><tr><th></th><th>日期</th><th>種類</th><th>股票</th><th>價格 × 數量／金額</th><th>理由／心得</th></tr></thead><tbody>' + rows + '</tbody></table></div>' : '<p class="empty">還沒有紀錄</p>');
-    h += '<p class="jn-hint">損益用成交價計算（不含手續費、交易稅），賣出可以指定賣的是哪一筆；美股以交易當時匯率換算成台幣成本，市值用目前匯率。現價每分鐘更新，台股盤後以收盤價為準。資料只有你自己看得到。</p>';
+    h += '<h2>交易紀錄 <span class="count">' + E.length + ' 筆</span></h2>' + (rows ? '<div class="scroll"><table class="compact"><thead><tr><th></th><th>日期</th><th>種類</th><th>股票</th><th>價格 × 數量／金額</th><th>手續費＋稅</th><th>理由／心得</th></tr></thead><tbody>' + rows + '</tbody></table></div>' : '<p class="empty">還沒有紀錄</p>');
+    h += '<p class="jn-hint">損益含手續費和交易稅（自動計算，費率可按「⚙️ 手續費調整」改），賣出可以指定賣的是哪一筆；美股以交易當時匯率換算成台幣成本，市值用目前匯率。現價每分鐘更新，台股盤後以收盤價為準。資料只有你自己看得到。</p>';
     root.innerHTML = h;
     drawCharts(r, ++gen);
     drawEquity(gen);
@@ -356,7 +355,7 @@ function journalClient(API) {
       '<label>進場／出場理由（可複選）</label><div class="jn-tags">' + TAGS.map(function (t) { return '<button type="button" data-t="' + t + '"' + ((e.tags || []).indexOf(t) >= 0 ? ' class="on"' : '') + '>' + t + '</button>'; }).join('') + '</div>' +
       '<label>心得筆記</label><textarea name="note" maxlength="500" placeholder="為什麼買／賣？下次要注意什麼？">' + esc(e.note || '') + '</textarea>' +
       '<div class="jn-btns"><button type="button" data-a="close">取消</button><button type="button" class="main" data-a="save-trade">儲存</button></div><div class="jn-err"></div>');
-    f.fee.closest('.jn-row').style.display = 'none'; // 不記手續費、交易稅
+    f.fee.closest('.jn-row').style.display = 'none'; // 手續費、交易稅自動算，不用填（費率在「手續費調整」）
     var st = { market: e.market || 'TW', kind: H ? 'holding' : e.kind === 'sell' ? 'sell' : 'buy', code: e.code || '', name: e.name || '', manualFee: !!e.id };
     if (H) {
       // 原有持股：藏起買賣、日期、手續費、當沖、理由
@@ -440,7 +439,7 @@ function journalClient(API) {
           after = '<br>這筆' + (gain >= 0 ? '賺' : '賠') + ' <b class="' + (gain >= 0 ? 'up' : 'dn') + '">$' + fmt(Math.abs(gain), st.market === 'US' ? 2 : 0) + '</b>' + (rem > 1e-9 ? '　賣完剩 ' + fmt(rem) + ' 股，均價 <b>' + fmt((cur.costLocal - costOut) / rem, 2) + '</b>（原本 ' + fmt(cur.avg, 2) + '）' : '　全部賣光');
         }
       }
-      f.querySelector('.jn-calc').innerHTML = p && q ? (st.kind === 'buy' ? '應付' : '實收') + ' <b>' + (st.market === 'US' ? 'US$' + fmt(total, 2) + '（約台幣 $' + fmt(total * fx) + '）' : '$' + fmt(total)) + '</b>' + after + (true ? '' : '　<span></span>') : '';
+      f.querySelector('.jn-calc').innerHTML = p && q ? (st.kind === 'buy' ? '應付' : '實收') + ' <b>' + (st.market === 'US' ? 'US$' + fmt(total, 2) + '（約台幣 $' + fmt(total * fx) + '）' : '$' + fmt(total)) + '</b>' + after + (st.market === 'TW' || fee ? '　<span>含手續費 ' + (st.market === 'US' ? 'US$' + fmt(fee, 2) : '$' + fmt(fee)) + (tax ? '、交易稅 $' + fmt(tax) : '') + '</span>' : '') : '';
     }
     f.querySelectorAll('.mk button').forEach(function (b) { b.onclick = function () { st.market = b.dataset.m; st.code = ''; st.name = ''; f.code.value = ''; seg(); }; });
     f.querySelectorAll('.sd button').forEach(function (b) { b.onclick = function () { st.kind = b.dataset.s; seg(); }; });
@@ -593,7 +592,7 @@ function journalClient(API) {
   }
 
   function settingsForm() {
-    var f = open('<h3>⚙️ 手續費設定</h3><p class="jn-hint">之後新增的交易會用新的設定自動計算；舊紀錄不會變。</p>' + settingsFields(S || DEF, false) + '<div class="jn-btns"><button type="button" data-a="close">取消</button><button type="button" class="main" data-a="save-settings">儲存</button></div><div class="jn-err"></div>');
+    var f = open('<h3>⚙️ 手續費調整</h3><p class="jn-hint">之後新增的交易會用新的設定自動計算；舊紀錄不會變。</p>' + settingsFields(S || DEF, false) + '<div class="jn-btns"><button type="button" data-a="close">取消</button><button type="button" class="main" data-a="save-settings">儲存</button></div><div class="jn-err"></div>');
     f.addEventListener('click', function (ev) {
       var a = ev.target.closest('[data-a]'); if (!a) return;
       if (a.dataset.a === 'close') modal.hidden = true;
@@ -731,7 +730,7 @@ function journalClient(API) {
   function reload() {
     return api('/api/journal').then(function (j) {
       if (j.error) { root.innerHTML = '<p class="empty">' + esc(j.error) + '</p>'; return; }
-      S = j.settings; if (window.__feeCalcPrefill) window.__feeCalcPrefill(S); P = j.plans || []; planErr = j.planErr || null; E = (j.entries || []).map(function (e) { if (e.kind === 'buy' && e.date === '2000-01-01') e.kind = 'holding'; e.fee = 0; e.tax = 0; return e; }); // 手續費、稅不計 // 原有持股
+      S = j.settings; if (window.__feeCalcPrefill) window.__feeCalcPrefill(S); P = j.plans || []; planErr = j.planErr || null; E = (j.entries || []).map(function (e) { if (e.kind === 'buy' && e.date === '2000-01-01') e.kind = 'holding'; return e; }); // 原有持股
       var r = calc(), syms = r.hold.map(sym).concat(tradeSyms(), ['^TWII']); if (E.some(function (p) { return p.market === 'US'; })) syms.push('USDTWD=X');
       Q = {}; render();
       return quotes(syms).then(function () { render(); daySum(); });
