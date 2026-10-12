@@ -21,7 +21,7 @@ const { getEstimates } = require('./estimates.js');
 const { findCups, CUP_PARAMS } = require('./cup.js');
 const activeEtf = require('./activeetf.js');
 const { renderJournal, renderFeeCalc, JOURNAL_CSS, journalScript } = require('./journal.js');
-const { renderGate, GATE_CSS, shareScript, pushScript } = require('./landing.js');
+const { renderGate, GATE_CSS, shareScript, pushScript, tourScript } = require('./landing.js');
 const VOTE_API = 'https://shoupan-api.shoupan.workers.dev';
 // 比賽金鑰：雲端（GitHub Actions）從加密設定讀，本機從 worker/.results-key 讀
 const resultsKey = () => {
@@ -2327,7 +2327,7 @@ const NAV = [
   ['chips', '籌碼', [['locked', '主力鎖碼'], ['flow', '三大法人'], ['holders', '千張大戶'], ['aetf', '主動ETF']]],
   ['sector', '產業', [['industry', '產業趨勢'], ['news', '產業新聞'], ['ir50', '0050法說營收']]],
   ['macro', '總經', [['macro', '總經']]],
-  ['journal', '股票日誌', [['journal', '我的日誌'], ['fee', '手續費試算']]],
+  ['journal', '股票日誌', [['journal', '我的日誌']]],
   ['me', '個人檔案', [['profile', '個人檔案']]],
 ];
 // 手機版底部分頁列的圖示（線條圖示，顏色跟著文字）
@@ -2741,7 +2741,7 @@ ${renderLatent(extra.latent)}</div>
 <div class="page" data-p="industry" hidden>${extra.crashed && extra.crashed.length ? renderLeaders(extra) : ''}${extra.industry ? renderIndustry(extra.industry) : '<p class="empty">產業趨勢計算失敗</p>'}${extra.crashed && extra.crashed.length ? '' : renderLeaders(extra)}</div>
 <div class="page" data-p="locked" hidden>${extra.locked ? renderLocked(extra.locked) : '<p class="empty">主力鎖碼資料更新失敗</p>'}</div>
 <div class="page" data-p="journal" hidden>${renderJournal()}</div>
-<div class="page" data-p="fee" hidden>${renderFeeCalc()}</div>
+
 <div class="page" data-p="holders" hidden>${renderHolders(extra.holders)}</div>
 <div class="page" data-p="aetf" hidden>${extra.aetf && extra.aetf.etfs.length ? renderActiveEtf(extra.aetf) : '<p class="empty">主動式 ETF 資料更新失敗</p>'}</div>
 <div class="page" data-p="flow" hidden>${renderFlow(flow, picks)}</div>
@@ -2907,6 +2907,7 @@ ${clientScript()}
 })();</script>
 ${shareScript()}
 ${pushScript(VOTE_API)}
+${tourScript()}
 ${journalScript(VOTE_API)}
 </body></html>`;
 }

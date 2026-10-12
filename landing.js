@@ -10,11 +10,10 @@ const FEATURES = [
   ['⭐', '自選股＋估價', '依族群自動分組、雲端同步；EPS × 本益比算合理價，附外資預估。'],
   ['🗳️', '收盤預測比賽', '猜明天漲跌和最強族群，13:35 收盤準時開獎，衝上每週排行榜。'],
   ['🔔', '開盤／收盤推播', '08:55 開盤提醒、13:35 開獎、盤後報告出爐，像 App 一樣跳通知。'],
-  ['🧮', '手續費試算', '輸入買賣價就算出手續費、交易稅和「損益兩平價」，不用登入。'],
   ['📤', '一鍵分享圖卡', '每一頁都能做成附 QR Code 的圖卡，直接分享到 Threads、IG、LINE。'],
 ];
 const JOURNAL = [
-  ['手續費、交易稅自動算', '照你的券商折扣，ETF、當沖、美股都分得清楚'],
+  ['賣哪一筆自己選', '賣出時指定賣的是哪一筆，剩下的均價自動重算'],
   ['台股＋美股一起記', '美股自動換算台幣，現金、庫存、損益一次看'],
   ['定期定額自動記帳', '設定一次，每個扣款日收盤後自動記，遇假日順延'],
   ['停利停損到價提醒', '買進時先設好出場點，到價庫存直接提醒你'],
@@ -33,7 +32,7 @@ const TRUST = [
 const FAQ = [
   ['飆股情報局要錢嗎？', '完全免費。訪客也能看所有選股與盤後資料；用 Google 帳號登入後，還可以記帳、投票、收推播、自選股雲端同步。'],
   ['一定要登入嗎？', '不用。點「以訪客身分進入」就能直接看。只有股票日誌、投票比賽、自選股、個人檔案、推播通知需要 Google 登入。'],
-  ['股票日誌能做什麼？', '記錄台股和美股的買賣，自動算手續費和交易稅、現金、庫存、已實現和未實現損益；可以設定停利停損、定期定額自動記帳，還有資產走勢圖和大盤比較。資料只有你自己看得到。'],
+  ['股票日誌能做什麼？', '記錄台股和美股的買賣，自動算現金、庫存、均價、已實現和未實現損益；可以設定停利停損、定期定額自動記帳，還有資產走勢圖和大盤比較。資料只有你自己看得到。'],
   ['資料多久更新一次？', '每個交易日收盤後約 14:00 前更新，15:10 補齊、17:00 補上三大法人；頂部報價盤中每 30 分鐘更新。'],
   ['選股的條件是什麼？', '每個名單頁面上方都寫清楚條件（一K站三線、三率三升、杯柄型態等），並附回測勝率，透明公開。'],
   ['可以在手機上用嗎？', '可以。用手機瀏覽器打開後選「加入主畫面」，就像 App 一樣，還能收推播通知。'],
@@ -62,7 +61,7 @@ function heroDemo() {
 
 function renderGate() {
   const logo = '/TW-STOCK-/icon-192.png?v=2';
-  const ticker = ['一K站三線', '杯柄型態 VCP', '三率三升', '潛伏股', '族群趨勢', '主力鎖碼', '三大法人', '千張大戶', '主動ETF加減碼', '總經數據', '股票日誌', '定期定額', '停利停損', '資產走勢', '收盤開獎', '推播通知', '手續費試算'];
+  const ticker = ['一K站三線', '杯柄型態 VCP', '三率三升', '潛伏股', '族群趨勢', '主力鎖碼', '三大法人', '千張大戶', '主動ETF加減碼', '總經數據', '股票日誌', '定期定額', '停利停損', '資產走勢', '收盤開獎', '推播通知'];
   return `<div id="gate">
 <nav class="lp-nav"><div class="lp-wrap lp-navin">
   <a class="lp-brand" href="#gate-top"><img src="${logo}" alt="">飆股情報局</a>
@@ -207,7 +206,8 @@ const GATE_CSS = `#gate{display:none}html.gated #gate{display:block;position:fix
 @media (prefers-reduced-motion:reduce){.lp-reveal{opacity:1;transform:none;transition:none}.lp-track,.lp-demo,.lp-rot span,.lp-toast,.lp-demo-chart .ln,.lp-jcal i,.lp-live{animation:none!important}.lp-rot span{opacity:0}.lp-rot span:first-child{opacity:1}.lp-toast{opacity:1}.lp-demo-chart .ln{stroke-dashoffset:0}}
 .sh-bar{display:flex;justify-content:flex-end;margin:10px 0 -4px}.sh-inline{font:inherit;font-size:13px;font-weight:700;padding:6px 14px;border-radius:999px;border:1.5px solid var(--accent);background:color-mix(in srgb,var(--accent) 8%,transparent);color:var(--accent);cursor:pointer}
 .sh-tblbar{display:flex;justify-content:flex-end;margin:6px 0 4px}.sh-tbl{font:inherit;font-size:12.5px;font-weight:600;padding:4px 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--mute);cursor:pointer}.sh-tbl:hover{color:var(--fg);border-color:var(--fg)}
-#share-fab{;right:16px;bottom:18px;z-index:40;font:inherit;font-size:14px;font-weight:700;padding:11px 18px;border-radius:999px;border:0;background:var(--accent);color:var(--bg);box-shadow:0 6px 18px rgba(0,0,0,.28);cursor:pointer}html.gated #share-fab{display:none}#share-fab[hidden]{display:none}
+#tour-modal{position:fixed;inset:0;z-index:90;background:rgba(15,15,20,.55);display:flex;align-items:center;justify-content:center;padding:16px}.tr-box{position:relative;background:var(--bg);color:var(--fg);border-radius:22px;max-width:420px;width:100%;padding:34px 24px 22px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.25)}.tr-skip{position:absolute;top:12px;right:14px;border:0;background:none;color:var(--mute);font:inherit;font-size:13.5px;cursor:pointer}.tr-ic{font-size:54px;line-height:1.1}.tr-t{font-size:21px;font-weight:800;margin:12px 0 10px}.tr-x{font-size:14.5px;line-height:1.8;color:var(--mute);min-height:110px}.tr-x b{color:var(--fg)}.tr-dots{display:flex;justify-content:center;gap:7px;margin:14px 0}.tr-dots i{width:7px;height:7px;border-radius:50%;background:var(--line)}.tr-dots i.on{width:20px;border-radius:4px;background:#d0312d}.tr-btns{display:flex;gap:10px}.tr-btns button,.tr-go{flex:1;font:inherit;font-size:15px;font-weight:700;padding:11px;border-radius:999px;border:1.5px solid var(--line);background:var(--bg);color:var(--fg);cursor:pointer}.tr-btns .tr-next{background:#1a1a1a;color:#fff;border-color:#1a1a1a}.tr-go{display:block;width:100%;margin-top:10px;background:#d0312d;color:#fff;border-color:#d0312d}.tr-go[hidden]{display:none}
+#share-fab{position:fixed;right:16px;bottom:18px;z-index:40;font:inherit;font-size:14px;font-weight:700;padding:11px 18px;border-radius:999px;border:0;background:var(--accent);color:var(--bg);box-shadow:0 6px 18px rgba(0,0,0,.28);cursor:pointer}html.gated #share-fab{display:none}#share-fab[hidden]{display:none}
 #share-modal{position:fixed;inset:0;z-index:1200;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:16px}#share-modal[hidden]{display:none}
 .sh-box{background:var(--bg);border-radius:18px;padding:16px;max-width:420px;width:100%;max-height:94vh;overflow:auto;text-align:center}.sh-box img{width:100%;border-radius:10px;display:block;background:var(--card);min-height:200px}
 .sh-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.sh-btns button{font:inherit;font-size:14px;font-weight:700;padding:11px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}.sh-btns .sh-main{grid-column:1/-1;background:var(--accent);border-color:var(--accent);color:var(--bg)}
@@ -639,6 +639,7 @@ function pushClient(API) {
     if (!supported && !(ios && !standalone)) return; // 不支援、也不是 iPhone 未加入主畫面：不打擾
     var nick = document.getElementById('nick-modal');
     if (nick && !nick.hidden) return setTimeout(maybeAsk, 1500); // 先讓新會員取完暱稱
+    if (document.getElementById('tour-modal')) return setTimeout(maybeAsk, 2000); // 新手教學看完再問
     asking = true;
     if (supported) {
       askBox('<div class="pa-ic">🔔</div><div class="gate-name">要開啟通知嗎？</div><div class="gate-sub">08:55 開盤提醒今天的焦點股<br>13:35 收盤開獎，告訴你得了幾分<br>14:00 盤後報告出爐</div><button type="button" class="nm-ok pa-yes">開啟通知</button><button type="button" class="pa-no">之後再說</button><div class="gate-note">隨時可以在「個人檔案」關閉或調整</div>', enable);
@@ -667,8 +668,65 @@ function pushScript(api) {
   return `<script>(${pushClient.toString()})(${JSON.stringify(api)});</script>`;
 }
 
+
+// ---- 新手教學（像 App 第一次打開的導覽）：登入後只出現一次，日誌頁可以再打開 ----
+function tourClient() {
+  var KEY = 'shoupan_tour_v1';
+  var SLIDES = [
+    ['👋', '歡迎來到飆股情報局', '每天收盤後，幫你把台股整理好：<br>選股名單、籌碼、族群趨勢、總經，<b>一個網站全部看完</b>。'],
+    ['📈', '選股名單每天自動更新', '一K站三線、杯柄型態、三率三升、潛伏股…<br>每頁最上面有<b>資料日期</b>，看就知道是不是最新的。<br>想分享，按表格上的 <b>📤 分享這張表</b>。'],
+    ['⭐', '自選股', '把想追的股票加進來，<br>每天看漲跌、營收 MoM／YoY，<br>還會標出它今天上了哪些名單。'],
+    ['🗳️', '每天猜明天漲跌', '開盤前投票：看多還是看空、哪個族群最強。<br>13:35 收盤開獎，<b>猜中得分上排行榜</b>。'],
+    ['📒', '股票日誌：你的投資記帳本', '① 按 <b>📦 原有持股</b>，把現在有的股票加進來<br>② 之後每次買賣按 <b>＋ 記一筆交易</b><br>③ 賣出時選「賣的是哪一筆」，均價自動重算<br>損益、產業配置、跟大盤比，全部自動畫好。'],
+    ['🔔', '打開通知，不錯過重點', '08:55 盤前重點、13:35 收盤開獎、14:00 盤後報告，<br>像 App 一樣跳出來。到「個人檔案」就能開。'],
+  ];
+  var i = 0, m = null;
+  function token() { try { return localStorage.getItem('shoupan_token'); } catch (e) { return null; } }
+  function seen() { try { return !!localStorage.getItem(KEY); } catch (e) { return true; } }
+  function done() { try { localStorage.setItem(KEY, String(Date.now())); } catch (e) {} if (m) { m.remove(); m = null; } if (window.__pushCheck) window.__pushCheck(); }
+  function draw() {
+    var s = SLIDES[i], last = i === SLIDES.length - 1;
+    m.querySelector('.tr-body').innerHTML = '<div class="tr-ic">' + s[0] + '</div><div class="tr-t">' + s[1] + '</div><div class="tr-x">' + s[2] + '</div>';
+    m.querySelector('.tr-dots').innerHTML = SLIDES.map(function (x, k) { return '<i' + (k === i ? ' class="on"' : '') + '></i>'; }).join('');
+    m.querySelector('.tr-prev').style.visibility = i ? 'visible' : 'hidden';
+    m.querySelector('.tr-next').textContent = last ? '開始使用 🚀' : '下一步';
+    m.querySelector('.tr-go').hidden = !last;
+  }
+  function open() {
+    if (m) return;
+    i = 0;
+    m = document.createElement('div'); m.id = 'tour-modal';
+    m.innerHTML = '<div class="tr-box"><button type="button" class="tr-skip">略過</button><div class="tr-body"></div><div class="tr-dots"></div>' +
+      '<div class="tr-btns"><button type="button" class="tr-prev">← 上一步</button><button type="button" class="tr-next">下一步</button></div>' +
+      '<button type="button" class="tr-go" hidden>📒 現在就去記第一筆</button></div>';
+    document.body.appendChild(m);
+    m.querySelector('.tr-skip').onclick = done;
+    m.querySelector('.tr-prev').onclick = function () { if (i > 0) { i--; draw(); } };
+    m.querySelector('.tr-next').onclick = function () { if (i < SLIDES.length - 1) { i++; draw(); } else done(); };
+    m.querySelector('.tr-go').onclick = function () { done(); var g = document.querySelector('.gtab[data-g="journal"],.btab[data-g="journal"]'); if (g) g.click(); scrollTo(0, 0); };
+    // 手機左右滑
+    var x0 = null;
+    m.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+    m.addEventListener('touchend', function (e) { if (x0 == null) return; var dx = e.changedTouches[0].clientX - x0; x0 = null; if (dx < -40 && i < SLIDES.length - 1) { i++; draw(); } else if (dx > 40 && i > 0) { i--; draw(); } });
+    draw();
+  }
+  window.__openTour = open;
+  function check() {
+    if (!token() || seen() || m) return;
+    var nick = document.getElementById('nick-modal');
+    if (nick && !nick.hidden) return setTimeout(check, 1500); // 新會員先取暱稱
+    open();
+  }
+  var orig = window.__pushCheck;
+  window.__pushCheck = function () { if (token() && !seen()) { setTimeout(check, 800); return; } if (orig) orig(); };
+  setTimeout(check, 1500);
+}
+function tourScript() {
+  return `<script>(${tourClient.toString()})();</script>`;
+}
+
 function shareScript() {
   return `<script>(${shareClient.toString()})(${JSON.stringify(SITE)});</script>`;
 }
 
-module.exports = { renderGate, GATE_CSS, shareScript, pushScript };
+module.exports = { tourScript, renderGate, GATE_CSS, shareScript, pushScript };
