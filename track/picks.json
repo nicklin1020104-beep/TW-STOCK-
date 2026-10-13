@@ -1091,5 +1091,79 @@
    "okVol": false,
    "above60": true
   }
+ ],
+ "20261013": [
+  {
+   "code": "2610",
+   "name": "華航",
+   "mkt": "上市",
+   "industry": "航運業",
+   "close": 20.5,
+   "yoy": 31.861356890902748,
+   "star": true,
+   "okUp": true,
+   "okVol": true,
+   "above60": false
+  },
+  {
+   "code": "9908",
+   "name": "大台北",
+   "mkt": "上市",
+   "industry": "油電燃氣業",
+   "close": 29.1,
+   "yoy": 5.401856589779604,
+   "star": false,
+   "okUp": true,
+   "okVol": false,
+   "above60": true
+  },
+  {
+   "code": "6183",
+   "name": "關貿",
+   "mkt": "上市",
+   "industry": "資訊服務業",
+   "close": 91.6,
+   "yoy": 12.151177573657947,
+   "star": false,
+   "okUp": true,
+   "okVol": false,
+   "above60": false
+  },
+  {
+   "code": "2633",
+   "name": "台灣高鐵",
+   "mkt": "上市",
+   "industry": "航運業",
+   "close": 26,
+   "yoy": 11.38546769393401,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": true
+  },
+  {
+   "code": "1909",
+   "name": "榮成",
+   "mkt": "上市",
+   "industry": "造紙工業",
+   "close": 10.25,
+   "yoy": 25.293580244394978,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": null
+  },
+  {
+   "code": "2704",
+   "name": "國賓",
+   "mkt": "上市",
+   "industry": "觀光餐旅",
+   "close": 45.3,
+   "yoy": 35.86363269732302,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": false
+  }
  ]
 }
