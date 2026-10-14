@@ -1106,6 +1106,18 @@
    "above60": false
   },
   {
+   "code": "3045",
+   "name": "台灣大",
+   "mkt": "上市",
+   "industry": "通信網路業",
+   "close": 125,
+   "yoy": 10.346626140125839,
+   "star": true,
+   "okUp": true,
+   "okVol": true,
+   "above60": true
+  },
+  {
    "code": "9908",
    "name": "大台北",
    "mkt": "上市",
@@ -1140,6 +1152,18 @@
    "okUp": false,
    "okVol": false,
    "above60": true
+  },
+  {
+   "code": "1229",
+   "name": "聯華",
+   "mkt": "上市",
+   "industry": "食品工業",
+   "close": 40.65,
+   "yoy": 2.1309780985504525,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": false
   },
   {
    "code": "1909",
