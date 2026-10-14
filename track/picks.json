@@ -1189,5 +1189,91 @@
    "okVol": false,
    "above60": false
   }
+ ],
+ "20261014": [
+  {
+   "code": "2489",
+   "name": "瑞軒",
+   "mkt": "上市",
+   "industry": "光電業",
+   "close": 41.15,
+   "yoy": 32.484742867667954,
+   "star": true,
+   "okUp": true,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "4979",
+   "name": "華星光",
+   "mkt": "上櫃",
+   "industry": "通信網路業",
+   "close": 588,
+   "yoy": 97.78394876930012,
+   "star": true,
+   "okUp": true,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "6885",
+   "name": "全福生技",
+   "mkt": "上市",
+   "industry": "生技醫療業",
+   "close": 31.9,
+   "yoy": 209.54773869346732,
+   "star": false,
+   "okUp": true,
+   "okVol": false,
+   "above60": true
+  },
+  {
+   "code": "6706",
+   "name": "惠特",
+   "mkt": "上市",
+   "industry": "光電業",
+   "close": 153.5,
+   "yoy": 131.66082210562396,
+   "star": false,
+   "okUp": true,
+   "okVol": false,
+   "above60": true
+  },
+  {
+   "code": "3376",
+   "name": "新日興",
+   "mkt": "上市",
+   "industry": "電子零組件業",
+   "close": 179,
+   "yoy": 3.259517806568829,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": false
+  },
+  {
+   "code": "2201",
+   "name": "裕隆",
+   "mkt": "上市",
+   "industry": "汽車工業",
+   "close": 29.3,
+   "yoy": 2.4152332234138565,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": true
+  },
+  {
+   "code": "9908",
+   "name": "大台北",
+   "mkt": "上市",
+   "industry": "油電燃氣業",
+   "close": 29.1,
+   "yoy": 5.401856589779604,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": true
+  }
  ]
 }

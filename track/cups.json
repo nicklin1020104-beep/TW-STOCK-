@@ -349,5 +349,16 @@
    "tight": true,
    "pivot": 100
   }
+ ],
+ "20261014": [
+  {
+   "code": "2347",
+   "name": "聯強",
+   "mkt": "上市",
+   "close": 102.5,
+   "status": "1 天前帶量突破",
+   "tight": true,
+   "pivot": 100
+  }
  ]
 }
