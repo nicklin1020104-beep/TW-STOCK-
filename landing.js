@@ -344,11 +344,22 @@ function shareClient(SITE) {
     // 表格
     var rowH = data.bar ? 70 : data.rows.length <= 5 ? 112 : 76, n = Math.max(1, data.rows.length), boxH = 70 + n * rowH + 20;
     g.fillStyle = C.card; rr(g, 40, top, W - 80, boxH, 26); g.fill();
-    var nameW = data.compact ? 180 : data.cols.length > 1 ? 380 : W - 160, vx = 70 + nameW, vw = data.cols.length > 1 ? (W - 70 - vx - 30) / (data.cols.length - 1) : 0;
+    // 欄寬：文字比較長的欄（例如「加碼的 ETF」）給比較寬，放不下就換行，不要被截掉
+    var wide = data.cols.slice(1).map(function (h, i) { return !data.compact && data.rows.some(function (r) { return r.vals[i] && r.vals[i].t.length > 10; }); });
+    var anyWide = wide.some(function (x) { return x; });
+    var nameW = data.compact ? 180 : data.cols.length > 1 ? (anyWide ? 250 : 380) : W - 160, vx = 70 + nameW, vw = data.cols.length > 1 ? (W - 70 - vx - 30) / (data.cols.length - 1) : 0;
+    var wts = wide.map(function (x) { return x ? 2.6 : 1; }), wsum = wts.reduce(function (a, b) { return a + b; }, 0) || 1, avail = W - 70 - vx - 30, colW = wts.map(function (w) { return avail * w / wsum; }), colR = [], acc = vx;
+    colW.forEach(function (w) { acc += w; colR.push(acc); });
+    function wrap(t, maxW) { // 用「、」或逐字斷行
+      var parts = t.split('、').map(function (p, k, all) { return k < all.length - 1 ? p + '、' : p; }), lines = [], cur = '';
+      parts.forEach(function (p) { if (g.measureText(cur + p).width <= maxW || !cur) cur += p; else { lines.push(cur); cur = p; } });
+      if (cur) lines.push(cur);
+      return lines.map(function (l) { return fit(g, l, maxW); });
+    }
     g.font = font(24, true); g.fillStyle = C.mute;
     g.fillText(data.cols[0], 70, top + 40);
     g.textAlign = 'right';
-    data.cols.slice(1).forEach(function (h, i) { if (data.compact) { var hm = h.match(/^(D[+][0-9])[ ]*(.*)$/), hp = hm ? [hm[1], hm[2]] : [h]; g.font = font(21, true); g.fillText(fit(g, hp[0], vw - 8), vx + vw * (i + 1), top + 30); if (hp[1]) { g.font = font(17); g.fillText(hp[1], vx + vw * (i + 1), top + 54); } } else g.fillText(fit(g, h, vw - 12), vx + vw * (i + 1), top + 40); });
+    data.cols.slice(1).forEach(function (h, i) { var vw = colW[i]; if (data.compact) { var hm = h.match(/^(D[+][0-9])[ ]*(.*)$/), hp = hm ? [hm[1], hm[2]] : [h]; g.font = font(21, true); g.fillText(fit(g, hp[0], vw - 8), colR[i], top + 30); if (hp[1]) { g.font = font(17); g.fillText(hp[1], colR[i], top + 54); } } else g.fillText(fit(g, h, vw - 12), colR[i], top + 40); });
     g.textAlign = 'left';
     if (!data.rows.length) { g.fillStyle = C.mute; g.font = font(32); g.fillText(data.emptyText || '今日無符合條件的股票', 70, top + 110); }
     data.rows.forEach(function (r, k) {
@@ -358,7 +369,11 @@ function shareClient(SITE) {
       g.fillStyle = C.gold; g.font = font(26, true); g.fillText(String(k + 1), 70, cy);
       g.fillStyle = C.fg; g.font = font(data.compact ? 27 : data.cols.length > 1 ? 34 : 30, true); g.fillText(fit(g, r.name, r.vals.every(function (v) { return !v.t; }) ? W - 200 : nameW - 50), 112, cy);
       g.textAlign = 'right';
-      r.vals.forEach(function (v, i) { g.fillStyle = v.c; g.font = data.compact ? font(i === r.vals.length - 1 ? 25 : 23, true) : font(v.t.length > 8 ? 24 : 32, true); g.fillText(fit(g, v.t, vw - (data.compact ? 4 : 12)), vx + vw * (i + 1), cy); });
+      r.vals.forEach(function (v, i) {
+        var vw = colW[i]; g.fillStyle = v.c;
+        if (wide[i]) { g.font = font(rowH < 100 ? 20 : 23, true); var ls = wrap(v.t, vw - 12).slice(0, rowH < 100 ? 2 : 3), lh = rowH < 100 ? 25 : 30; ls.forEach(function (l, j) { g.fillText(l, colR[i], cy + (j - (ls.length - 1) / 2) * lh); }); return; }
+        g.font = data.compact ? font(i === r.vals.length - 1 ? 25 : 23, true) : font(v.t.length > 8 ? 24 : 32, true); g.fillText(fit(g, v.t, vw - (data.compact ? 4 : 12)), colR[i], cy);
+      });
       g.textAlign = 'left';
     });
     if (data.total > data.rows.length) { g.fillStyle = C.mute; g.font = font(24); g.fillText('…還有 ' + (data.total - data.rows.length) + ' 筆，掃 QR Code 看完整名單', 70, top + boxH + 34); }
