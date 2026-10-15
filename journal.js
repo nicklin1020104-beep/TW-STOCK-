@@ -241,7 +241,7 @@ function journalClient(API) {
       '<div><b>' + money(r.cash) + '</b><span>現金</span></div><div><b>' + money(r.mv) + '</b><span>股票市值</span></div>' +
       '<div><b>' + pn(uz) + '</b><span>未實現損益</span></div><div><b>' + pn(rz) + '</b><span>已實現損益（含股利）</span></div>' +
       '<div><b>' + (trades.length ? Math.round(wins.length / trades.length * 100) + '%' : '-') + '</b><span>勝率（' + trades.length + ' 筆賣出）</span></div></div>';
-    if (r.cash < 0) h += '<p class="jn-hint">⚠️ 現金是負的：可能還沒記「入金」，按「💵 現金」補上起始資金或入金。</p>';
+    if (r.cash < 0) h += '<p class="jn-hint">⚠️ 現金是負的：可能還沒記「入金」。按「💵 現金」→「校正餘額」，輸入你實際有的現金，系統會自動補差額。</p>';
     h += '<div class="jn-acts"><button type="button" class="main" data-a="trade">＋ 記一筆交易</button><button type="button" data-a="holding">📦 原有持股</button><button type="button" data-a="plans">🔁 定期定額</button><button type="button" data-a="cash">💵 現金／股利</button><button type="button" data-a="settings">⚙️ 手續費調整</button><button type="button" onclick="window.__openTour && window.__openTour()">📖 使用教學</button></div>';
     // 庫存
     // 到價提醒
@@ -575,17 +575,39 @@ function journalClient(API) {
 
   function cashForm(e) {
     e = e || { kind: 'deposit', date: today() };
-    var f = open('<h3>' + (e.id ? '編輯' : '現金／股利') + '</h3><div class="jn-seg ck"><button type="button" data-k="deposit">入金</button><button type="button" data-k="withdraw">出金</button><button type="button" data-k="dividend">股利入帳</button></div>' +
-      '<label>日期</label><input type="date" name="date" value="' + e.date + '"><label>金額（台幣）</label><input name="amount" inputmode="decimal" value="' + (e.amount || '') + '">' +
+    var f = open('<h3>' + (e.id ? '編輯' : '現金／股利') + '</h3><div class="jn-seg ck"><button type="button" data-k="deposit">入金</button><button type="button" data-k="withdraw">出金</button><button type="button" data-k="dividend">股利入帳</button>' + (e.id ? '' : '<button type="button" data-k="adjust">校正餘額</button>') + '</div>' +
+      '<p class="jn-hint adj" hidden></p>' +
+      '<label>日期</label><input type="date" name="date" value="' + e.date + '"><label class="amt-l">金額（台幣）</label><input name="amount" inputmode="decimal" value="' + (e.amount || '') + '">' +
       '<div class="dv"><label>哪一檔的股利（可不填）</label><input name="code" placeholder="例如 2330" value="' + esc(e.code || '') + '"></div>' +
       '<label>備註</label><input name="note" maxlength="100" value="' + esc(e.note || '') + '">' +
       '<div class="jn-btns"><button type="button" data-a="close">取消</button><button type="button" class="main" data-a="save-cash">儲存</button></div><div class="jn-err"></div>');
     var kind = e.kind;
-    function seg() { f.querySelectorAll('.ck button').forEach(function (b) { b.classList.toggle('on', b.dataset.k === kind); }); f.querySelector('.dv').hidden = kind !== 'dividend'; }
+    // 校正餘額：輸入實際現金，自動補一筆入金／出金（日期預設放在開始記帳那天，現金就不會中途變負的）
+    var firstDay = E.filter(function (x) { return x.kind !== 'holding' && x.date; }).map(function (x) { return x.date; }).sort()[0] || today();
+    function adjHint() {
+      var box = f.querySelector('.adj'); if (kind !== 'adjust') return;
+      var cur = calc().cash, want = parseFloat(f.amount.value), d = isFinite(want) ? want - cur : null;
+      box.innerHTML = '系統目前算出來的現金：<b>' + money(cur) + '</b>' + (d == null ? '' : Math.abs(d) < 1 ? '<br>已經一樣，不用校正' : '<br>會自動補一筆 <b>' + (d > 0 ? '入金 ' : '出金 ') + money(Math.abs(d)) + '</b>，現金就會變成 ' + money(want));
+    }
+    function seg() {
+      f.querySelectorAll('.ck button').forEach(function (b) { b.classList.toggle('on', b.dataset.k === kind); });
+      f.querySelector('.dv').hidden = kind !== 'dividend';
+      var adj = kind === 'adjust';
+      f.querySelector('.adj').hidden = !adj;
+      f.querySelector('.amt-l').textContent = adj ? '你現在實際有多少現金（台幣）' : '金額（台幣）';
+      if (adj) { f.date.value = firstDay; if (!f.note.value) f.note.value = '現金校正'; adjHint(); }
+    }
+    f.amount.addEventListener('input', adjHint);
     f.querySelectorAll('.ck button').forEach(function (b) { b.onclick = function () { kind = b.dataset.k; seg(); }; });
     f.addEventListener('click', function (ev) {
       var a = ev.target.closest('[data-a]'); if (!a) return;
       if (a.dataset.a === 'close') modal.hidden = true;
+      if (a.dataset.a === 'save-cash' && kind === 'adjust') {
+        var want = parseFloat(f.amount.value), d = want - calc().cash;
+        if (!isFinite(want)) return (f.querySelector('.jn-err').textContent = '請填你現在實際的現金');
+        if (Math.abs(d) < 1) { modal.hidden = true; return; }
+        return save('/api/journal/entry', { kind: d > 0 ? 'deposit' : 'withdraw', date: f.date.value, amount: Math.round(Math.abs(d)), note: f.note.value || '現金校正' }, f);
+      }
       if (a.dataset.a === 'save-cash') { var c = f.code.value.trim().toUpperCase(); save('/api/journal/entry', { id: e.id, kind: kind, date: f.date.value, amount: parseFloat(f.amount.value), code: kind === 'dividend' ? c : '', name: kind === 'dividend' && names[c] ? names[c].n : '', note: f.note.value }, f); }
     });
     seg();
