@@ -123,7 +123,7 @@ function journalClient(API) {
   var EQ = { range: 'all', mode: 'ret', hist: {} }, eqChart = null;
   function eqHtml() {
     return '<h2>📈 我的資產走勢</h2><div class="jn-eqbar"><div class="jn-seg jn-rng">' + [['all', '從記帳開始'], [30, '近1個月'], [90, '近3個月'], [365, '近1年']].map(function (x) { return '<button type="button" data-r="' + x[0] + '"' + (String(EQ.range) === String(x[0]) ? ' class="on"' : '') + '>' + x[1] + '</button>'; }).join('') + '</div>' +
-      '<div class="jn-seg jn-mode"><button type="button" data-m="value"' + (EQ.mode === 'value' ? ' class="on"' : '') + '>總資產</button><button type="button" data-m="ret"' + (EQ.mode === 'ret' ? ' class="on"' : '') + '>報酬率 vs 大盤</button></div></div>' +
+      '<div class="jn-seg jn-mode"><button type="button" data-m="value"' + (EQ.mode === 'value' ? ' class="on"' : '') + '>總資產</button><button type="button" data-m="ret"' + (EQ.mode === 'ret' ? ' class="on"' : '') + '>報酬率 vs 大盤</button><button type="button" data-m="day"' + (EQ.mode === 'day' ? ' class="on"' : '') + '>每天賺賠（元）</button></div></div>' +
       '<div class="jn-chart jn-eq"><canvas id="jn-c3"></canvas><p class="jn-hint jn-eqmsg">計算中…</p></div><div class="jn-cards jn-eqstats"></div>';
   }
   function histOf(sym, from) {
@@ -190,23 +190,28 @@ function journalClient(API) {
       var plAmt = rows[rows.length - 1].v - base[base.length - 1];
       var i0 = rows[0].idx, mk = rows.map(function (x) { return x.idx && i0 ? +((x.idx / i0 - 1) * 100).toFixed(2) : null; });
       // 每天自己的漲跌 %（扣掉當天入金出金）和大盤當天漲跌 %
-      var dMy = [], dMk = [], dLab = [], winDays = 0, nDays = 0;
+      var dMy = [], dMk = [], dLab = [], dAmt = [], winDays = 0, nDays = 0;
       for (var j = 1; j < rows.length; j++) {
         var pv = rows[j - 1].v, a = pv > 0 ? +(((rows[j].v - rows[j].flow - pv) / pv) * 100).toFixed(2) : null;
         var b = rows[j].idx && rows[j - 1].idx ? +((rows[j].idx / rows[j - 1].idx - 1) * 100).toFixed(2) : null;
-        dMy.push(a); dMk.push(b); dLab.push(lab[j]);
+        dMy.push(a); dMk.push(b); dLab.push(lab[j]); dAmt.push(pv > 0 ? Math.round(rows[j].v - rows[j].flow - pv) : null); // 當天賺賠金額（扣掉入金出金）
         if (a != null && b != null) { nDays++; if (a > b) winDays++; }
       }
       var cs = getComputedStyle(document.documentElement), fg = cs.getPropertyValue('--fg').trim() || '#222', up = cs.getPropertyValue('--up').trim() || '#d0312d';
       var dn = cs.getPropertyValue('--dn').trim() || '#16a34a';
-      var ds = EQ.mode === 'value'
+      var ds = EQ.mode === 'day'
+        ? [{ label: '當天賺賠', data: dAmt, backgroundColor: dAmt.map(function (v) { return v >= 0 ? up : dn; }), borderRadius: 4 }]
+        : EQ.mode === 'value'
         ? [{ label: '總資產', data: rows.map(function (x) { return Math.round(x.v); }), borderColor: '#2563eb', backgroundColor: 'rgba(37,99,235,0.08)', fill: true, tension: 0.25, pointRadius: 0, borderWidth: 2.5 }]
         : [{ label: (start === bookStart ? '記帳以來' : '期間') + '漲跌 %', data: my, borderColor: up, tension: 0.25, pointRadius: 0, borderWidth: 2.5 }, { label: '加權指數', data: mk, borderColor: '#94a3b8', borderDash: [6, 5], tension: 0.25, pointRadius: 0, borderWidth: 2 }];
       loadChart().then(function () {
         if (g0 !== gen) return;
         if (eqChart) eqChart.destroy();
-        eqChart = new Chart(document.getElementById('jn-c3'), { type: 'line', data: { labels: lab, datasets: ds }, options: { interaction: { mode: 'index', intersect: false }, plugins: { legend: { display: EQ.mode === 'ret', labels: { color: fg } }, tooltip: { callbacks: { label: function (c) { return c.dataset.label + '：' + (EQ.mode === 'value' ? '$' + c.raw.toLocaleString() : (c.raw >= 0 ? '+' : '') + c.raw + '%'); } } } }, scales: { x: { ticks: { color: fg, maxTicksLimit: 7 }, grid: { display: false } }, y: { ticks: { color: fg, callback: function (v) { return EQ.mode === 'value' ? (Math.abs(v) >= 1e4 ? (v / 1e4).toFixed(0) + '萬' : v) : v + '%'; } } } } } });
+        var dayM = EQ.mode === 'day', money0 = function (v) { return (v >= 0 ? '+' : '-') + '$' + Math.abs(v).toLocaleString(); };
+        eqChart = new Chart(document.getElementById('jn-c3'), { type: dayM ? 'bar' : 'line', data: { labels: dayM ? dLab : lab, datasets: ds }, options: { interaction: { mode: 'index', intersect: false }, plugins: { legend: { display: EQ.mode === 'ret', labels: { color: fg } }, tooltip: { callbacks: { label: function (c) { return c.dataset.label + '：' + (dayM ? money0(c.raw) : EQ.mode === 'value' ? '$' + c.raw.toLocaleString() : (c.raw >= 0 ? '+' : '') + c.raw + '%'); } } } }, scales: { x: { ticks: { color: fg, maxTicksLimit: dayM ? 12 : 7 }, grid: { display: false } }, y: { ticks: { color: fg, callback: function (v) { return dayM || EQ.mode === 'value' ? (Math.abs(v) >= 1e4 ? (v / 1e4).toFixed(Math.abs(v) >= 1e5 ? 0 : 1) + '萬' : v) : v + '%'; } } } } } });
       });
+      var dl = root.querySelector('.jn-daylist'); if (!dl) { dl = document.createElement('div'); dl.className = 'jn-daylist'; root.querySelector('.jn-eqstats').before(dl); }
+      dl.innerHTML = EQ.mode !== 'day' || !dAmt.length ? '' : '<div class="scroll"><table class="compact"><thead><tr><th>日期</th><th>當天賺賠</th><th>當天漲跌</th><th>大盤</th></tr></thead><tbody>' + dLab.map(function (d, i) { return [d, dAmt[i], dMy[i], dMk[i]]; }).reverse().slice(0, 10).map(function (x) { return '<tr><td>' + x[0] + '</td><td>' + (x[1] == null ? '-' : pn(x[1])) + '</td><td>' + (x[2] == null ? '-' : pct(x[2])) + '</td><td>' + (x[3] == null ? '-' : pct(x[3])) + '</td></tr>'; }).join('') + '</tbody></table></div>';
       var lastMy = my[my.length - 1], lastMk = mk[mk.length - 1];
       root.querySelector('.jn-eqstats').innerHTML =
         // 總報酬：用你的成本算（原有持股用你填的成本），跟上面「總資產」卡片一樣；記帳以來：從記帳第一天的收盤價算起
@@ -242,7 +247,7 @@ function journalClient(API) {
       '<div><b>' + pn(uz) + '</b><span>未實現損益</span></div><div><b>' + pn(rz) + '</b><span>已實現損益（含股利）</span></div>' +
       '<div><b>' + (trades.length ? Math.round(wins.length / trades.length * 100) + '%' : '-') + '</b><span>勝率（' + trades.length + ' 筆賣出）</span></div></div>';
     if (r.cash < 0) h += '<p class="jn-hint">⚠️ 現金是負的：可能還沒記「入金」。按「💵 現金」→「校正餘額」，輸入你實際有的現金，系統會自動補差額。</p>';
-    h += '<div class="jn-acts"><button type="button" class="main" data-a="trade">＋ 記一筆交易</button><button type="button" data-a="holding">📦 原有持股</button><button type="button" data-a="plans">🔁 定期定額</button><button type="button" data-a="cash">💵 現金／股利</button><button type="button" data-a="settings">⚙️ 手續費調整</button><button type="button" onclick="window.__openTour && window.__openTour()">📖 使用教學</button></div>';
+    h += '<div class="jn-acts"><button type="button" class="main" data-a="trade">＋ 記一筆交易</button><button type="button" data-a="holding">📦 原有持股</button><button type="button" data-a="ocr">📷 截圖匯入持股</button><button type="button" data-a="plans">🔁 定期定額</button><button type="button" data-a="cash">💵 現金／股利</button><button type="button" data-a="settings">⚙️ 手續費調整</button><button type="button" onclick="window.__openTour && window.__openTour()">📖 使用教學</button></div>';
     // 庫存
     // 到價提醒
     var hits = r.hold.filter(function (p) { return p.price != null && ((p.tp && p.price >= p.tp) || (p.sl && p.price <= p.sl)); });
@@ -613,6 +618,76 @@ function journalClient(API) {
     seg();
   }
 
+  // ---- 截圖匯入持股：上傳券商 App 的庫存截圖，辨識後確認再加入 ----
+  function shrink(file) { // 縮到長邊 1600px、轉 JPEG，上傳比較快
+    return new Promise(function (ok, bad) {
+      var im = new Image(), u = URL.createObjectURL(file);
+      im.onload = function () {
+        var k = Math.min(1, 1600 / Math.max(im.width, im.height)), c = document.createElement('canvas');
+        c.width = Math.round(im.width * k); c.height = Math.round(im.height * k);
+        c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); URL.revokeObjectURL(u);
+        ok(c.toDataURL('image/jpeg', 0.88).split(',')[1]);
+      };
+      im.onerror = function () { bad(new Error('讀不到這張圖片')); };
+      im.src = u;
+    });
+  }
+  function findCode(x) { // 代號優先；沒有代號就用名稱找
+    if (x.market === 'US') return x.code;
+    if (x.code && names[x.code]) return x.code;
+    var nm = (x.name || '').replace(/\s/g, '');
+    var hit = Object.keys(names).filter(function (c) { return names[c].n === nm; })[0] || Object.keys(names).filter(function (c) { return nm && (names[c].n || '').indexOf(nm) === 0; })[0];
+    return hit || x.code || '';
+  }
+  function ocrForm() {
+    var f = open('<h3>📷 截圖匯入持股</h3><p class="jn-hint">上傳券商 App「庫存／持股」頁的截圖，系統會讀出股票、股數和成本，<b>你確認後才會加入</b>。可以一次選好幾張。截圖會交給 AI（Anthropic 的 Claude）辨識，不會留存在本站。</p>' +
+      '<input type="file" name="pic" accept="image/*" multiple style="margin:8px 0">' +
+      '<div class="ocr-out"></div><div class="jn-btns"><button type="button" data-a="close">取消</button><button type="button" class="main" data-a="ocr-go" disabled>開始辨識</button></div><div class="jn-err"></div>');
+    var out = f.querySelector('.ocr-out'), err = f.querySelector('.jn-err'), go = f.querySelector('[data-a="ocr-go"]'), found = [];
+    f.pic.addEventListener('change', function () { go.disabled = !f.pic.files.length; err.textContent = ''; });
+    function table() {
+      var held = {}; calc().hold.forEach(function (p) { held[p.market + ':' + p.code] = p.qty; });
+      out.innerHTML = found.length ? '<div class="scroll"><table class="compact"><thead><tr><th></th><th>代號</th><th>名稱</th><th>股數</th><th>成本均價</th></tr></thead><tbody>' + found.map(function (x, i) {
+        var dup = held[x.market + ':' + x.code];
+        return '<tr><td><input type="checkbox" data-i="' + i + '"' + (x.code && x.qty && x.cost ? ' checked' : '') + '></td><td><input data-f="code" data-i="' + i + '" value="' + esc(x.code || '') + '" style="width:76px"></td><td>' + esc(x.name) + (x.market === 'US' ? '<span class="tag">美</span>' : '') + (dup ? '<br><span class="jn-hint">日誌已有 ' + fmt(dup) + ' 股，會再加上去</span>' : '') + '</td><td><input data-f="qty" data-i="' + i + '" inputmode="decimal" value="' + (x.qty || '') + '" style="width:80px"></td><td><input data-f="cost" data-i="' + i + '" inputmode="decimal" value="' + (x.cost || '') + '" style="width:80px"></td></tr>';
+      }).join('') + '</tbody></table></div><p class="jn-hint">請核對數字（特別是股數和成本），不對可以直接改。打勾的會加入成「原有持股」。</p>' : '';
+      go.textContent = found.length ? '加入勾選的持股' : '開始辨識';
+      go.dataset.a = found.length ? 'ocr-save' : 'ocr-go';
+      go.disabled = false;
+    }
+    out.addEventListener('input', function (ev) { var t = ev.target; if (t.dataset.f) { var x = found[+t.dataset.i]; x[t.dataset.f] = t.dataset.f === 'code' ? t.value.trim().toUpperCase() : parseFloat(t.value) || null; } });
+    f.addEventListener('click', function (ev) {
+      var a = ev.target.closest('[data-a]'); if (!a) return;
+      if (a.dataset.a === 'close') { modal.hidden = true; return; }
+      if (a.dataset.a === 'ocr-go') {
+        var files = [].slice.call(f.pic.files || []); if (!files.length) return;
+        go.disabled = true; err.textContent = '辨識中…（一張大約 10～20 秒）';
+        files.reduce(function (p, file, k) {
+          return p.then(function () {
+            err.textContent = '辨識中… 第 ' + (k + 1) + ' / ' + files.length + ' 張';
+            return shrink(file).then(function (b64) { return api('/api/journal/ocr', { image: b64, media_type: 'image/jpeg' }); }).then(function (j) {
+              if (j.error) throw new Error(j.error);
+              (j.items || []).forEach(function (x) { x.code = findCode(x); if (!found.some(function (y) { return y.code && y.code === x.code; })) found.push(x); });
+            });
+          });
+        }, Promise.resolve()).then(function () {
+          err.textContent = found.length ? '' : '沒有讀到持股，換一張截圖試試（要有股票名稱、股數、成本的那頁）';
+          table();
+        }).catch(function (e) { err.textContent = e.message || '辨識失敗'; table(); });
+      }
+      if (a.dataset.a === 'ocr-save') {
+        var pick = [].slice.call(out.querySelectorAll('input[type=checkbox]:checked')).map(function (c) { return found[+c.dataset.i]; });
+        var bad = pick.filter(function (x) { return !x.code || !x.qty || !x.cost; });
+        if (!pick.length) return (err.textContent = '請至少勾一檔');
+        if (bad.length) return (err.textContent = '有 ' + bad.length + ' 檔缺代號、股數或成本，請補上或取消勾選');
+        go.disabled = true; err.textContent = '加入中…';
+        pick.reduce(function (p, x) {
+          return p.then(function () { return api('/api/journal/entry', { kind: 'buy', market: x.market, date: '2000-01-01', code: x.code, name: x.market === 'US' ? x.name : (names[x.code] && names[x.code].n) || x.name, price: x.cost, qty: x.qty, fee: 0, tax: 0, tags: [], note: '截圖匯入' }).then(function (j) { if (j.error) throw new Error(x.name + '：' + j.error); }); });
+        }, Promise.resolve()).then(function () { modal.hidden = true; reload(); }).catch(function (e) { go.disabled = false; err.textContent = e.message; });
+      }
+    });
+  }
+
   function settingsForm() {
     var f = open('<h3>⚙️ 手續費調整</h3><p class="jn-hint">之後新增的交易會用新的設定自動計算；舊紀錄不會變。</p>' + settingsFields(S || DEF, false) + '<div class="jn-btns"><button type="button" data-a="close">取消</button><button type="button" class="main" data-a="save-settings">儲存</button></div><div class="jn-err"></div>');
     f.addEventListener('click', function (ev) {
@@ -637,6 +712,7 @@ function journalClient(API) {
     var a = ev.target.closest('[data-a]');
     if (a && a.dataset.a === 'trade') tradeForm();
     if (a && a.dataset.a === 'holding') tradeForm(null, true);
+    if (a && a.dataset.a === 'ocr') ocrForm();
     if (a && a.dataset.a === 'plans') planForm();
     var po = ev.target.closest('[data-pos]'); if (po) posModal(po.dataset.pos);
     var pe = ev.target.closest('[data-plan]'); if (pe) planForm(P.filter(function (x) { return x.id == pe.dataset.plan; })[0]);
