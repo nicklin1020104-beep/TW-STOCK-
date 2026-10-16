@@ -632,6 +632,46 @@ function journalClient(API) {
       im.src = u;
     });
   }
+  // 免費辨識：在瀏覽器裡跑 Tesseract（第一次會下載中文辨識檔），不經過任何付費服務
+  var tessP = null;
+  function tess() {
+    if (tessP) return tessP;
+    tessP = new Promise(function (ok, bad) {
+      if (window.Tesseract) return ok();
+      var sc = document.createElement('script'); sc.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js'; sc.onload = ok; sc.onerror = function () { tessP = null; bad(new Error('辨識工具下載失敗，請檢查網路')); }; document.head.appendChild(sc);
+    }).then(function () { return Tesseract.createWorker(['chi_tra', 'eng']); });
+    return tessP;
+  }
+  // 從辨識出的文字找持股：用股票代號或名稱定位，再從附近的數字挑出股數和成本
+  function parseHold(text) {
+    var lines = text.split(/\n+/).map(function (l) { return l.replace(/([\u4e00-\u9fff])\s+(?=[\u4e00-\u9fff])/g, '$1').trim(); }).filter(Boolean);
+    var byName = Object.keys(names).filter(function (c) { return (names[c].n || '').length >= 2; }).sort(function (a, b) { return names[b].n.length - names[a].n.length; });
+    var hits = [];
+    lines.forEach(function (l, i) {
+      var code = null, m = l.match(/(?:^|[^0-9.])(00[0-9]{2,4}[A-Z]?|[1-9][0-9]{3})(?![0-9.%])/);
+      if (m && names[m[1]]) code = m[1];
+      if (!code) { var nm = l.replace(/[^\u4e00-\u9fffA-Z-]/g, ''); code = byName.filter(function (c) { return nm.indexOf(names[c].n) >= 0; })[0] || null; }
+      if (code && !hits.some(function (h) { return h.code === code; })) hits.push({ code: code, i: i });
+    });
+    return hits.map(function (h, k) {
+      var end = Math.min(lines.length, (hits[k + 1] ? hits[k + 1].i : h.i + 4) , h.i + 4);
+      var block = lines.slice(h.i, end).join(' ').replace(new RegExp('(^|[^0-9])' + h.code + '(?![0-9])'), ' ');
+      var lot = /張/.test(block) && !/股/.test(block);
+      var nums = (block.match(/-?[0-9][0-9,]*(?:\.[0-9]+)?(?!\s*%)/g) || []).map(function (x) { return parseFloat(x.replace(/,/g, '')); }).filter(function (v) { return isFinite(v) && v > 0; });
+      var px = names[h.code].c || null;
+      var priceLike = px ? nums.filter(function (v) { return v >= px * 0.35 && v <= px * 2.5; }) : nums.filter(function (v) { return v % 1 !== 0; });
+      // 成本：跟現價接近、但不等於現價的那個（畫面上通常同時有現價和成本）
+      var notNow = priceLike.filter(function (v) { return !px || Math.abs(v - px) > px * 0.001; });
+      var cost = (notNow.length ? notNow : priceLike)[0] || null;
+      // 股數：整數、不像價格；有市值可以對的話優先
+      var ints = nums.filter(function (v) { return v % 1 === 0 && priceLike.indexOf(v) < 0 && v <= 1e7; });
+      var qty = null;
+      if (px) ints.forEach(function (q) { if (qty == null && nums.some(function (mv) { return Math.abs(mv - q * (lot ? 1000 : 1) * px) <= q * (lot ? 1000 : 1) * px * 0.12 && mv !== q; })) qty = q; });
+      if (qty == null) qty = ints[0] || null;
+      if (qty != null && lot) qty = qty * 1000;
+      return { code: h.code, name: names[h.code].n, qty: qty, cost: cost, market: 'TW' };
+    });
+  }
   function findCode(x) { // 代號優先；沒有代號就用名稱找
     if (x.market === 'US') return x.code;
     if (x.code && names[x.code]) return x.code;
@@ -640,11 +680,11 @@ function journalClient(API) {
     return hit || x.code || '';
   }
   function ocrForm() {
-    var f = open('<h3>📷 截圖匯入持股</h3><p class="jn-hint">上傳券商 App「庫存／持股」頁的截圖，系統會讀出股票、股數和成本，<b>你確認後才會加入</b>。可以一次選好幾張。截圖會交給 AI（Anthropic 的 Claude）辨識，不會留存在本站。</p>' +
+    var f = open('<h3>📷 截圖匯入持股</h3><p class="jn-hint">上傳券商 App「庫存／持股」頁的截圖，系統會讀出股票、股數和成本，<b>你確認後才會加入</b>。可以一次選好幾張。辨識在你的手機／電腦上進行，截圖不會上傳。第一次使用要下載辨識檔，會多等一下。</p>' +
       '<input type="file" name="pic" accept="image/*" multiple style="margin:8px 0">' +
       '<div class="ocr-out"></div><div class="jn-btns"><button type="button" data-a="close">取消</button><button type="button" class="main" data-a="ocr-go" disabled>開始辨識</button></div><div class="jn-err"></div>');
     var out = f.querySelector('.ocr-out'), err = f.querySelector('.jn-err'), go = f.querySelector('[data-a="ocr-go"]'), found = [];
-    f.pic.addEventListener('change', function () { go.disabled = !f.pic.files.length; err.textContent = ''; });
+    f.pic.addEventListener('change', function () { err.textContent = ''; found = []; out.innerHTML = ''; go.dataset.a = 'ocr-go'; if (f.pic.files.length) go.click(); }); // 選好截圖就自動開始辨識
     function table() {
       var held = {}; calc().hold.forEach(function (p) { held[p.market + ':' + p.code] = p.qty; });
       out.innerHTML = found.length ? '<div class="scroll"><table class="compact"><thead><tr><th></th><th>代號</th><th>名稱</th><th>股數</th><th>成本均價</th></tr></thead><tbody>' + found.map(function (x, i) {
@@ -661,13 +701,12 @@ function journalClient(API) {
       if (a.dataset.a === 'close') { modal.hidden = true; return; }
       if (a.dataset.a === 'ocr-go') {
         var files = [].slice.call(f.pic.files || []); if (!files.length) return;
-        go.disabled = true; err.textContent = '辨識中…（一張大約 10～20 秒）';
+        go.disabled = true; err.textContent = '準備辨識工具…（第一次約 10～20 秒）';
         files.reduce(function (p, file, k) {
           return p.then(function () {
             err.textContent = '辨識中… 第 ' + (k + 1) + ' / ' + files.length + ' 張';
-            return shrink(file).then(function (b64) { return api('/api/journal/ocr', { image: b64, media_type: 'image/jpeg' }); }).then(function (j) {
-              if (j.error) throw new Error(j.error);
-              (j.items || []).forEach(function (x) { x.code = findCode(x); if (!found.some(function (y) { return y.code && y.code === x.code; })) found.push(x); });
+            return tess().then(function (w) { return w.recognize(file); }).then(function (r) {
+              (parseHold(r.data.text || '')).forEach(function (x) { x.code = findCode(x); if (!found.some(function (y) { return y.code && y.code === x.code; })) found.push(x); });
             });
           });
         }, Promise.resolve()).then(function () {
