@@ -154,7 +154,9 @@ function journalClient(API) {
       if (!dates.length || dates[dates.length - 1] < t) dates.push(t);
       // 每檔的「某天以前最近收盤」
       var ptr = {}, last = {};
-      function px(s, d) { var h = H[s] || [], i = ptr[s] || 0; while (i < h.length && h[i].date <= d) { last[s] = h[i].close; i++; } ptr[s] = i; if (d === t && Q[s] && Q[s].price) return Q[s].price; return last[s]; }
+      // 前一個交易日：台股用證交所即時行情的「昨收」（Yahoo 日線偶爾少一天，會把今天的漲跌算錯）
+      var prevDay = dates.length > 1 && dates[dates.length - 1] === t ? dates[dates.length - 2] : null;
+      function px(s, d) { var h = H[s] || [], i = ptr[s] || 0; while (i < h.length && h[i].date <= d) { last[s] = h[i].close; i++; } ptr[s] = i; if (d === t && Q[s] && Q[s].price) return Q[s].price; if (d === prevDay && Q[s] && Q[s].prev && (Q[s].src === 'mis' || s === '^TWII')) return Q[s].prev; return last[s]; }
       var ent = E.slice().sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : a.id - b.id; });
       var qty = {}, cash = 0, inv = 0, k = 0, rows = [];
       dates.forEach(function (d) {
