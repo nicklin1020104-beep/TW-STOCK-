@@ -1276,5 +1276,43 @@
    "above60": true
   }
  ],
- "20261015": []
+ "20261015": [],
+ "20261016": [
+  {
+   "code": "2313",
+   "name": "華通",
+   "mkt": "上市",
+   "industry": "電子零組件業",
+   "close": 248,
+   "yoy": 15.018893793137691,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "2413",
+   "name": "環科",
+   "mkt": "上市",
+   "industry": "電子零組件業",
+   "close": 55.8,
+   "yoy": 10.626616935727137,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": true
+  },
+  {
+   "code": "2731",
+   "name": "雄獅",
+   "mkt": "上市",
+   "industry": "觀光餐旅",
+   "close": 144.5,
+   "yoy": 11.39532491407495,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": true
+  }
+ ]
 }
