@@ -1315,5 +1315,79 @@
    "above60": true
   }
  ],
- "20261019": []
+ "20261019": [],
+ "20261020": [
+  {
+   "code": "1809",
+   "name": "中釉",
+   "mkt": "上市",
+   "industry": "玻璃陶瓷",
+   "close": 47.3,
+   "yoy": 5.883935238218912,
+   "star": true,
+   "okUp": true,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "8215",
+   "name": "明基材",
+   "mkt": "上市",
+   "industry": "光電業",
+   "close": 29.2,
+   "yoy": 8.408579081326707,
+   "star": true,
+   "okUp": true,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "2324",
+   "name": "仁寶",
+   "mkt": "上市",
+   "industry": "電腦及週邊設備業",
+   "close": 36.9,
+   "yoy": 35.4481054399287,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": false
+  },
+  {
+   "code": "3376",
+   "name": "新日興",
+   "mkt": "上市",
+   "industry": "電子零組件業",
+   "close": 178.5,
+   "yoy": 3.259517806568829,
+   "star": false,
+   "okUp": true,
+   "okVol": false,
+   "above60": false
+  },
+  {
+   "code": "8908",
+   "name": "欣雄",
+   "mkt": "上市",
+   "industry": "油電燃氣業",
+   "close": 40.8,
+   "yoy": 24.924566738507867,
+   "star": false,
+   "okUp": true,
+   "okVol": false,
+   "above60": true
+  },
+  {
+   "code": "5522",
+   "name": "遠雄",
+   "mkt": "上市",
+   "industry": "建材營造",
+   "close": 62.1,
+   "yoy": 262.471963434005,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": false
+  }
+ ]
 }
