@@ -1389,5 +1389,55 @@
    "okVol": false,
    "above60": false
   }
+ ],
+ "20261021": [
+  {
+   "code": "3264",
+   "name": "欣銓",
+   "mkt": "上櫃",
+   "industry": "半導體業",
+   "close": 265,
+   "yoy": 46.93218817357776,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "3605",
+   "name": "宏致",
+   "mkt": "上市",
+   "industry": "電子零組件業",
+   "close": 178,
+   "yoy": 22.65825833807461,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "5871",
+   "name": "中租-KY",
+   "mkt": "上市",
+   "industry": "其他",
+   "close": 107.5,
+   "yoy": 2.52843704776593,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": false
+  },
+  {
+   "code": "1215",
+   "name": "卜蜂",
+   "mkt": "上市",
+   "industry": "食品工業",
+   "close": 106.5,
+   "yoy": 6.245092507797576,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": false
+  }
  ]
 }

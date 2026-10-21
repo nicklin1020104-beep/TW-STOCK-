@@ -394,5 +394,25 @@
    "tight": false,
    "pivot": 105
   }
+ ],
+ "20261021": [
+  {
+   "code": "2855",
+   "name": "統一證",
+   "mkt": "上市",
+   "close": 55.6,
+   "status": "柄整理中",
+   "tight": true,
+   "pivot": 60.2
+  },
+  {
+   "code": "3717",
+   "name": "聯嘉投控",
+   "mkt": "上市",
+   "close": 28,
+   "status": "柄整理中",
+   "tight": true,
+   "pivot": 30.9
+  }
  ]
 }
