@@ -196,11 +196,12 @@ function journalClient(API) {
       var plAmt = rows[rows.length - 1].v - base[base.length - 1];
       var i0 = rows[0].idx, mk = rows.map(function (x) { return x.idx && i0 ? +((x.idx / i0 - 1) * 100).toFixed(2) : null; });
       // 每天自己的漲跌 %（扣掉當天入金出金）和大盤當天漲跌 %
-      var dMy = [], dMk = [], dLab = [], dAmt = [], winDays = 0, nDays = 0;
+      var dMy = [], dMk = [], dLab = [], dAmt = [], dDt = [], winDays = 0, nDays = 0;
+      var dtBy = {}; E.forEach(function (x) { if (x.kind === 'daytrade') dtBy[x.date] = (dtBy[x.date] || 0) + dtPnl(x); }); // 每天的當沖損益（分開列）
       for (var j = 1; j < rows.length; j++) {
         var pv = rows[j - 1].v, a = pv > 0 ? +(((rows[j].v - rows[j].flow - pv) / pv) * 100).toFixed(2) : null;
         var b = rows[j].idx && rows[j - 1].idx ? +((rows[j].idx / rows[j - 1].idx - 1) * 100).toFixed(2) : null;
-        dMy.push(a); dMk.push(b); dLab.push(lab[j]); dAmt.push(pv > 0 ? Math.round(rows[j].v - rows[j].flow - pv) : null); // 當天賺賠金額（扣掉入金出金）
+        dMy.push(a); dMk.push(b); dLab.push(lab[j]); dAmt.push(pv > 0 ? Math.round(rows[j].v - rows[j].flow - pv) : null); dDt.push(Math.round(dtBy[rows[j].d] || 0)); // 當天賺賠金額（扣掉入金出金）
         if (a != null && b != null) { nDays++; if (a > b) winDays++; }
       }
       var cs = getComputedStyle(document.documentElement), fg = cs.getPropertyValue('--fg').trim() || '#222', up = cs.getPropertyValue('--up').trim() || '#d0312d';
@@ -214,10 +215,10 @@ function journalClient(API) {
         if (g0 !== gen) return;
         if (eqChart) eqChart.destroy();
         var dayM = EQ.mode === 'day', money0 = function (v) { return (v >= 0 ? '+' : '-') + '$' + Math.abs(v).toLocaleString(); };
-        eqChart = new Chart(document.getElementById('jn-c3'), { type: 'line', data: { labels: dayM ? dLab : lab, datasets: ds }, options: { interaction: { mode: 'index', intersect: false }, plugins: { legend: { display: EQ.mode === 'ret', labels: { color: fg } }, tooltip: { callbacks: { label: function (c) { return c.dataset.label + '：' + (dayM ? money0(c.raw) : EQ.mode === 'value' ? '$' + c.raw.toLocaleString() : (c.raw >= 0 ? '+' : '') + c.raw + '%'); } } } }, scales: { x: { ticks: { color: fg, maxTicksLimit: dayM ? 12 : 7 }, grid: { display: false } }, y: { ticks: { color: fg, callback: function (v) { return dayM || EQ.mode === 'value' ? (Math.abs(v) >= 1e4 ? (v / 1e4).toFixed(Math.abs(v) >= 1e5 ? 0 : 1) + '萬' : v) : v + '%'; } } } } } });
+        eqChart = new Chart(document.getElementById('jn-c3'), { type: 'line', data: { labels: dayM ? dLab : lab, datasets: ds }, options: { interaction: { mode: 'index', intersect: false }, plugins: { legend: { display: EQ.mode === 'ret', labels: { color: fg } }, tooltip: { callbacks: { afterLabel: function (c) { var d = dayM ? dDt[c.dataIndex] : 0; return d && c.raw != null ? '其中當沖 ' + money0(d) + '、庫存 ' + money0(c.raw - d) : ''; }, label: function (c) { return c.dataset.label + '：' + (dayM ? money0(c.raw) : EQ.mode === 'value' ? '$' + c.raw.toLocaleString() : (c.raw >= 0 ? '+' : '') + c.raw + '%'); } } } }, scales: { x: { ticks: { color: fg, maxTicksLimit: dayM ? 12 : 7 }, grid: { display: false } }, y: { ticks: { color: fg, callback: function (v) { return dayM || EQ.mode === 'value' ? (Math.abs(v) >= 1e4 ? (v / 1e4).toFixed(Math.abs(v) >= 1e5 ? 0 : 1) + '萬' : v) : v + '%'; } } } } } });
       });
       var dl = root.querySelector('.jn-daylist'); if (!dl) { dl = document.createElement('div'); dl.className = 'jn-daylist'; root.querySelector('.jn-eqstats').before(dl); }
-      dl.innerHTML = EQ.mode !== 'day' || !dAmt.length ? '' : '<div class="scroll"><table class="compact"><thead><tr><th>日期</th><th>當天賺賠</th><th>當天漲跌</th><th>大盤</th></tr></thead><tbody>' + dLab.map(function (d, i) { return [d, dAmt[i], dMy[i], dMk[i]]; }).reverse().slice(0, 10).map(function (x) { return '<tr><td>' + x[0] + '</td><td>' + (x[1] == null ? '-' : pn(x[1])) + '</td><td>' + (x[2] == null ? '-' : pct(x[2])) + '</td><td>' + (x[3] == null ? '-' : pct(x[3])) + '</td></tr>'; }).join('') + '</tbody></table></div>';
+      dl.innerHTML = EQ.mode !== 'day' || !dAmt.length ? '' : '<div class="scroll"><table class="compact"><thead><tr><th>日期</th><th>當天賺賠</th><th>其中庫存</th><th>其中當沖</th><th>當天漲跌</th><th>大盤</th></tr></thead><tbody>' + dLab.map(function (d, i) { return [d, dAmt[i], dMy[i], dMk[i], dDt[i]]; }).reverse().slice(0, 10).map(function (x) { return '<tr><td>' + x[0] + '</td><td>' + (x[1] == null ? '-' : pn(x[1])) + '</td><td>' + (x[1] == null ? '-' : pn(x[1] - x[4])) + '</td><td>' + (x[4] ? pn(x[4]) : '<span class="jn-hint">-</span>') + '</td><td>' + (x[2] == null ? '-' : pct(x[2])) + '</td><td>' + (x[3] == null ? '-' : pct(x[3])) + '</td></tr>'; }).join('') + '</tbody></table></div>';
       var lastMy = my[my.length - 1], lastMk = mk[mk.length - 1];
       root.querySelector('.jn-eqstats').innerHTML =
         // 總報酬：用你的成本算（原有持股用你填的成本），跟上面「總資產」卡片一樣；記帳以來：從記帳第一天的收盤價算起
