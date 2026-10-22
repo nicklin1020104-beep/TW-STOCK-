@@ -55,10 +55,13 @@ function journalClient(API) {
     return { fee: fee, tax: tax };
   }
 
+  // 當沖損益：賣出金額 − 買進金額 − 手續費 − 當沖稅
+  function dtPnl(e) { return (e.sell - e.price) * e.qty - (e.fee || 0) - (e.tax || 0); }
   // ---- 計算：現金、庫存（平均成本法）、已實現 ----
   function calc() {
     var cash = 0, invested = 0, dividends = 0, pos = {}, realized = [];
     E.slice().sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : a.id - b.id; }).forEach(function (e) {
+      if (e.kind === 'daytrade') { var dtp = dtPnl(e); cash += dtp; realized.push({ date: e.date, code: e.code, name: e.name, market: 'TW', qty: e.qty, pnl: dtp, pct: dtp / (e.price * e.qty) * 100, days: 0, dt: true }); return; }
       if (e.kind === 'deposit') { cash += e.amount; invested += e.amount; return; }
       if (e.kind === 'withdraw') { cash -= e.amount; invested -= e.amount; return; }
       if (e.kind === 'dividend') { cash += e.amount; dividends += e.amount; realized.push({ date: e.date, code: e.code, name: e.name, pnl: e.amount, div: true }); return; }
@@ -166,6 +169,7 @@ function journalClient(API) {
           if (e.kind === 'deposit') { cash += e.amount; inv += e.amount; if (rows.length) flow += e.amount; }
           else if (e.kind === 'withdraw') { cash -= e.amount; inv -= e.amount; if (rows.length) flow -= e.amount; }
           else if (e.kind === 'dividend') cash += e.amount;
+          else if (e.kind === 'daytrade') cash += dtPnl(e);
           else if (e.kind === 'holding') { qty[key] = (qty[key] || 0) + e.qty; inv += e.price * e.qty * fx; if (rows.length) flow += e.price * e.qty * fx; }
           else if (e.kind === 'buy') { qty[key] = (qty[key] || 0) + e.qty; cash -= (e.price * e.qty + (e.fee || 0)) * fx; }
           else if (e.kind === 'sell') { qty[key] = (qty[key] || 0) - e.qty; cash += (e.price * e.qty - (e.fee || 0) - (e.tax || 0)) * fx; }
@@ -249,7 +253,7 @@ function journalClient(API) {
       '<div><b>' + pn(uz) + '</b><span>未實現損益</span></div><div><b>' + pn(rz) + '</b><span>已實現損益（含股利）</span></div>' +
       '<div><b>' + (trades.length ? Math.round(wins.length / trades.length * 100) + '%' : '-') + '</b><span>勝率（' + trades.length + ' 筆賣出）</span></div></div>';
     if (r.cash < 0) h += '<p class="jn-hint">⚠️ 現金是負的：可能還沒記「入金」。按「💵 現金」→「校正餘額」，輸入你實際有的現金，系統會自動補差額。</p>';
-    h += '<div class="jn-acts"><button type="button" class="main" data-a="trade">＋ 記一筆交易</button><button type="button" data-a="holding">📦 原有持股</button><button type="button" data-a="ocr">📷 截圖匯入持股</button><button type="button" data-a="plans">🔁 定期定額</button><button type="button" data-a="cash">💵 現金／股利</button><button type="button" data-a="settings">⚙️ 手續費調整</button><button type="button" onclick="window.__openTour && window.__openTour()">📖 使用教學</button></div>';
+    h += '<div class="jn-acts"><button type="button" class="main" data-a="trade">＋ 記一筆交易</button><button type="button" data-a="holding">📦 原有持股</button><button type="button" data-a="ocr">📷 截圖匯入持股</button><button type="button" data-a="dt">⚡ 當沖</button><button type="button" data-a="plans">🔁 定期定額</button><button type="button" data-a="cash">💵 現金／股利</button><button type="button" data-a="settings">⚙️ 手續費調整</button><button type="button" onclick="window.__openTour && window.__openTour()">📖 使用教學</button></div>';
     // 庫存
     // 到價提醒
     var hits = r.hold.filter(function (p) { return p.price != null && ((p.tp && p.price >= p.tp) || (p.sl && p.price <= p.sl)); });
@@ -273,14 +277,23 @@ function journalClient(API) {
       h += '<h2>交易統計</h2><div class="jn-cards"><div><b>' + pct(avgW) + '</b><span>平均獲利（賺的那幾筆）</span></div><div><b>' + pct(avgL) + '</b><span>平均虧損（賠的那幾筆）</span></div><div><b>' + (best.pnl > 0 ? pn(best.pnl) : '-') + '</b><span>最大獲利' + (best.pnl > 0 ? '：' + esc(best.name || best.code) : '') + '</span></div><div><b>' + (worst.pnl < 0 ? pn(worst.pnl) : '-') + '</b><span>最大虧損' + (worst.pnl < 0 ? '：' + esc(worst.name || worst.code) : '') + '</span></div><div><b>' + (function () { var d = trades.filter(function (x) { return x.days != null; }); return d.length ? fmt(d.reduce(function (a, x) { return a + x.days; }, 0) / d.length, 1) + ' 天' : '-'; })() + '</b><span>平均持有</span></div><div><b>' + pn(r.dividends) + '</b><span>股利收入</span></div></div>';
     }
     // 紀錄
-    var kindTxt = { buy: '買進', sell: '賣出', deposit: '入金', withdraw: '出金', dividend: '股利', holding: '原有持股' };
+    var kindTxt = { buy: '買進', sell: '賣出', deposit: '入金', withdraw: '出金', dividend: '股利', holding: '原有持股', daytrade: '當沖' };
     var rows = E.slice().sort(function (a, b) { return a.date > b.date ? -1 : a.date < b.date ? 1 : b.id - a.id; }).map(function (e) {
-      var isT = e.kind === 'buy' || e.kind === 'sell' || e.kind === 'holding';
+      var isT = e.kind === 'buy' || e.kind === 'sell' || e.kind === 'holding' || e.kind === 'daytrade';
       var what = isT ? esc(e.code) + ' ' + esc(e.name || '') + (e.market === 'US' ? '<span class="tag">美</span>' : '') : e.kind === 'dividend' ? esc((e.code || '') + ' ' + (e.name || '')) : '-';
-      var detail = isT ? fmt(e.price, 2) + ' × ' + fmt(e.qty) + (e.market === 'US' ? '（匯率 ' + e.fx + '）' : '') : money(e.amount);
+      var detail = e.kind === 'daytrade' ? '買 ' + fmt(e.price, 2) + ' → 賣 ' + fmt(e.sell, 2) + ' × ' + fmt(e.qty) + '　' + pn(dtPnl(e)) : isT ? fmt(e.price, 2) + ' × ' + fmt(e.qty) + (e.market === 'US' ? '（匯率 ' + e.fx + '）' : '') : money(e.amount);
       var cost = isT ? fmt((e.fee || 0) + (e.tax || 0), e.market === 'US' ? 2 : 0) : '';
       return '<tr><td class="jn-ops"><button class="jn-edit" data-id="' + e.id + '">✏️ 編輯</button><button class="jn-del" data-id="' + e.id + '">刪除</button></td><td>' + (e.kind === 'holding' ? '原有' : e.date.slice(5).replace('-', '/')) + '</td><td><span class="chip ' + (e.kind === 'holding' ? 'mid' : e.kind === 'buy' || e.kind === 'deposit' || e.kind === 'dividend' ? 'good' : 'bad') + '">' + kindTxt[e.kind] + (e.daytrade ? '・當沖' : '') + '</span></td><td class="nm">' + what + '</td><td>' + detail + '</td><td>' + cost + '</td><td class="jn-note">' + (e.tags && e.tags.length ? e.tags.map(function (t) { return '<span class="chip mid">' + esc(t) + '</span>'; }).join('') + ' ' : '') + esc(e.note || '') + '</td></tr>';
     }).join('');
+    var dts = E.filter(function (x) { return x.kind === 'daytrade'; }).sort(function (a, b) { return a.date > b.date ? -1 : a.date < b.date ? 1 : b.id - a.id; });
+    if (dts.length) {
+      var dtSum = dts.reduce(function (a, x) { return a + dtPnl(x); }, 0), dtWin = dts.filter(function (x) { return dtPnl(x) > 0; }).length, ym = today().slice(0, 7);
+      var dtMonth = dts.filter(function (x) { return x.date.slice(0, 7) === ym; }).reduce(function (a, x) { return a + dtPnl(x); }, 0);
+      var dtToday = dts.filter(function (x) { return x.date === today(); }).reduce(function (a, x) { return a + dtPnl(x); }, 0);
+      h += '<h2>⚡ 當沖紀錄 <span class="count">' + dts.length + ' 筆</span></h2><div class="jn-cards"><div><b>' + pn(dtSum) + '</b><span>當沖總損益</span></div><div><b>' + pn(dtMonth) + '</b><span>這個月</span></div><div><b>' + pn(dtToday) + '</b><span>今天</span></div><div><b>' + Math.round(dtWin / dts.length * 100) + '%</b><span>勝率（' + dtWin + '/' + dts.length + '）</span></div></div>' +
+        '<div class="scroll"><table class="compact"><thead><tr><th></th><th>日期</th><th>股票</th><th>方向</th><th>買進</th><th>賣出</th><th>股數</th><th>手續費＋稅</th><th>損益</th></tr></thead><tbody>' +
+        dts.slice(0, 30).map(function (x) { var p = dtPnl(x); return '<tr><td class="jn-ops"><button class="jn-edit" data-id="' + x.id + '">✏️</button><button class="jn-del" data-id="' + x.id + '">刪除</button></td><td>' + x.date.slice(5).replace('-', '/') + '</td><td class="nm">' + esc(x.code) + ' ' + esc(x.name || '') + '</td><td>' + (x.daytrade === 2 ? '先賣後買' : '先買後賣') + '</td><td>' + fmt(x.price, 2) + '</td><td>' + fmt(x.sell, 2) + '</td><td>' + fmt(x.qty) + '</td><td>' + fmt((x.fee || 0) + (x.tax || 0)) + '</td><td>' + pn(p) + '<span class="tag">' + pct(p / (x.price * x.qty) * 100) + '</span></td></tr>'; }).join('') + '</tbody></table></div>';
+    }
     h += '<h2>交易紀錄 <span class="count">' + E.length + ' 筆</span></h2>' + (rows ? '<div class="scroll"><table class="compact"><thead><tr><th></th><th>日期</th><th>種類</th><th>股票</th><th>價格 × 數量／金額</th><th>手續費＋稅</th><th>理由／心得</th></tr></thead><tbody>' + rows + '</tbody></table></div>' : '<p class="empty">還沒有紀錄</p>');
     h += '<p class="jn-hint">損益含手續費和交易稅（自動計算，費率可按「⚙️ 手續費調整」改），賣出可以指定賣的是哪一筆；美股以交易當時匯率換算成台幣成本，市值用目前匯率。現價每分鐘更新，台股盤後以收盤價為準。資料只有你自己看得到。</p>';
     root.innerHTML = h;
@@ -729,6 +742,55 @@ function journalClient(API) {
     });
   }
 
+  // ---- ⚡ 當沖：一筆記完買價、賣價，手續費和當沖稅（0.15%）自動算 ----
+  function dtForm(e) {
+    e = e || { date: today(), daytrade: 1 };
+    var f = open('<h3>⚡ ' + (e.id ? '編輯當沖' : '記一筆當沖') + '</h3><p class="jn-hint">當天買賣同一檔，只記損益，不會影響庫存和均價。手續費照你的「手續費調整」，證交稅用當沖減半的 0.15%。</p>' +
+      '<div class="jn-seg dtd"><button type="button" data-d="long">先買後賣（做多）</button><button type="button" data-d="short">先賣後買（做空）</button></div>' +
+      '<label>日期</label><input type="date" name="date" value="' + e.date + '">' +
+      '<label>股票</label><div class="jn-sug"><input name="code" autocomplete="off" placeholder="代號或名稱，例如 2330、台積電" value="' + esc(e.code ? e.code + (e.name ? ' ' + e.name : '') : '') + '"><ul hidden></ul></div>' +
+      '<div class="jn-row"><div><label>買進價</label><input name="price" inputmode="decimal" value="' + (e.price || '') + '"></div><div><label>賣出價</label><input name="sell" inputmode="decimal" value="' + (e.sell || '') + '"></div></div>' +
+      '<label>股數（1 張 = 1000）</label><input name="qty" inputmode="decimal" value="' + (e.qty || '') + '"><div class="jn-hint"><button type="button" class="jn-edit" data-a="lot">×1000（換成張）</button></div>' +
+      '<div class="jn-calc"></div><label>心得筆記</label><textarea name="note" maxlength="500">' + esc(e.note || '') + '</textarea>' +
+      '<div class="jn-btns"><button type="button" data-a="close">取消</button><button type="button" class="main" data-a="save-dt">儲存</button></div><div class="jn-err"></div>');
+    var st = { dir: e.daytrade === 2 ? 'short' : 'long', code: e.code || '', name: e.name || '' };
+    function seg() { f.querySelectorAll('.dtd button').forEach(function (b) { b.classList.toggle('on', b.dataset.d === st.dir); }); }
+    function costs() {
+      var b = parseFloat(f.price.value) || 0, sl = parseFloat(f.sell.value) || 0, q = parseFloat(f.qty.value) || 0;
+      var fb = feeOf('TW', 'buy', b, q, true, st.code).fee, fs = feeOf('TW', 'sell', sl, q, true, st.code);
+      return { b: b, s: sl, q: q, fee: fb + fs.fee, tax: fs.tax };
+    }
+    function recalc() {
+      var c = costs(); if (!c.b || !c.s || !c.q) { f.querySelector('.jn-calc').innerHTML = ''; return; }
+      var p = (c.s - c.b) * c.q - c.fee - c.tax;
+      f.querySelector('.jn-calc').innerHTML = '這筆' + (p >= 0 ? '賺' : '賠') + ' <b class="' + (p >= 0 ? 'up' : 'dn') + '">$' + fmt(Math.abs(p)) + '</b>（' + pct(p / (c.b * c.q) * 100) + '）　<span>手續費 $' + fmt(c.fee) + '、當沖稅 $' + fmt(c.tax) + '</span>';
+    }
+    f.querySelectorAll('.dtd button').forEach(function (b) { b.onclick = function () { st.dir = b.dataset.d; seg(); }; });
+    ['price', 'sell', 'qty'].forEach(function (k) { f[k].addEventListener('input', recalc); });
+    f.querySelector('[data-a="lot"]').onclick = function () { var q = parseFloat(f.qty.value) || 0; if (q) { f.qty.value = q * 1000; recalc(); } };
+    var ul = f.querySelector('.jn-sug ul');
+    f.code.addEventListener('input', function () {
+      var v = f.code.value.trim().toUpperCase(); st.code = ''; st.name = '';
+      if (!v) { ul.hidden = true; return; }
+      var hits = Object.keys(names).filter(function (c) { return c.indexOf(v) === 0 || (names[c].n || '').toUpperCase().indexOf(v) >= 0; }).sort(function (a, b) { return (a.indexOf(v) === 0 ? 0 : 1) - (b.indexOf(v) === 0 ? 0 : 1) || a.length - b.length; }).slice(0, 8);
+      ul.innerHTML = hits.map(function (c) { return '<li data-c="' + c + '" data-n="' + esc(names[c].n) + '">' + c + ' ' + esc(names[c].n) + '</li>'; }).join('') || '<li class="no">找不到，請確認代號</li>';
+      ul.hidden = false;
+    });
+    ul.addEventListener('click', function (ev) { var li = ev.target.closest('li[data-c]'); if (!li) return; st.code = li.dataset.c; st.name = li.dataset.n; f.code.value = st.code + ' ' + st.name; ul.hidden = true; recalc(); });
+    f.addEventListener('click', function (ev) {
+      var a = ev.target.closest('[data-a]'); if (!a) return;
+      if (a.dataset.a === 'close') modal.hidden = true;
+      if (a.dataset.a === 'save-dt') {
+        if (!st.code) { var v = f.code.value.trim().split(' ')[0].toUpperCase(); if (names[v]) { st.code = v; st.name = names[v].n; } }
+        var c = costs();
+        if (!st.code) return (f.querySelector('.jn-err').textContent = '請從清單選擇股票');
+        if (!c.b || !c.s || !c.q) return (f.querySelector('.jn-err').textContent = '請填買進價、賣出價和股數');
+        save('/api/journal/entry', { id: e.id, kind: 'daytrade', dir: st.dir, date: f.date.value, code: st.code, name: st.name, price: c.b, sell: c.s, qty: c.q, fee: c.fee, tax: c.tax, note: f.note.value }, f);
+      }
+    });
+    seg(); recalc();
+  }
+
   function settingsForm() {
     var f = open('<h3>⚙️ 手續費調整</h3><p class="jn-hint">之後新增的交易會用新的設定自動計算；舊紀錄不會變。</p>' + settingsFields(S || DEF, false) + '<div class="jn-btns"><button type="button" data-a="close">取消</button><button type="button" class="main" data-a="save-settings">儲存</button></div><div class="jn-err"></div>');
     f.addEventListener('click', function (ev) {
@@ -754,6 +816,7 @@ function journalClient(API) {
     if (a && a.dataset.a === 'trade') tradeForm();
     if (a && a.dataset.a === 'holding') tradeForm(null, true);
     if (a && a.dataset.a === 'ocr') ocrForm();
+    if (a && a.dataset.a === 'dt') dtForm();
     if (a && a.dataset.a === 'plans') planForm();
     var po = ev.target.closest('[data-pos]'); if (po) posModal(po.dataset.pos);
     var pe = ev.target.closest('[data-plan]'); if (pe) planForm(P.filter(function (x) { return x.id == pe.dataset.plan; })[0]);
@@ -770,7 +833,7 @@ function journalClient(API) {
       });
     }
     var ed = ev.target.closest('.jn-edit[data-id]');
-    if (ed) { var e = E.filter(function (x) { return x.id == ed.dataset.id; })[0]; if (e) (e.kind === 'buy' || e.kind === 'sell' || e.kind === 'holding' ? tradeForm : cashForm)(e); }
+    if (ed) { var e = E.filter(function (x) { return x.id == ed.dataset.id; })[0]; if (e) (e.kind === 'daytrade' ? dtForm : e.kind === 'buy' || e.kind === 'sell' || e.kind === 'holding' ? tradeForm : cashForm)(e); }
     var del = ev.target.closest('.jn-del[data-id]');
     if (del && confirm('確定要刪除這筆紀錄嗎？')) api('/api/journal/delete', { id: +del.dataset.id }).then(reload);
   });
@@ -796,11 +859,12 @@ function journalClient(API) {
   function dayCalc() {
     var t = today(), r = calc(), fxNow = r.fxNow || 0, pos = {};
     r.hold.forEach(function (p) { pos[p.market + ':' + p.code] = { market: p.market, code: p.code, name: p.name, qty: p.qty, tp: p.tp, sl: p.sl, flow: 0, dq: 0 }; });
-    var depToday = 0;
+    var depToday = 0, dtToday = 0;
     E.forEach(function (e) {
       if (e.date !== t) return;
       if (e.kind === 'deposit') depToday += e.amount;
       if (e.kind === 'withdraw') depToday -= e.amount;
+      if (e.kind === 'daytrade') dtToday += dtPnl(e); // 今天的當沖損益也算進今天
       if (e.kind !== 'buy' && e.kind !== 'sell') return;
       var k = e.market + ':' + e.code, p = pos[k] || (pos[k] = { market: e.market, code: e.code, name: e.name, qty: 0, flow: 0, dq: 0 });
       var amt = e.price * e.qty;
@@ -817,7 +881,8 @@ function journalClient(API) {
       list.push({ code: p.code, name: p.name || (names[p.code] && names[p.code].n) || p.code, pnl: v, chg: (q.price / q.prev - 1) * 100, held: p.qty > 0, price: q.price, tp: p.tp, sl: p.sl });
     });
     if (!list.length) return;
-    if (!list.length) return null;
+    pnl += dtToday;
+    if (!list.length && !dtToday) return null;
     var base = r.total - pnl - depToday;
     return { t: t, r: r, list: list, pnl: pnl, miss: miss, my: base > 0 ? pnl / base * 100 : null };
   }
