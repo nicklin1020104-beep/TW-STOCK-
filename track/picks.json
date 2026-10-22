@@ -1439,5 +1439,31 @@
    "okVol": false,
    "above60": false
   }
+ ],
+ "20261022": [
+  {
+   "code": "2908",
+   "name": "特力",
+   "mkt": "上市",
+   "industry": "貿易百貨",
+   "close": 22.05,
+   "yoy": 14.47291280559391,
+   "star": false,
+   "okUp": true,
+   "okVol": false,
+   "above60": true
+  },
+  {
+   "code": "2731",
+   "name": "雄獅",
+   "mkt": "上市",
+   "industry": "觀光餐旅",
+   "close": 144,
+   "yoy": 11.39532491407495,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": true
+  }
  ]
 }
