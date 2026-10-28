@@ -1530,6 +1530,18 @@
    "above60": true
   },
   {
+   "code": "1595",
+   "name": "川寶",
+   "mkt": "上櫃",
+   "industry": "半導體業",
+   "close": 80.5,
+   "yoy": 226.67536654640364,
+   "star": false,
+   "okUp": true,
+   "okVol": false,
+   "above60": true
+  },
+  {
    "code": "3715",
    "name": "定穎投控",
    "mkt": "上市",
