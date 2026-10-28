@@ -426,5 +426,16 @@
    "tight": true,
    "pivot": 60.2
   }
+ ],
+ "20261028": [
+  {
+   "code": "2855",
+   "name": "統一證",
+   "mkt": "上市",
+   "close": 55.9,
+   "status": "柄整理中",
+   "tight": true,
+   "pivot": 60.2
+  }
  ]
 }

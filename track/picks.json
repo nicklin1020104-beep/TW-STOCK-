@@ -1503,5 +1503,67 @@
    "okVol": false,
    "above60": null
   }
+ ],
+ "20261028": [
+  {
+   "code": "3673",
+   "name": "TPK-KY",
+   "mkt": "上市",
+   "industry": "光電業",
+   "close": 75,
+   "yoy": 27.821721288822612,
+   "star": true,
+   "okUp": true,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "4927",
+   "name": "泰鼎-KY",
+   "mkt": "上市",
+   "industry": "電子零組件業",
+   "close": 56.3,
+   "yoy": 72.82861855651544,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "3715",
+   "name": "定穎投控",
+   "mkt": "上市",
+   "industry": "電子零組件業",
+   "close": 133.5,
+   "yoy": 84.69522628124143,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": true
+  },
+  {
+   "code": "6510",
+   "name": "精測",
+   "mkt": "上櫃",
+   "industry": "半導體業",
+   "close": 3200,
+   "yoy": 55.851857519990816,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": true
+  },
+  {
+   "code": "9908",
+   "name": "大台北",
+   "mkt": "上市",
+   "industry": "油電燃氣業",
+   "close": 29,
+   "yoy": 5.401856589779604,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": false
+  }
  ]
 }
