@@ -1577,5 +1577,31 @@
    "okVol": false,
    "above60": false
   }
+ ],
+ "20261029": [
+  {
+   "code": "8908",
+   "name": "欣雄",
+   "mkt": "上市",
+   "industry": "油電燃氣業",
+   "close": 40.35,
+   "yoy": 24.924566738507867,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": true
+  },
+  {
+   "code": "6183",
+   "name": "關貿",
+   "mkt": "上市",
+   "industry": "資訊服務業",
+   "close": 91.6,
+   "yoy": 12.151177573657947,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": false
+  }
  ]
 }
