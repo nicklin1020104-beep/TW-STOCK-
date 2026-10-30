@@ -1603,5 +1603,67 @@
    "okVol": false,
    "above60": false
   }
+ ],
+ "20261030": [
+  {
+   "code": "2609",
+   "name": "陽明",
+   "mkt": "上市",
+   "industry": "航運業",
+   "close": 63.5,
+   "yoy": 69.93539181535685,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "2615",
+   "name": "萬海",
+   "mkt": "上市",
+   "industry": "航運業",
+   "close": 120,
+   "yoy": 97.6272252761016,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "6234",
+   "name": "高僑",
+   "mkt": "上櫃",
+   "industry": "光電業",
+   "close": 48.4,
+   "yoy": 133.51547055818395,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "6805",
+   "name": "富世達",
+   "mkt": "上市",
+   "industry": "電子零組件業",
+   "close": 2385,
+   "yoy": 32.17438109017265,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": true
+  },
+  {
+   "code": "1722",
+   "name": "台肥",
+   "mkt": "上市",
+   "industry": "化學工業",
+   "close": 41.9,
+   "yoy": 6.969986247659176,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": false
+  }
  ]
 }
