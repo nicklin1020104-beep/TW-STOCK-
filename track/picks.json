@@ -1665,5 +1665,43 @@
    "okVol": false,
    "above60": false
   }
+ ],
+ "20261102": [
+  {
+   "code": "2610",
+   "name": "華航",
+   "mkt": "上市",
+   "industry": "航運業",
+   "close": 20.65,
+   "yoy": 31.861356890902748,
+   "star": true,
+   "okUp": true,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "4977",
+   "name": "眾達-KY",
+   "mkt": "上市",
+   "industry": "通信網路業",
+   "close": 183,
+   "yoy": 125.76660822131308,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "1809",
+   "name": "中釉",
+   "mkt": "上市",
+   "industry": "玻璃陶瓷",
+   "close": 46.4,
+   "yoy": 5.883935238218912,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": true
+  }
  ]
 }
