@@ -1680,6 +1680,18 @@
    "above60": true
   },
   {
+   "code": "4903",
+   "name": "聯光通",
+   "mkt": "上櫃",
+   "industry": "通信網路業",
+   "close": 53.6,
+   "yoy": 93.82719454922866,
+   "star": true,
+   "okUp": true,
+   "okVol": true,
+   "above60": true
+  },
+  {
    "code": "4977",
    "name": "眾達-KY",
    "mkt": "上市",
@@ -1689,6 +1701,18 @@
    "star": false,
    "okUp": false,
    "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "5230",
+   "name": "雷笛克光學",
+   "mkt": "上櫃",
+   "industry": "光電業",
+   "close": 28.4,
+   "yoy": 22.764347954769015,
+   "star": false,
+   "okUp": true,
+   "okVol": false,
    "above60": true
   },
   {
