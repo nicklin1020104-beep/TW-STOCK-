@@ -1727,5 +1727,67 @@
    "okVol": false,
    "above60": true
   }
+ ],
+ "20261103": [
+  {
+   "code": "1802",
+   "name": "台玻",
+   "mkt": "上市",
+   "industry": "玻璃陶瓷",
+   "close": 67.7,
+   "yoy": 34.10637421967269,
+   "star": true,
+   "okUp": true,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "2908",
+   "name": "特力",
+   "mkt": "上市",
+   "industry": "貿易百貨",
+   "close": 22.2,
+   "yoy": 14.47291280559391,
+   "star": false,
+   "okUp": true,
+   "okVol": false,
+   "above60": true
+  },
+  {
+   "code": "2704",
+   "name": "國賓",
+   "mkt": "上市",
+   "industry": "觀光餐旅",
+   "close": 45.1,
+   "yoy": 35.86363269732302,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": false
+  },
+  {
+   "code": "6183",
+   "name": "關貿",
+   "mkt": "上市",
+   "industry": "資訊服務業",
+   "close": 91.3,
+   "yoy": 12.151177573657947,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": false
+  },
+  {
+   "code": "9937",
+   "name": "全國",
+   "mkt": "上市",
+   "industry": "油電燃氣業",
+   "close": 55.3,
+   "yoy": 11.628492771196113,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": true
+  }
  ]
 }

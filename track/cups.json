@@ -450,5 +450,16 @@
    "tight": false,
    "pivot": 43.35
   }
+ ],
+ "20261103": [
+  {
+   "code": "8213",
+   "name": "志超",
+   "mkt": "上市",
+   "close": 39.75,
+   "status": "柄整理中",
+   "tight": false,
+   "pivot": 43.35
+  }
  ]
 }
