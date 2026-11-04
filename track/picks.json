@@ -1789,5 +1789,19 @@
    "okVol": false,
    "above60": true
   }
+ ],
+ "20261104": [
+  {
+   "code": "4977",
+   "name": "眾達-KY",
+   "mkt": "上市",
+   "industry": "通信網路業",
+   "close": 183.5,
+   "yoy": 125.76660822131308,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": true
+  }
  ]
 }
