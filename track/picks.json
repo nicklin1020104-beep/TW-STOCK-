@@ -1829,5 +1829,55 @@
    "okVol": false,
    "above60": null
   }
+ ],
+ "20261106": [
+  {
+   "code": "6112",
+   "name": "邁達特",
+   "mkt": "上市",
+   "industry": "資訊服務業",
+   "close": 51.4,
+   "yoy": 27.07,
+   "star": true,
+   "okUp": true,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "5904",
+   "name": "寶雅*",
+   "mkt": "上櫃",
+   "industry": "居家生活",
+   "close": 74,
+   "yoy": 15.735229827256287,
+   "star": true,
+   "okUp": true,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "6446",
+   "name": "藥華藥",
+   "mkt": "上市",
+   "industry": "生技醫療業",
+   "close": 1270,
+   "yoy": 102.01,
+   "star": true,
+   "okUp": true,
+   "okVol": true,
+   "above60": false
+  },
+  {
+   "code": "6180",
+   "name": "橘子",
+   "mkt": "上櫃",
+   "industry": "文化創意業",
+   "close": 40.3,
+   "yoy": 37.188110754206306,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": false
+  }
  ]
 }
