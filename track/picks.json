@@ -1868,6 +1868,18 @@
    "above60": false
   },
   {
+   "code": "3576",
+   "name": "聯合再生",
+   "mkt": "上市",
+   "industry": "光電業",
+   "close": 17.8,
+   "yoy": 3,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": true
+  },
+  {
    "code": "6180",
    "name": "橘子",
    "mkt": "上櫃",
