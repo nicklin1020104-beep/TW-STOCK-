@@ -1928,6 +1928,18 @@
    "okUp": true,
    "okVol": false,
    "above60": true
+  },
+  {
+   "code": "6949",
+   "name": "沛爾生醫*-創",
+   "mkt": "上市",
+   "industry": "生技醫療業",
+   "close": 40.05,
+   "yoy": 3.24,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": null
   }
  ]
 }
