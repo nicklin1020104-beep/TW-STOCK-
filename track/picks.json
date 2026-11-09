@@ -1891,5 +1891,43 @@
    "okVol": false,
    "above60": false
   }
+ ],
+ "20261109": [
+  {
+   "code": "2891",
+   "name": "中信金",
+   "mkt": "上市",
+   "industry": "金融保險業",
+   "close": 75.9,
+   "yoy": 12.819080928036378,
+   "star": true,
+   "okUp": true,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "4977",
+   "name": "眾達-KY",
+   "mkt": "上市",
+   "industry": "通信網路業",
+   "close": 178,
+   "yoy": 125.76660822131308,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "3147",
+   "name": "大綜",
+   "mkt": "上櫃",
+   "industry": "資訊服務業",
+   "close": 319.5,
+   "yoy": 287.9399445615201,
+   "star": false,
+   "okUp": true,
+   "okVol": false,
+   "above60": true
+  }
  ]
 }
