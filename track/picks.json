@@ -1941,5 +1941,31 @@
    "okVol": false,
    "above60": null
   }
+ ],
+ "20261110": [
+  {
+   "code": "9904",
+   "name": "寶成",
+   "mkt": "上市",
+   "industry": "運動休閒",
+   "close": 26,
+   "yoy": 10.40254522940537,
+   "star": true,
+   "okUp": true,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "2646",
+   "name": "星宇航空",
+   "mkt": "上市",
+   "industry": "航運業",
+   "close": 20.05,
+   "yoy": 68.88604770696023,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": false
+  }
  ]
 }
