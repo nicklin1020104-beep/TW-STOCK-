@@ -153,7 +153,9 @@ function journalClient(API) {
     Promise.all(need.map(function (s) { return histOf(s, from); })).then(function (arr) {
       if (g0 !== gen) return;
       var H = {}; need.forEach(function (s, i) { H[s] = arr[i]; });
-      var dates = (H['^TWII'] || []).map(function (x) { return x.date; }).filter(function (d) { return d >= start; });
+      // 交易日：加權指數和台股持股的日線合起來（Yahoo 的加權日線偶爾少一天，例如 11/9，會讓那天整個不見、隔天漲跌算錯）
+      var dset = {}; need.forEach(function (s) { if (s === '^TWII' || /[.]TWO?$/.test(s)) (H[s] || []).forEach(function (x) { if (x.date >= start) dset[x.date] = 1; }); });
+      var dates = Object.keys(dset).sort();
       if (!dates.length || dates[dates.length - 1] < t) dates.push(t);
       // 每檔的「某天以前最近收盤」
       var ptr = {}, last = {};
