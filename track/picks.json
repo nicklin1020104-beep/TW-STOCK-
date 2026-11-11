@@ -1942,5 +1942,55 @@
    "above60": null
   }
  ],
- "20261110": []
+ "20261110": [],
+ "20261111": [
+  {
+   "code": "2891",
+   "name": "中信金",
+   "mkt": "上市",
+   "industry": "金融保險業",
+   "close": 74.7,
+   "yoy": 12.819080928036378,
+   "star": true,
+   "okUp": true,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "2886",
+   "name": "兆豐金",
+   "mkt": "上市",
+   "industry": "金融保險業",
+   "close": 54.2,
+   "yoy": 16.451900087938668,
+   "star": true,
+   "okUp": true,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "8415",
+   "name": "大國鋼",
+   "mkt": "上櫃",
+   "industry": "鋼鐵工業",
+   "close": 38.5,
+   "yoy": 43.826288112215344,
+   "star": false,
+   "okUp": true,
+   "okVol": false,
+   "above60": true
+  },
+  {
+   "code": "5871",
+   "name": "中租-KY",
+   "mkt": "上市",
+   "industry": "其他",
+   "close": 106,
+   "yoy": 2.52843704776593,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": false
+  }
+ ]
 }
