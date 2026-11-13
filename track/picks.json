@@ -2030,5 +2030,43 @@
    "okVol": false,
    "above60": true
   }
+ ],
+ "20261113": [
+  {
+   "code": "4743",
+   "name": "合一",
+   "mkt": "上櫃",
+   "industry": "生技醫療業",
+   "close": 50.2,
+   "yoy": 154.6639231824417,
+   "star": false,
+   "okUp": true,
+   "okVol": false,
+   "above60": true
+  },
+  {
+   "code": "6890",
+   "name": "來億-KY",
+   "mkt": "上市",
+   "industry": "運動休閒",
+   "close": 161.5,
+   "yoy": 3.4973725256555297,
+   "star": false,
+   "okUp": true,
+   "okVol": false,
+   "above60": true
+  },
+  {
+   "code": "9924",
+   "name": "福興",
+   "mkt": "上市",
+   "industry": "居家生活",
+   "close": 38.2,
+   "yoy": 16.750766538508596,
+   "star": false,
+   "okUp": true,
+   "okVol": false,
+   "above60": true
+  }
  ]
 }
