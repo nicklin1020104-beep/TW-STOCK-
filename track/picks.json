@@ -2070,5 +2070,31 @@
   }
  ],
  "20261116": [],
- "20261117": []
+ "20261117": [],
+ "20261118": [
+  {
+   "code": "3305",
+   "name": "昇貿",
+   "mkt": "上市",
+   "industry": "其他電子業",
+   "close": 107.5,
+   "yoy": 53.132988411628745,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": true
+  },
+  {
+   "code": "2258",
+   "name": "鴻華先進-創",
+   "mkt": "上市",
+   "industry": "汽車工業",
+   "close": 29.95,
+   "yoy": 1346.1385633785483,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": false
+  }
+ ]
 }
