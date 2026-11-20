@@ -2097,5 +2097,19 @@
    "above60": false
   }
  ],
- "20261119": []
+ "20261119": [],
+ "20261120": [
+  {
+   "code": "7828",
+   "name": "創新服務",
+   "mkt": "上櫃",
+   "industry": "半導體業",
+   "close": 1295,
+   "yoy": 224.6261533566656,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": false
+  }
+ ]
 }
