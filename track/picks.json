@@ -2112,5 +2112,43 @@
    "above60": false
   }
  ],
- "20261123": []
+ "20261123": [],
+ "20261124": [
+  {
+   "code": "1210",
+   "name": "大成",
+   "mkt": "上市",
+   "industry": "食品工業",
+   "close": 52,
+   "yoy": 14.580437403873324,
+   "star": false,
+   "okUp": true,
+   "okVol": false,
+   "above60": true
+  },
+  {
+   "code": "1215",
+   "name": "卜蜂",
+   "mkt": "上市",
+   "industry": "食品工業",
+   "close": 104,
+   "yoy": 13.354622978587804,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": false
+  },
+  {
+   "code": "6670",
+   "name": "復盛應用",
+   "mkt": "上市",
+   "industry": "運動休閒",
+   "close": 266,
+   "yoy": 20.929887029437037,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": false
+  }
+ ]
 }
