@@ -2150,5 +2150,19 @@
    "okVol": false,
    "above60": false
   }
+ ],
+ "20261125": [
+  {
+   "code": "1210",
+   "name": "大成",
+   "mkt": "上市",
+   "industry": "食品工業",
+   "close": 51.9,
+   "yoy": 14.580437403873324,
+   "star": false,
+   "okUp": true,
+   "okVol": false,
+   "above60": true
+  }
  ]
 }
