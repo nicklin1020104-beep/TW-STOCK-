@@ -2164,5 +2164,43 @@
    "okVol": false,
    "above60": true
   }
+ ],
+ "20261126": [
+  {
+   "code": "6285",
+   "name": "啟碁",
+   "mkt": "上市",
+   "industry": "通信網路業",
+   "close": 193,
+   "yoy": 77.78424111325353,
+   "star": false,
+   "okUp": false,
+   "okVol": true,
+   "above60": false
+  },
+  {
+   "code": "6870",
+   "name": "騰雲",
+   "mkt": "上櫃",
+   "industry": "數位雲端",
+   "close": 446.5,
+   "yoy": 35.64443945622133,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": true
+  },
+  {
+   "code": "1614",
+   "name": "三洋電",
+   "mkt": "上市",
+   "industry": "電器電纜",
+   "close": 31.85,
+   "yoy": 5.096353163119067,
+   "star": false,
+   "okUp": false,
+   "okVol": false,
+   "above60": true
+  }
  ]
 }
